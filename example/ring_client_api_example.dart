@@ -93,9 +93,7 @@ void main() async {
   // Example 8: Get camera events
   if (cameras.isNotEmpty) {
     final camera = cameras.first;
-    final events = await camera.getEvents(
-      CameraEventOptions(limit: 10),
-    );
+    final events = await camera.getEvents(CameraEventOptions(limit: 10));
     print('\nRecent events for ${camera.name}:');
     for (final event in events.events) {
       print('  - ${event.kind} at ${event.createdAt}');

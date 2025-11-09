@@ -970,7 +970,7 @@ BaseCameraData _$BaseCameraDataFromJson(Map<String, dynamic> json) =>
           : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
       id: (json['id'] as num?)?.toInt(),
       isSidewalkGateway: json['isSidewalkGateway'] as bool?,
-      locationId: json['locationId'] as String?,
+      locationId: json['location_id'] as String?,
       motionSnooze: json['motionSnooze'] == null
           ? null
           : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
@@ -1013,7 +1013,7 @@ Map<String, dynamic> _$BaseCameraDataToJson(BaseCameraData instance) =>
       'features': instance.features,
       'id': instance.id,
       'isSidewalkGateway': instance.isSidewalkGateway,
-      'locationId': instance.locationId,
+      'location_id': instance.locationId,
       'motionSnooze': instance.motionSnooze,
       'nightModeStatus': instance.nightModeStatus,
       'owned': instance.owned,
@@ -1059,7 +1059,7 @@ CameraData _$CameraDataFromJson(Map<String, dynamic> json) => CameraData(
       : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
   id: (json['id'] as num?)?.toInt(),
   isSidewalkGateway: json['isSidewalkGateway'] as bool?,
-  locationId: json['locationId'] as String?,
+  locationId: json['location_id'] as String?,
   motionSnooze: json['motionSnooze'] == null
       ? null
       : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
@@ -1100,7 +1100,7 @@ Map<String, dynamic> _$CameraDataToJson(CameraData instance) =>
       'features': instance.features,
       'id': instance.id,
       'isSidewalkGateway': instance.isSidewalkGateway,
-      'locationId': instance.locationId,
+      'location_id': instance.locationId,
       'motionSnooze': instance.motionSnooze,
       'nightModeStatus': instance.nightModeStatus,
       'owned': instance.owned,
@@ -1189,7 +1189,7 @@ OnvifCameraData _$OnvifCameraDataFromJson(Map<String, dynamic> json) =>
           : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
       id: (json['id'] as num?)?.toInt(),
       isSidewalkGateway: json['isSidewalkGateway'] as bool?,
-      locationId: json['locationId'] as String?,
+      locationId: json['location_id'] as String?,
       motionSnooze: json['motionSnooze'] == null
           ? null
           : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
@@ -1232,7 +1232,7 @@ Map<String, dynamic> _$OnvifCameraDataToJson(OnvifCameraData instance) =>
       'features': instance.features,
       'id': instance.id,
       'isSidewalkGateway': instance.isSidewalkGateway,
-      'locationId': instance.locationId,
+      'location_id': instance.locationId,
       'motionSnooze': instance.motionSnooze,
       'nightModeStatus': instance.nightModeStatus,
       'owned': instance.owned,

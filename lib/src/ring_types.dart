@@ -1409,6 +1409,7 @@ class BaseCameraData {
   final CameraFeatures? features;
   final int? id;
   final bool? isSidewalkGateway;
+  @JsonKey(name: 'location_id')
   final String? locationId;
   final MotionSnooze? motionSnooze;
   final String? nightModeStatus; // 'unknown', 'true', or 'false'
