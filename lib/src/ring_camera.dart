@@ -92,6 +92,7 @@ double? getBatteryLevel(dynamic data) {
 
   final health = data.health;
   if (levels.isEmpty ||
+      health == null ||
       (health.batteryPercentage == null &&
           health.batteryPresent != true &&
           health.secondBatteryPercentage == null)) {
@@ -290,8 +291,8 @@ class RingCamera extends Subscribed {
 
   // Helper methods to extract data from union type
   static int _getId(AnyCameraData data) {
-    if (data is CameraData) return data.id;
-    if (data is OnvifCameraData) return data.id;
+    if (data is CameraData) return data.id ?? 0;
+    if (data is OnvifCameraData) return data.id ?? 0;
     throw ArgumentError('Invalid camera data type');
   }
 
@@ -302,14 +303,26 @@ class RingCamera extends Subscribed {
   }
 
   static String _getDescription(AnyCameraData data) {
-    if (data is CameraData) return data.description;
-    if (data is OnvifCameraData) return data.description;
+    if (data is CameraData) return data.description ?? '';
+    if (data is OnvifCameraData) return data.description ?? '';
     throw ArgumentError('Invalid camera data type');
   }
 
   static CameraSettingsData _getSettings(AnyCameraData data) {
-    if (data is CameraData) return data.settings;
-    if (data is OnvifCameraData) return data.settings;
+    if (data is CameraData) {
+      final settings = data.settings;
+      if (settings == null) {
+        throw StateError('Camera settings is null');
+      }
+      return settings;
+    }
+    if (data is OnvifCameraData) {
+      final settings = data.settings;
+      if (settings == null) {
+        throw StateError('Camera settings is null');
+      }
+      return settings;
+    }
     throw ArgumentError('Invalid camera data type');
   }
 
@@ -361,10 +374,10 @@ class RingCamera extends Subscribed {
   /// Check if battery is low
   bool get hasLowBattery {
     if (data is CameraData) {
-      return (data as CameraData).alerts.battery == 'low';
+      return (data as CameraData).alerts?.battery == 'low';
     }
     if (data is OnvifCameraData) {
-      return (data as OnvifCameraData).alerts.battery == 'low';
+      return (data as OnvifCameraData).alerts?.battery == 'low';
     }
     return false;
   }
@@ -372,7 +385,7 @@ class RingCamera extends Subscribed {
   /// Check if camera is charging
   bool get isCharging {
     if (data is CameraData) {
-      return (data as CameraData).externalConnection;
+      return (data as CameraData).externalConnection ?? false;
     }
     return false;
   }
@@ -393,10 +406,10 @@ class RingCamera extends Subscribed {
   /// Check if camera is offline
   bool get isOffline {
     if (data is CameraData) {
-      return (data as CameraData).alerts.connection == 'offline';
+      return (data as CameraData).alerts?.connection == 'offline';
     }
     if (data is OnvifCameraData) {
-      return (data as OnvifCameraData).alerts.connection == 'offline';
+      return (data as OnvifCameraData).alerts?.connection == 'offline';
     }
     return false;
   }
@@ -404,7 +417,7 @@ class RingCamera extends Subscribed {
   /// Check if Ring Edge is enabled
   bool get isRingEdgeEnabled {
     final settings = _getSettings(data);
-    return settings.sheilaSettings.localStorageEnabled == true;
+    return settings.sheilaSettings?.localStorageEnabled == true;
   }
 
   /// Check if camera has in-home doorbell

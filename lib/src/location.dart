@@ -43,7 +43,14 @@ RingDeviceData flattenDeviceData(dynamic data) {
     }
   }
 
-  return RingDeviceData.fromJson(result);
+  try {
+    return RingDeviceData.fromJson(result);
+  } catch (e, stack) {
+    logError('[flattenDeviceData] Error parsing device data: $e');
+    logError('[flattenDeviceData] JSON was: ${result.toString().substring(0, 500)}...');
+    logError('[flattenDeviceData] Stack: $stack');
+    rethrow;
+  }
 }
 
 /// Options for Location configuration
@@ -169,7 +176,14 @@ class Location extends Subscribed {
             updatedDevices,
             data,
           ) {
-            final flatData = flattenDeviceData(data);
+            RingDeviceData flatData;
+            try {
+              flatData = flattenDeviceData(data);
+            } catch (e, stack) {
+              logError('[onDevices.scan] Error in flattenDeviceData: $e');
+              logError('[onDevices.scan] Stack: $stack');
+              rethrow;
+            }
 
             // Find existing device
             RingDevice? existingDevice;
@@ -207,9 +221,16 @@ class Location extends Subscribed {
         .where((m) => m.msg == MessageType.sessionInfo)
         .map(
           (m) => m.body
-              .map(
-                (item) => AssetSession.fromJson(item as Map<String, dynamic>),
-              )
+              .map((item) {
+                try {
+                  return AssetSession.fromJson(item as Map<String, dynamic>);
+                } catch (e, stack) {
+                  logError('[AssetSession.fromJson] Error: $e');
+                  logError('[AssetSession.fromJson] JSON: $item');
+                  logError('[AssetSession.fromJson] Stack: $stack');
+                  rethrow;
+                }
+              })
               .toList(),
         );
 
@@ -290,10 +311,10 @@ class Location extends Subscribed {
   String get id => locationId;
 
   /// Get the location ID
-  String get locationId => locationDetails.locationId;
+  String get locationId => locationDetails.locationId ?? '';
 
   /// Get the location name
-  String get name => locationDetails.name;
+  String get name => locationDetails.name ?? '';
 
   /// Create a WebSocket connection to the Ring servers
   Future<WebSocket> createConnection() async {
@@ -866,8 +887,9 @@ class Location extends Subscribed {
             device.disconnect();
           }
         })
-        .catchError((error) {
-          logError(error);
+        .catchError((error, stack) {
+          logError('[Location.disconnect getDevices] $error');
+          logError('[Stack] $stack');
         });
 
     // Close WebSocket connection
@@ -876,8 +898,9 @@ class Location extends Subscribed {
           .then((connection) {
             connection.close();
           })
-          .catchError((error) {
-            logError(error);
+          .catchError((error, stack) {
+            logError('[Location.disconnect connectionPromise] $error');
+            logError('[Stack] $stack');
           });
     }
 

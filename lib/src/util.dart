@@ -229,7 +229,12 @@ String toBase64(String input) {
 
 /// Decode base64 string
 String fromBase64(String encodedInput) {
-  return utf8.decode(base64Decode(encodedInput));
+  // Add padding if needed (base64 strings must be a multiple of 4)
+  var padded = encodedInput;
+  while (padded.length % 4 != 0) {
+    padded += '=';
+  }
+  return utf8.decode(base64Decode(padded));
 }
 
 /// Build a URL query string from a map

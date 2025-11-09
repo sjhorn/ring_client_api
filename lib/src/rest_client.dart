@@ -11,6 +11,7 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
 import 'ring_types.dart';
@@ -191,6 +192,12 @@ Future<DataResponse<T>> requestWithRetry<T>(
     request.headers.addAll(headers);
     if (bodyString != null) {
       request.body = bodyString;
+      if (options.url.contains('oauth.ring.com')) {
+        // ignore: avoid_print
+        print('[DEBUG] OAuth request body: ${bodyString.length} chars');
+        // ignore: avoid_print
+        print('[DEBUG] OAuth headers: ${headers.keys.toList()}');
+      }
     }
 
     // Make the request with timeout
@@ -210,6 +217,12 @@ Future<DataResponse<T>> requestWithRetry<T>(
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
+        if (options.url.contains('oauth.ring.com')) {
+          // ignore: avoid_print
+          print('[DEBUG] OAuth response status: ${response.statusCode}');
+          // ignore: avoid_print
+          print('[DEBUG] OAuth response body: ${response.body}');
+        }
         final error = await _responseToError(response);
         throw error;
       }
@@ -323,11 +336,19 @@ class _AuthConfig {
   }
 
   factory _AuthConfig.fromJson(Map<String, dynamic> json) {
-    return _AuthConfig(
-      rt: json['rt'] as String,
-      hid: json['hid'] as String?,
-      pnc: json['pnc'] as Map<String, dynamic>?,
-    );
+    try {
+      return _AuthConfig(
+        rt: json['rt'] as String,
+        hid: json['hid'] as String?,
+        pnc: json['pnc'] != null ? json['pnc'] as Map<String, dynamic> : null,
+      );
+    } catch (e) {
+      // ignore: avoid_print
+      print('[ERROR] Failed to parse auth config from JSON: $e');
+      // ignore: avoid_print
+      print('[ERROR] JSON keys: ${json.keys.toList()}');
+      rethrow;
+    }
   }
 }
 
@@ -339,12 +360,20 @@ _AuthConfig? _parseAuthConfig(String? rawRefreshToken) {
 
   try {
     final decoded = fromBase64(rawRefreshToken);
+    // ignore: avoid_print
+    print('[DEBUG] Decoded refresh token: ${decoded.substring(0, min(100, decoded.length))}...');
     final config = jsonDecode(decoded) as Map<String, dynamic>;
     if (config['rt'] == null) {
+      // ignore: avoid_print
+      print('[DEBUG] No rt field found in config');
       return null;
     }
+    // ignore: avoid_print
+    print('[DEBUG] Successfully parsed auth config with rt field (length: ${(config['rt'] as String).length})');
     return _AuthConfig.fromJson(config);
-  } catch (_) {
+  } catch (e) {
+    // ignore: avoid_print
+    print('[DEBUG] Failed to parse refresh token as JSON: $e');
     // If parsing fails, treat the entire string as a simple refresh token
     return _AuthConfig(rt: rawRefreshToken);
   }
@@ -398,10 +427,14 @@ class RingRestClient {
     // Extract refresh token if present
     if (authOptions is RefreshTokenAuth) {
       refreshToken = authOptions.refreshToken;
+      // ignore: avoid_print
+      print('[DEBUG] Got refresh token from auth options: ${refreshToken?.substring(0, min(50, refreshToken?.length ?? 0))}...');
     }
 
     // Parse auth config
     _authConfig = _parseAuthConfig(refreshToken);
+    // ignore: avoid_print
+    print('[DEBUG] Auth config parsed: ${_authConfig != null ? "success (rt length: ${_authConfig!.rt.length})" : "null"}');
 
     // Initialize hardware ID
     final systemId = authOptions is EmailAuth
@@ -484,6 +517,14 @@ class RingRestClient {
 
     try {
       final hardwareId = await _hardwareIdPromise;
+      // ignore: avoid_print
+      print('[DEBUG] Auth request:');
+      // ignore: avoid_print
+      print('[DEBUG]   hardwareId: $hardwareId');
+      // ignore: avoid_print
+      print('[DEBUG]   grantData: $grantData');
+      // ignore: avoid_print
+      print('[DEBUG]   refresh_token length: ${grantData['refresh_token']?.length}');
       final response = await requestWithRetry<Map<String, dynamic>>(
         RequestOptions(
           url: 'https://oauth.ring.com/oauth/token',
@@ -502,6 +543,23 @@ class RingRestClient {
         ),
       );
 
+      // ignore: avoid_print
+      print('[DEBUG] Auth response received, parsing...');
+      // ignore: avoid_print
+      print('[DEBUG] Response data type: ${response.data.runtimeType}');
+      final data = response.data as Map<String, dynamic>;
+      // ignore: avoid_print
+      print('[DEBUG] Response data keys: ${data.keys.toList()}');
+      // ignore: avoid_print
+      print('[DEBUG] access_token: ${data['access_token']?.runtimeType} (null: ${data['access_token'] == null})');
+      // ignore: avoid_print
+      print('[DEBUG] expires_in: ${data['expires_in']?.runtimeType} (null: ${data['expires_in'] == null})');
+      // ignore: avoid_print
+      print('[DEBUG] refresh_token: ${data['refresh_token']?.runtimeType} (null: ${data['refresh_token'] == null})');
+      // ignore: avoid_print
+      print('[DEBUG] scope: ${data['scope']?.runtimeType} (null: ${data['scope'] == null})');
+      // ignore: avoid_print
+      print('[DEBUG] token_type: ${data['token_type']?.runtimeType} (null: ${data['token_type'] == null})');
       final authTokenResponse = AuthTokenResponse.fromJson(response.data);
       final oldRefreshToken = refreshToken;
 
@@ -532,6 +590,8 @@ class RingRestClient {
     } catch (requestError) {
       if (grantData.containsKey('refresh_token')) {
         // Failed request with refresh token - try with email/password
+        // ignore: avoid_print
+        print('[DEBUG] Auth with refresh token failed: $requestError');
         refreshToken = null;
         _authConfig = null;
         logError(requestError);

@@ -238,16 +238,16 @@ typedef AssetKind = String;
 class AssetSession {
   final String assetUuid;
   final String connectionStatus; // 'unknown', 'cell-backup', 'online'
-  final int doorbotId;
+  final int? doorbotId;
   final AssetKind kind;
-  final int sessionId;
+  final int? sessionId;
 
   const AssetSession({
     required this.assetUuid,
     required this.connectionStatus,
-    required this.doorbotId,
+    this.doorbotId,
     required this.kind,
-    required this.sessionId,
+    this.sessionId,
   });
 
   factory AssetSession.fromJson(Map<String, dynamic> json) =>
@@ -419,7 +419,7 @@ class RingDeviceData {
   final String zid;
   final String name;
   final String deviceType;
-  final int categoryId;
+  final int? categoryId;
   final int? batteryLevel;
   final BatteryStatus batteryStatus;
   final BatteryBackup? batteryBackup;
@@ -486,7 +486,7 @@ class RingDeviceData {
     required this.zid,
     required this.name,
     required this.deviceType,
-    required this.categoryId,
+    this.categoryId,
     this.batteryLevel,
     required this.batteryStatus,
     this.batteryBackup,
@@ -579,42 +579,43 @@ enum ChimeSoundKind {
 /// Base station data structure
 @JsonSerializable()
 class BaseStation {
-  final String address;
-  final List<dynamic> alerts;
-  final String description;
-  final String deviceId;
+  final String? address;
+  final List<dynamic>? alerts;
+  final String? description;
+  final String? deviceId;
   final dynamic features;
-  final Firmware firmwareVersion;
-  final int id;
-  final String kind;
-  final double latitude;
-  final String locationId;
-  final double longitude;
-  final bool owned;
+  final Firmware? firmwareVersion;
+  final int? id;
+  final String? kind;
+  final double? latitude;
+  @JsonKey(name: 'location_id')
+  final String? locationId;
+  final double? longitude;
+  final bool? owned;
   final BaseStationOwner? owner;
   final dynamic ringId;
   final dynamic settings;
-  final bool stolen;
-  final String timeZone;
+  final bool? stolen;
+  final String? timeZone;
 
   const BaseStation({
-    required this.address,
-    required this.alerts,
-    required this.description,
-    required this.deviceId,
-    required this.features,
-    required this.firmwareVersion,
-    required this.id,
-    required this.kind,
-    required this.latitude,
-    required this.locationId,
-    required this.longitude,
-    required this.owned,
+    this.address,
+    this.alerts,
+    this.description,
+    this.deviceId,
+    this.features,
+    this.firmwareVersion,
+    this.id,
+    this.kind,
+    this.latitude,
+    this.locationId,
+    this.longitude,
+    this.owned,
     this.owner,
     required this.ringId,
-    required this.settings,
-    required this.stolen,
-    required this.timeZone,
+    this.settings,
+    this.stolen,
+    this.timeZone,
   });
 
   factory BaseStation.fromJson(Map<String, dynamic> json) =>
@@ -626,16 +627,16 @@ class BaseStation {
 /// Base station owner information
 @JsonSerializable()
 class BaseStationOwner {
-  final int id;
-  final String email;
-  final String firstName;
-  final String lastName;
+  final int? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
 
   const BaseStationOwner({
-    required this.id,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
   });
 
   factory BaseStationOwner.fromJson(Map<String, dynamic> json) =>
@@ -652,6 +653,7 @@ class BeamBridge {
   final String hardwareId;
   final int id;
   final String kind;
+  @JsonKey(name: 'location_id')
   final String locationId;
   final BeamBridgeMetadata metadata;
   final int ownerId;
@@ -697,18 +699,18 @@ class BeamBridgeMetadata {
 /// Chime settings structure
 @JsonSerializable()
 class ChimeSettings {
-  final int volume;
-  final String dingAudioUserId;
-  final String dingAudioId;
-  final String motionAudioUserId;
-  final String motionAudioId;
+  final int? volume;
+  final String? dingAudioUserId;
+  final String? dingAudioId;
+  final String? motionAudioUserId;
+  final String? motionAudioId;
 
   const ChimeSettings({
-    required this.volume,
-    required this.dingAudioUserId,
-    required this.dingAudioId,
-    required this.motionAudioUserId,
-    required this.motionAudioId,
+    this.volume,
+    this.dingAudioUserId,
+    this.dingAudioId,
+    this.motionAudioUserId,
+    this.motionAudioId,
   });
 
   factory ChimeSettings.fromJson(Map<String, dynamic> json) =>
@@ -720,9 +722,9 @@ class ChimeSettings {
 /// Chime features structure
 @JsonSerializable()
 class ChimeFeatures {
-  final bool ringtonesEnabled;
+  final bool? ringtonesEnabled;
 
-  const ChimeFeatures({required this.ringtonesEnabled});
+  const ChimeFeatures({this.ringtonesEnabled});
 
   factory ChimeFeatures.fromJson(Map<String, dynamic> json) =>
       _$ChimeFeaturesFromJson(json);
@@ -733,10 +735,10 @@ class ChimeFeatures {
 /// Chime alerts structure
 @JsonSerializable()
 class ChimeAlerts {
-  final String connection;
-  final String rssi;
+  final String? connection;
+  final String? rssi;
 
-  const ChimeAlerts({required this.connection, required this.rssi});
+  const ChimeAlerts({this.connection, this.rssi});
 
   factory ChimeAlerts.fromJson(Map<String, dynamic> json) =>
       _$ChimeAlertsFromJson(json);
@@ -747,9 +749,9 @@ class ChimeAlerts {
 /// Chime do not disturb structure
 @JsonSerializable()
 class ChimeDoNotDisturb {
-  final int secondsLeft;
+  final int? secondsLeft;
 
-  const ChimeDoNotDisturb({required this.secondsLeft});
+  const ChimeDoNotDisturb({this.secondsLeft});
 
   factory ChimeDoNotDisturb.fromJson(Map<String, dynamic> json) =>
       _$ChimeDoNotDisturbFromJson(json);
@@ -760,16 +762,16 @@ class ChimeDoNotDisturb {
 /// Chime owner information
 @JsonSerializable()
 class ChimeOwner {
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String email;
+  final int? id;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
 
   const ChimeOwner({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
   });
 
   factory ChimeOwner.fromJson(Map<String, dynamic> json) =>
@@ -781,44 +783,44 @@ class ChimeOwner {
 /// Chime data structure
 @JsonSerializable()
 class ChimeData {
-  final int id;
-  final String description;
-  final String deviceId;
-  final String timeZone;
-  final Firmware firmwareVersion;
-  final String kind;
-  final double latitude;
-  final double longitude;
-  final String address;
-  final ChimeSettings settings;
-  final ChimeFeatures features;
-  final bool owned;
-  final ChimeAlerts alerts;
-  final ChimeDoNotDisturb doNotDisturb;
-  final bool stolen;
-  final String locationId;
+  final int? id;
+  final String? description;
+  final String? deviceId;
+  final String? timeZone;
+  final Firmware? firmwareVersion;
+  final String? kind;
+  final double? latitude;
+  final double? longitude;
+  final String? address;
+  final ChimeSettings? settings;
+  final ChimeFeatures? features;
+  final bool? owned;
+  final ChimeAlerts? alerts;
+  final ChimeDoNotDisturb? doNotDisturb;
+  final bool? stolen;
+  final String? locationId;
   final dynamic ringId;
-  final ChimeOwner owner;
+  final ChimeOwner? owner;
 
   const ChimeData({
-    required this.id,
-    required this.description,
-    required this.deviceId,
-    required this.timeZone,
-    required this.firmwareVersion,
-    required this.kind,
-    required this.latitude,
-    required this.longitude,
-    required this.address,
-    required this.settings,
-    required this.features,
-    required this.owned,
-    required this.alerts,
-    required this.doNotDisturb,
-    required this.stolen,
-    required this.locationId,
+    this.id,
+    this.description,
+    this.deviceId,
+    this.timeZone,
+    this.firmwareVersion,
+    this.kind,
+    this.latitude,
+    this.longitude,
+    this.address,
+    this.settings,
+    this.features,
+    this.owned,
+    this.alerts,
+    this.doNotDisturb,
+    this.stolen,
+    this.locationId,
     required this.ringId,
-    required this.owner,
+    this.owner,
   });
 
   factory ChimeData.fromJson(Map<String, dynamic> json) =>
@@ -926,22 +928,24 @@ class RingtoneOptions {
 /// Location address structure
 @JsonSerializable()
 class LocationAddress {
-  final String address1;
-  final String address2;
-  final String crossStreet;
-  final String city;
-  final String state;
-  final String timezone;
-  final String zipCode;
+  final String? address1;
+  final String? address2;
+  @JsonKey(name: 'cross_street')
+  final String? crossStreet;
+  final String? city;
+  final String? state;
+  final String? timezone;
+  @JsonKey(name: 'zip_code')
+  final String? zipCode;
 
   const LocationAddress({
-    required this.address1,
-    required this.address2,
-    required this.crossStreet,
-    required this.city,
-    required this.state,
-    required this.timezone,
-    required this.zipCode,
+    this.address1,
+    this.address2,
+    this.crossStreet,
+    this.city,
+    this.state,
+    this.timezone,
+    this.zipCode,
   });
 
   factory LocationAddress.fromJson(Map<String, dynamic> json) =>
@@ -958,8 +962,12 @@ class GeoCoordinates {
 
   const GeoCoordinates({required this.latitude, required this.longitude});
 
-  factory GeoCoordinates.fromJson(Map<String, dynamic> json) =>
-      _$GeoCoordinatesFromJson(json);
+  factory GeoCoordinates.fromJson(Map<String, dynamic> json) {
+    return GeoCoordinates(
+      latitude: json['latitude'].toString(),
+      longitude: json['longitude'].toString(),
+    );
+  }
 
   Map<String, dynamic> toJson() => _$GeoCoordinatesToJson(this);
 }
@@ -967,26 +975,33 @@ class GeoCoordinates {
 /// User location structure
 @JsonSerializable()
 class UserLocation {
-  final LocationAddress address;
-  final String createdAt;
-  final GeoCoordinates geoCoordinates;
-  final String geoServiceVerified; // 'address_only' or other string values
-  final String locationId;
-  final String name;
-  final int ownerId;
-  final String updatedAt;
-  final bool userVerified;
+  final LocationAddress? address;
+  @JsonKey(name: 'created_at')
+  final String? createdAt;
+  @JsonKey(name: 'geo_coordinates')
+  final GeoCoordinates? geoCoordinates;
+  @JsonKey(name: 'geo_service_verified')
+  final String? geoServiceVerified; // 'address_only' or other string values
+  @JsonKey(name: 'location_id')
+  final String? locationId;
+  final String? name;
+  @JsonKey(name: 'owner_id')
+  final int? ownerId;
+  @JsonKey(name: 'updated_at')
+  final String? updatedAt;
+  @JsonKey(name: 'user_verified')
+  final bool? userVerified;
 
   const UserLocation({
-    required this.address,
-    required this.createdAt,
-    required this.geoCoordinates,
-    required this.geoServiceVerified,
-    required this.locationId,
-    required this.name,
-    required this.ownerId,
-    required this.updatedAt,
-    required this.userVerified,
+    this.address,
+    this.createdAt,
+    this.geoCoordinates,
+    this.geoServiceVerified,
+    this.locationId,
+    this.name,
+    this.ownerId,
+    this.updatedAt,
+    this.userVerified,
   });
 
   factory UserLocation.fromJson(Map<String, dynamic> json) =>
@@ -1036,22 +1051,22 @@ class CameraAlerts {
 /// Camera features structure
 @JsonSerializable()
 class CameraFeatures {
-  final bool motionsEnabled;
-  final bool showRecordings;
-  final bool advancedMotionEnabled;
-  final bool peopleOnlyEnabled;
-  final bool shadowCorrectionEnabled;
-  final bool motionMessageEnabled;
-  final bool nightVisionEnabled;
+  final bool? motionsEnabled;
+  final bool? showRecordings;
+  final bool? advancedMotionEnabled;
+  final bool? peopleOnlyEnabled;
+  final bool? shadowCorrectionEnabled;
+  final bool? motionMessageEnabled;
+  final bool? nightVisionEnabled;
 
   const CameraFeatures({
-    required this.motionsEnabled,
-    required this.showRecordings,
-    required this.advancedMotionEnabled,
-    required this.peopleOnlyEnabled,
-    required this.shadowCorrectionEnabled,
-    required this.motionMessageEnabled,
-    required this.nightVisionEnabled,
+    this.motionsEnabled,
+    this.showRecordings,
+    this.advancedMotionEnabled,
+    this.peopleOnlyEnabled,
+    this.shadowCorrectionEnabled,
+    this.motionMessageEnabled,
+    this.nightVisionEnabled,
   });
 
   factory CameraFeatures.fromJson(Map<String, dynamic> json) =>
@@ -1077,8 +1092,8 @@ class MotionSnooze {
 @JsonSerializable()
 class MotionZones {
   final bool enableAudio;
-  final int activeMotionFilter;
-  final int sensitivity;
+  final int? activeMotionFilter;
+  final int? sensitivity;
   final dynamic advancedObjectSettings;
   final dynamic zone1;
   final dynamic zone2;
@@ -1086,8 +1101,8 @@ class MotionZones {
 
   const MotionZones({
     required this.enableAudio,
-    required this.activeMotionFilter,
-    required this.sensitivity,
+    this.activeMotionFilter,
+    this.sensitivity,
     required this.advancedObjectSettings,
     required this.zone1,
     required this.zone2,
@@ -1173,21 +1188,21 @@ class ServerSettings {
 @JsonSerializable()
 class CameraSettingsData {
   final dynamic enableVod; // bool or int (1)
-  final MotionZones motionZones;
-  final String motionSnoozePresetProfile;
-  final String liveViewPresetProfile;
-  final List<String> liveViewPresets;
-  final List<String> motionSnoozePresets;
-  final int doorbellVolume;
+  final MotionZones? motionZones;
+  final String? motionSnoozePresetProfile;
+  final String? liveViewPresetProfile;
+  final List<String>? liveViewPresets;
+  final List<String>? motionSnoozePresets;
+  final int? doorbellVolume;
   final CameraChimeSettings? chimeSettings;
   final dynamic videoSettings;
-  final bool motionAnnouncement;
-  final int streamSetting;
-  final bool advancedMotionDetectionEnabled;
-  final bool advancedMotionDetectionHumanOnlyMode;
-  final int lumaNightThreshold;
+  final bool? motionAnnouncement;
+  final int? streamSetting;
+  final bool? advancedMotionDetectionEnabled;
+  final bool? advancedMotionDetectionHumanOnlyMode;
+  final int? lumaNightThreshold;
   final bool? enableAudioRecording;
-  final bool peopleDetectionEligible;
+  final bool? peopleDetectionEligible;
   final dynamic pirSettings;
   final List<int>? pirMotionZones;
   final FloodlightSettings? floodlightSettings;
@@ -1196,26 +1211,26 @@ class CameraSettingsData {
   final bool? liveViewDisabled; // set by modes
   final bool? motionDetectionEnabled; // set by modes or Record Motion toggle
   final String? powerMode; // 'battery' or 'wired'
-  final SheilaSettings sheilaSettings;
-  final ServerSettings serverSettings;
+  final SheilaSettings? sheilaSettings;
+  final ServerSettings? serverSettings;
 
   const CameraSettingsData({
     required this.enableVod,
-    required this.motionZones,
-    required this.motionSnoozePresetProfile,
-    required this.liveViewPresetProfile,
-    required this.liveViewPresets,
-    required this.motionSnoozePresets,
-    required this.doorbellVolume,
+    this.motionZones,
+    this.motionSnoozePresetProfile,
+    this.liveViewPresetProfile,
+    this.liveViewPresets,
+    this.motionSnoozePresets,
+    this.doorbellVolume,
     this.chimeSettings,
     required this.videoSettings,
-    required this.motionAnnouncement,
-    required this.streamSetting,
-    required this.advancedMotionDetectionEnabled,
-    required this.advancedMotionDetectionHumanOnlyMode,
-    required this.lumaNightThreshold,
+    this.motionAnnouncement,
+    this.streamSetting,
+    this.advancedMotionDetectionEnabled,
+    this.advancedMotionDetectionHumanOnlyMode,
+    this.lumaNightThreshold,
     this.enableAudioRecording,
-    required this.peopleDetectionEligible,
+    this.peopleDetectionEligible,
     this.pirSettings,
     this.pirMotionZones,
     this.floodlightSettings,
@@ -1224,8 +1239,8 @@ class CameraSettingsData {
     this.liveViewDisabled,
     this.motionDetectionEnabled,
     this.powerMode,
-    required this.sheilaSettings,
-    required this.serverSettings,
+    this.sheilaSettings,
+    this.serverSettings,
   });
 
   factory CameraSettingsData.fromJson(Map<String, dynamic> json) =>
@@ -1237,16 +1252,16 @@ class CameraSettingsData {
 /// Camera owner information
 @JsonSerializable()
 class CameraOwner {
-  final int id;
-  final String email;
-  final String firstName;
-  final String lastName;
+  final int? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
 
   const CameraOwner({
-    required this.id,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
   });
 
   factory CameraOwner.fromJson(Map<String, dynamic> json) =>
@@ -1261,13 +1276,13 @@ class SirenStatus {
   final String? startedAt;
   final String? duration;
   final String? endsAt;
-  final int secondsRemaining;
+  final int? secondsRemaining;
 
   const SirenStatus({
     this.startedAt,
     this.duration,
     this.endsAt,
-    required this.secondsRemaining,
+    this.secondsRemaining,
   });
 
   factory SirenStatus.fromJson(Map<String, dynamic> json) =>
@@ -1279,81 +1294,81 @@ class SirenStatus {
 /// Camera health structure
 @JsonSerializable()
 class CameraHealthData {
-  final String deviceType;
-  final int lastUpdateTime;
-  final bool connected;
-  final bool rssConnected;
-  final bool vodEnabled;
-  final bool sidewalkConnection;
-  final bool floodlightOn;
+  final String? deviceType;
+  final int? lastUpdateTime;
+  final bool? connected;
+  final bool? rssConnected;
+  final bool? vodEnabled;
+  final bool? sidewalkConnection;
+  final bool? floodlightOn;
   final bool? sirenOn;
-  final bool whiteLedOn;
-  final bool nightModeOn;
-  final bool hatchOpen;
-  final double packetLoss;
-  final String packetLossCategory; // 'good' or other string
-  final int rssi;
-  final double batteryVoltage;
-  final bool wifiIsRingNetwork;
-  final List<String> supportedRpcCommands;
-  final String otaStatus; // 'successful' or other string
+  final bool? whiteLedOn;
+  final bool? nightModeOn;
+  final bool? hatchOpen;
+  final double? packetLoss;
+  final String? packetLossCategory; // 'good' or other string
+  final int? rssi;
+  final double? batteryVoltage;
+  final bool? wifiIsRingNetwork;
+  final List<String>? supportedRpcCommands;
+  final String? otaStatus; // 'successful' or other string
   final int? extPowerState; // 0 or other number
   final String? prefRunMode; // 'low_power' or other string
   final String? runMode; // 'low_power', 'full_power', or other string
-  final String networkConnectionValue; // 'wifi' or other string
-  final int acPower; // 0 if not on ac power, 1 if ac power
+  final String? networkConnectionValue; // 'wifi' or other string
+  final int? acPower; // 0 if not on ac power, 1 if ac power
   final bool? batteryPresent;
-  final bool externalConnection;
+  final bool? externalConnection;
   final int? batteryPercentage; // 0 - 100
-  final String batteryPercentageCategory; // 'very_good', 'unknown', or other
-  final String firmwareVersion; // e.g., 'cam-1.12.13000'
-  final String rssiCategory; // 'good' or other string
-  final String batteryVoltageCategory; // 'very_good' or other string
-  final String secondBatteryVoltageCategory; // 'unknown' or other string
+  final String? batteryPercentageCategory; // 'very_good', 'unknown', or other
+  final String? firmwareVersion; // e.g., 'cam-1.12.13000'
+  final String? rssiCategory; // 'good' or other string
+  final String? batteryVoltageCategory; // 'very_good' or other string
+  final String? secondBatteryVoltageCategory; // 'unknown' or other string
   final int? secondBatteryPercentage; // 0 - 100
-  final String secondBatteryPercentageCategory; // 'unknown' or other string
-  final bool batterySave;
-  final String firmwareVersionStatus; // 'Up to Date'
-  final int txRate;
+  final String? secondBatteryPercentageCategory; // 'unknown' or other string
+  final bool? batterySave;
+  final String? firmwareVersionStatus; // 'Up to Date'
+  final int? txRate;
   final String? ptzConnected; // 'penguin' or other string
 
   const CameraHealthData({
-    required this.deviceType,
-    required this.lastUpdateTime,
-    required this.connected,
-    required this.rssConnected,
-    required this.vodEnabled,
-    required this.sidewalkConnection,
-    required this.floodlightOn,
+    this.deviceType,
+    this.lastUpdateTime,
+    this.connected,
+    this.rssConnected,
+    this.vodEnabled,
+    this.sidewalkConnection,
+    this.floodlightOn,
     this.sirenOn,
-    required this.whiteLedOn,
-    required this.nightModeOn,
-    required this.hatchOpen,
-    required this.packetLoss,
-    required this.packetLossCategory,
-    required this.rssi,
-    required this.batteryVoltage,
-    required this.wifiIsRingNetwork,
-    required this.supportedRpcCommands,
-    required this.otaStatus,
+    this.whiteLedOn,
+    this.nightModeOn,
+    this.hatchOpen,
+    this.packetLoss,
+    this.packetLossCategory,
+    this.rssi,
+    this.batteryVoltage,
+    this.wifiIsRingNetwork,
+    this.supportedRpcCommands,
+    this.otaStatus,
     this.extPowerState,
     this.prefRunMode,
     this.runMode,
-    required this.networkConnectionValue,
-    required this.acPower,
+    this.networkConnectionValue,
+    this.acPower,
     this.batteryPresent,
-    required this.externalConnection,
+    this.externalConnection,
     this.batteryPercentage,
-    required this.batteryPercentageCategory,
-    required this.firmwareVersion,
-    required this.rssiCategory,
-    required this.batteryVoltageCategory,
-    required this.secondBatteryVoltageCategory,
+    this.batteryPercentageCategory,
+    this.firmwareVersion,
+    this.rssiCategory,
+    this.batteryVoltageCategory,
+    this.secondBatteryVoltageCategory,
     this.secondBatteryPercentage,
-    required this.secondBatteryPercentageCategory,
-    required this.batterySave,
-    required this.firmwareVersionStatus,
-    required this.txRate,
+    this.secondBatteryPercentageCategory,
+    this.batterySave,
+    this.firmwareVersionStatus,
+    this.txRate,
     this.ptzConnected,
   });
 
@@ -1366,62 +1381,62 @@ class CameraHealthData {
 /// Base camera data structure
 @JsonSerializable()
 class BaseCameraData {
-  final CameraAlerts alerts;
-  final String createdAt;
+  final CameraAlerts? alerts;
+  final String? createdAt;
   final String? deactivatedAt;
-  final String description;
-  final String deviceId;
-  final CameraFeatures features;
-  final int id;
-  final bool isSidewalkGateway;
-  final String locationId;
+  final String? description;
+  final String? deviceId;
+  final CameraFeatures? features;
+  final int? id;
+  final bool? isSidewalkGateway;
+  final String? locationId;
   final MotionSnooze? motionSnooze;
-  final String nightModeStatus; // 'unknown', 'true', or 'false'
-  final bool owned;
+  final String? nightModeStatus; // 'unknown', 'true', or 'false'
+  final bool? owned;
   final dynamic ringNetId;
-  final CameraSettingsData settings;
-  final bool subscribed;
-  final bool subscribedMotions;
-  final String timeZone;
+  final CameraSettingsData? settings;
+  final bool? subscribed;
+  final bool? subscribedMotions;
+  final String? timeZone;
   final bool? motionDetectionEnabled;
   final bool? cameraLocationIndoor;
   final bool? facingWindow;
   final bool? enableIrLed;
-  final CameraOwner owner;
+  final CameraOwner? owner;
   final String? ledStatus; // 'on' or 'off'
   final String? ringCamLightInstalled; // 'true' or 'false'
   final String? ringCamSetupFlow; // 'floodlight' or other
   final SirenStatus? sirenStatus;
-  final CameraHealthData health;
+  final CameraHealthData? health;
 
   const BaseCameraData({
-    required this.alerts,
-    required this.createdAt,
+    this.alerts,
+    this.createdAt,
     this.deactivatedAt,
-    required this.description,
-    required this.deviceId,
-    required this.features,
-    required this.id,
-    required this.isSidewalkGateway,
-    required this.locationId,
+    this.description,
+    this.deviceId,
+    this.features,
+    this.id,
+    this.isSidewalkGateway,
+    this.locationId,
     this.motionSnooze,
-    required this.nightModeStatus,
-    required this.owned,
+    this.nightModeStatus,
+    this.owned,
     required this.ringNetId,
-    required this.settings,
-    required this.subscribed,
-    required this.subscribedMotions,
-    required this.timeZone,
+    this.settings,
+    this.subscribed,
+    this.subscribedMotions,
+    this.timeZone,
     this.motionDetectionEnabled,
     this.cameraLocationIndoor,
     this.facingWindow,
     this.enableIrLed,
-    required this.owner,
+    this.owner,
     this.ledStatus,
     this.ringCamLightInstalled,
     this.ringCamSetupFlow,
     this.sirenStatus,
-    required this.health,
+    this.health,
   });
 
   factory BaseCameraData.fromJson(Map<String, dynamic> json) =>
@@ -1439,10 +1454,10 @@ class CameraData extends BaseCameraData {
   final dynamic batteryLife2; // number, string, or null
   final double? batteryVoltage;
   final double? batteryVoltage2;
-  final bool externalConnection;
-  final Firmware firmwareVersion;
-  final double latitude;
-  final double longitude;
+  final bool? externalConnection;
+  final String? firmwareVersion;
+  final double? latitude;
+  final double? longitude;
   final dynamic ringId;
   final bool stolen;
 
@@ -1453,39 +1468,39 @@ class CameraData extends BaseCameraData {
     this.batteryLife2,
     this.batteryVoltage,
     this.batteryVoltage2,
-    required this.externalConnection,
-    required this.firmwareVersion,
-    required this.latitude,
-    required this.longitude,
+    this.externalConnection,
+    this.firmwareVersion,
+    this.latitude,
+    this.longitude,
     required this.ringId,
     required this.stolen,
-    required super.alerts,
-    required super.createdAt,
+    super.alerts,
+    super.createdAt,
     super.deactivatedAt,
-    required super.description,
-    required super.deviceId,
-    required super.features,
-    required super.id,
-    required super.isSidewalkGateway,
-    required super.locationId,
+    super.description,
+    super.deviceId,
+    super.features,
+    super.id,
+    super.isSidewalkGateway,
+    super.locationId,
     super.motionSnooze,
-    required super.nightModeStatus,
-    required super.owned,
+    super.nightModeStatus,
+    super.owned,
     required super.ringNetId,
-    required super.settings,
-    required super.subscribed,
-    required super.subscribedMotions,
-    required super.timeZone,
+    super.settings,
+    super.subscribed,
+    super.subscribedMotions,
+    super.timeZone,
     super.motionDetectionEnabled,
     super.cameraLocationIndoor,
     super.facingWindow,
     super.enableIrLed,
-    required super.owner,
+    super.owner,
     super.ledStatus,
     super.ringCamLightInstalled,
     super.ringCamSetupFlow,
     super.sirenStatus,
-    required super.health,
+    super.health,
   });
 
   factory CameraData.fromJson(Map<String, dynamic> json) =>
@@ -1674,14 +1689,14 @@ class IntercomFunction {
 /// Intercom chime settings
 @JsonSerializable()
 class IntercomChimeSettings {
-  final int type;
+  final int? type;
   final bool enable;
-  final int duration;
+  final int? duration;
 
   const IntercomChimeSettings({
-    required this.type,
+    this.type,
     required this.enable,
-    required this.duration,
+    this.duration,
   });
 
   factory IntercomChimeSettings.fromJson(Map<String, dynamic> json) =>
@@ -1697,16 +1712,16 @@ class IntercomSettings {
   final String config;
   final bool ringToOpen;
   final String intercomType; // 'DF' or other string
-  final int unlockMode;
-  final int replication;
+  final int? unlockMode;
+  final int? replication;
 
   const IntercomSettings({
     required this.predecessor,
     required this.config,
     required this.ringToOpen,
     required this.intercomType,
-    required this.unlockMode,
-    required this.replication,
+    this.unlockMode,
+    this.replication,
   });
 
   factory IntercomSettings.fromJson(Map<String, dynamic> json) =>
@@ -1719,43 +1734,43 @@ class IntercomSettings {
 @JsonSerializable()
 class IntercomHandsetSettings {
   final bool showRecordings;
-  final int recordingTtl;
+  final int? recordingTtl;
   final bool recordingEnabled;
   final dynamic keepAlive;
   final IntercomChimeSettings chimeSettings;
   final IntercomSettings intercomSettings;
-  final int keepAliveAuto;
-  final int doorbellVolume;
-  final int enableChime;
-  final int theftAlarmEnable;
-  final int useCachedDomain;
-  final int useServerIp;
+  final int? keepAliveAuto;
+  final int? doorbellVolume;
+  final int? enableChime;
+  final int? theftAlarmEnable;
+  final int? useCachedDomain;
+  final int? useServerIp;
   final String serverDomain; // 'fw.ring.com' or other string
   final dynamic serverIp;
-  final int enableLog;
+  final int? enableLog;
   final dynamic forcedKeepAlive;
-  final int micVolume;
-  final int voiceVolume;
+  final int? micVolume;
+  final int? voiceVolume;
 
   const IntercomHandsetSettings({
     required this.showRecordings,
-    required this.recordingTtl,
+    this.recordingTtl,
     required this.recordingEnabled,
     required this.keepAlive,
     required this.chimeSettings,
     required this.intercomSettings,
-    required this.keepAliveAuto,
-    required this.doorbellVolume,
-    required this.enableChime,
-    required this.theftAlarmEnable,
-    required this.useCachedDomain,
-    required this.useServerIp,
+    this.keepAliveAuto,
+    this.doorbellVolume,
+    this.enableChime,
+    this.theftAlarmEnable,
+    this.useCachedDomain,
+    this.useServerIp,
     required this.serverDomain,
     required this.serverIp,
-    required this.enableLog,
+    this.enableLog,
     required this.forcedKeepAlive,
-    required this.micVolume,
-    required this.voiceVolume,
+    this.micVolume,
+    this.voiceVolume,
   });
 
   factory IntercomHandsetSettings.fromJson(Map<String, dynamic> json) =>
@@ -1839,7 +1854,7 @@ class IntercomHandsetMetadata {
 /// Intercom handset audio data
 @JsonSerializable()
 class IntercomHandsetAudioData {
-  final int id;
+  final int? id;
   final String description;
   final String deviceId;
   final String kind; // Should be 'intercom_handset_audio'
@@ -1861,7 +1876,7 @@ class IntercomHandsetAudioData {
   final IntercomHandsetMetadata metadata;
 
   const IntercomHandsetAudioData({
-    required this.id,
+    this.id,
     required this.description,
     required this.deviceId,
     required this.kind,
@@ -3139,10 +3154,14 @@ class SocketTicketResponse {
 /// Auth token response
 @JsonSerializable()
 class AuthTokenResponse {
+  @JsonKey(name: 'access_token')
   final String accessToken;
+  @JsonKey(name: 'expires_in')
   final int expiresIn;
+  @JsonKey(name: 'refresh_token')
   final String refreshToken;
   final String scope; // 'client'
+  @JsonKey(name: 'token_type')
   final String tokenType; // 'Bearer'
 
   const AuthTokenResponse({
@@ -3361,13 +3380,13 @@ const List<String> disabledLocationModes = ['disabled', 'unset'];
 @JsonSerializable()
 class LocationModeSecurityStatus {
   final int? lu;
-  final String md; // 'none' or other string
-  final String returnTopic;
+  final String? md; // 'none' or other string
+  final String? returnTopic;
 
   const LocationModeSecurityStatus({
     this.lu,
-    required this.md,
-    required this.returnTopic,
+    this.md,
+    this.returnTopic,
   });
 
   factory LocationModeSecurityStatus.fromJson(Map<String, dynamic> json) =>
@@ -3397,14 +3416,14 @@ class NotYetParticipatingDevice {
 @JsonSerializable()
 class LocationModeResponse {
   final LocationMode mode;
-  final int lastUpdateTimeMs;
+  final int? lastUpdateTimeMs;
   final LocationModeSecurityStatus securityStatus;
   final bool readOnly;
   final List<NotYetParticipatingDevice>? notYetParticipatingInMode;
 
   const LocationModeResponse({
     required this.mode,
-    required this.lastUpdateTimeMs,
+    this.lastUpdateTimeMs,
     required this.securityStatus,
     required this.readOnly,
     this.notYetParticipatingInMode,

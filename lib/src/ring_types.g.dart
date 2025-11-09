@@ -40,9 +40,9 @@ const _$MessageDataTypeEnumMap = {
 AssetSession _$AssetSessionFromJson(Map<String, dynamic> json) => AssetSession(
   assetUuid: json['assetUuid'] as String,
   connectionStatus: json['connectionStatus'] as String,
-  doorbotId: (json['doorbotId'] as num).toInt(),
+  doorbotId: (json['doorbotId'] as num?)?.toInt(),
   kind: json['kind'] as String,
-  sessionId: (json['sessionId'] as num).toInt(),
+  sessionId: (json['sessionId'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$AssetSessionToJson(AssetSession instance) =>
@@ -111,7 +111,7 @@ RingDeviceData _$RingDeviceDataFromJson(Map<String, dynamic> json) =>
       zid: json['zid'] as String,
       name: json['name'] as String,
       deviceType: json['deviceType'] as String,
-      categoryId: (json['categoryId'] as num).toInt(),
+      categoryId: (json['categoryId'] as num?)?.toInt(),
       batteryLevel: (json['batteryLevel'] as num?)?.toInt(),
       batteryStatus: $enumDecode(_$BatteryStatusEnumMap, json['batteryStatus']),
       batteryBackup: $enumDecodeNullable(
@@ -256,25 +256,25 @@ const _$MotionStatusEnumMap = {
 };
 
 BaseStation _$BaseStationFromJson(Map<String, dynamic> json) => BaseStation(
-  address: json['address'] as String,
-  alerts: json['alerts'] as List<dynamic>,
-  description: json['description'] as String,
-  deviceId: json['deviceId'] as String,
+  address: json['address'] as String?,
+  alerts: json['alerts'] as List<dynamic>?,
+  description: json['description'] as String?,
+  deviceId: json['deviceId'] as String?,
   features: json['features'],
-  firmwareVersion: json['firmwareVersion'] as String,
-  id: (json['id'] as num).toInt(),
-  kind: json['kind'] as String,
-  latitude: (json['latitude'] as num).toDouble(),
-  locationId: json['locationId'] as String,
-  longitude: (json['longitude'] as num).toDouble(),
-  owned: json['owned'] as bool,
+  firmwareVersion: json['firmwareVersion'] as String?,
+  id: (json['id'] as num?)?.toInt(),
+  kind: json['kind'] as String?,
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  locationId: json['location_id'] as String?,
+  longitude: (json['longitude'] as num?)?.toDouble(),
+  owned: json['owned'] as bool?,
   owner: json['owner'] == null
       ? null
       : BaseStationOwner.fromJson(json['owner'] as Map<String, dynamic>),
   ringId: json['ringId'],
   settings: json['settings'],
-  stolen: json['stolen'] as bool,
-  timeZone: json['timeZone'] as String,
+  stolen: json['stolen'] as bool?,
+  timeZone: json['timeZone'] as String?,
 );
 
 Map<String, dynamic> _$BaseStationToJson(BaseStation instance) =>
@@ -288,7 +288,7 @@ Map<String, dynamic> _$BaseStationToJson(BaseStation instance) =>
       'id': instance.id,
       'kind': instance.kind,
       'latitude': instance.latitude,
-      'locationId': instance.locationId,
+      'location_id': instance.locationId,
       'longitude': instance.longitude,
       'owned': instance.owned,
       'owner': instance.owner,
@@ -300,10 +300,10 @@ Map<String, dynamic> _$BaseStationToJson(BaseStation instance) =>
 
 BaseStationOwner _$BaseStationOwnerFromJson(Map<String, dynamic> json) =>
     BaseStationOwner(
-      id: (json['id'] as num).toInt(),
-      email: json['email'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      id: (json['id'] as num?)?.toInt(),
+      email: json['email'] as String?,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
     );
 
 Map<String, dynamic> _$BaseStationOwnerToJson(BaseStationOwner instance) =>
@@ -320,7 +320,7 @@ BeamBridge _$BeamBridgeFromJson(Map<String, dynamic> json) => BeamBridge(
   hardwareId: json['hardwareId'] as String,
   id: (json['id'] as num).toInt(),
   kind: json['kind'] as String,
-  locationId: json['locationId'] as String,
+  locationId: json['location_id'] as String,
   metadata: BeamBridgeMetadata.fromJson(
     json['metadata'] as Map<String, dynamic>,
   ),
@@ -336,7 +336,7 @@ Map<String, dynamic> _$BeamBridgeToJson(BeamBridge instance) =>
       'hardwareId': instance.hardwareId,
       'id': instance.id,
       'kind': instance.kind,
-      'locationId': instance.locationId,
+      'location_id': instance.locationId,
       'metadata': instance.metadata,
       'ownerId': instance.ownerId,
       'role': instance.role,
@@ -357,11 +357,11 @@ Map<String, dynamic> _$BeamBridgeMetadataToJson(BeamBridgeMetadata instance) =>
 
 ChimeSettings _$ChimeSettingsFromJson(Map<String, dynamic> json) =>
     ChimeSettings(
-      volume: (json['volume'] as num).toInt(),
-      dingAudioUserId: json['dingAudioUserId'] as String,
-      dingAudioId: json['dingAudioId'] as String,
-      motionAudioUserId: json['motionAudioUserId'] as String,
-      motionAudioId: json['motionAudioId'] as String,
+      volume: (json['volume'] as num?)?.toInt(),
+      dingAudioUserId: json['dingAudioUserId'] as String?,
+      dingAudioId: json['dingAudioId'] as String?,
+      motionAudioUserId: json['motionAudioUserId'] as String?,
+      motionAudioId: json['motionAudioId'] as String?,
     );
 
 Map<String, dynamic> _$ChimeSettingsToJson(ChimeSettings instance) =>
@@ -374,30 +374,30 @@ Map<String, dynamic> _$ChimeSettingsToJson(ChimeSettings instance) =>
     };
 
 ChimeFeatures _$ChimeFeaturesFromJson(Map<String, dynamic> json) =>
-    ChimeFeatures(ringtonesEnabled: json['ringtonesEnabled'] as bool);
+    ChimeFeatures(ringtonesEnabled: json['ringtonesEnabled'] as bool?);
 
 Map<String, dynamic> _$ChimeFeaturesToJson(ChimeFeatures instance) =>
     <String, dynamic>{'ringtonesEnabled': instance.ringtonesEnabled};
 
 ChimeAlerts _$ChimeAlertsFromJson(Map<String, dynamic> json) => ChimeAlerts(
-  connection: json['connection'] as String,
-  rssi: json['rssi'] as String,
+  connection: json['connection'] as String?,
+  rssi: json['rssi'] as String?,
 );
 
 Map<String, dynamic> _$ChimeAlertsToJson(ChimeAlerts instance) =>
     <String, dynamic>{'connection': instance.connection, 'rssi': instance.rssi};
 
 ChimeDoNotDisturb _$ChimeDoNotDisturbFromJson(Map<String, dynamic> json) =>
-    ChimeDoNotDisturb(secondsLeft: (json['secondsLeft'] as num).toInt());
+    ChimeDoNotDisturb(secondsLeft: (json['secondsLeft'] as num?)?.toInt());
 
 Map<String, dynamic> _$ChimeDoNotDisturbToJson(ChimeDoNotDisturb instance) =>
     <String, dynamic>{'secondsLeft': instance.secondsLeft};
 
 ChimeOwner _$ChimeOwnerFromJson(Map<String, dynamic> json) => ChimeOwner(
-  id: (json['id'] as num).toInt(),
-  firstName: json['firstName'] as String,
-  lastName: json['lastName'] as String,
-  email: json['email'] as String,
+  id: (json['id'] as num?)?.toInt(),
+  firstName: json['firstName'] as String?,
+  lastName: json['lastName'] as String?,
+  email: json['email'] as String?,
 );
 
 Map<String, dynamic> _$ChimeOwnerToJson(ChimeOwner instance) =>
@@ -409,26 +409,36 @@ Map<String, dynamic> _$ChimeOwnerToJson(ChimeOwner instance) =>
     };
 
 ChimeData _$ChimeDataFromJson(Map<String, dynamic> json) => ChimeData(
-  id: (json['id'] as num).toInt(),
-  description: json['description'] as String,
-  deviceId: json['deviceId'] as String,
-  timeZone: json['timeZone'] as String,
-  firmwareVersion: json['firmwareVersion'] as String,
-  kind: json['kind'] as String,
-  latitude: (json['latitude'] as num).toDouble(),
-  longitude: (json['longitude'] as num).toDouble(),
-  address: json['address'] as String,
-  settings: ChimeSettings.fromJson(json['settings'] as Map<String, dynamic>),
-  features: ChimeFeatures.fromJson(json['features'] as Map<String, dynamic>),
-  owned: json['owned'] as bool,
-  alerts: ChimeAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
-  doNotDisturb: ChimeDoNotDisturb.fromJson(
-    json['doNotDisturb'] as Map<String, dynamic>,
-  ),
-  stolen: json['stolen'] as bool,
-  locationId: json['locationId'] as String,
+  id: (json['id'] as num?)?.toInt(),
+  description: json['description'] as String?,
+  deviceId: json['deviceId'] as String?,
+  timeZone: json['timeZone'] as String?,
+  firmwareVersion: json['firmwareVersion'] as String?,
+  kind: json['kind'] as String?,
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
+  address: json['address'] as String?,
+  settings: json['settings'] == null
+      ? null
+      : ChimeSettings.fromJson(json['settings'] as Map<String, dynamic>),
+  features: json['features'] == null
+      ? null
+      : ChimeFeatures.fromJson(json['features'] as Map<String, dynamic>),
+  owned: json['owned'] as bool?,
+  alerts: json['alerts'] == null
+      ? null
+      : ChimeAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
+  doNotDisturb: json['doNotDisturb'] == null
+      ? null
+      : ChimeDoNotDisturb.fromJson(
+          json['doNotDisturb'] as Map<String, dynamic>,
+        ),
+  stolen: json['stolen'] as bool?,
+  locationId: json['locationId'] as String?,
   ringId: json['ringId'],
-  owner: ChimeOwner.fromJson(json['owner'] as Map<String, dynamic>),
+  owner: json['owner'] == null
+      ? null
+      : ChimeOwner.fromJson(json['owner'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ChimeDataToJson(ChimeData instance) => <String, dynamic>{
@@ -534,24 +544,24 @@ Map<String, dynamic> _$RingtoneOptionsToJson(RingtoneOptions instance) =>
 
 LocationAddress _$LocationAddressFromJson(Map<String, dynamic> json) =>
     LocationAddress(
-      address1: json['address1'] as String,
-      address2: json['address2'] as String,
-      crossStreet: json['crossStreet'] as String,
-      city: json['city'] as String,
-      state: json['state'] as String,
-      timezone: json['timezone'] as String,
-      zipCode: json['zipCode'] as String,
+      address1: json['address1'] as String?,
+      address2: json['address2'] as String?,
+      crossStreet: json['cross_street'] as String?,
+      city: json['city'] as String?,
+      state: json['state'] as String?,
+      timezone: json['timezone'] as String?,
+      zipCode: json['zip_code'] as String?,
     );
 
 Map<String, dynamic> _$LocationAddressToJson(LocationAddress instance) =>
     <String, dynamic>{
       'address1': instance.address1,
       'address2': instance.address2,
-      'crossStreet': instance.crossStreet,
+      'cross_street': instance.crossStreet,
       'city': instance.city,
       'state': instance.state,
       'timezone': instance.timezone,
-      'zipCode': instance.zipCode,
+      'zip_code': instance.zipCode,
     };
 
 GeoCoordinates _$GeoCoordinatesFromJson(Map<String, dynamic> json) =>
@@ -567,30 +577,34 @@ Map<String, dynamic> _$GeoCoordinatesToJson(GeoCoordinates instance) =>
     };
 
 UserLocation _$UserLocationFromJson(Map<String, dynamic> json) => UserLocation(
-  address: LocationAddress.fromJson(json['address'] as Map<String, dynamic>),
-  createdAt: json['createdAt'] as String,
-  geoCoordinates: GeoCoordinates.fromJson(
-    json['geoCoordinates'] as Map<String, dynamic>,
-  ),
-  geoServiceVerified: json['geoServiceVerified'] as String,
-  locationId: json['locationId'] as String,
-  name: json['name'] as String,
-  ownerId: (json['ownerId'] as num).toInt(),
-  updatedAt: json['updatedAt'] as String,
-  userVerified: json['userVerified'] as bool,
+  address: json['address'] == null
+      ? null
+      : LocationAddress.fromJson(json['address'] as Map<String, dynamic>),
+  createdAt: json['created_at'] as String?,
+  geoCoordinates: json['geo_coordinates'] == null
+      ? null
+      : GeoCoordinates.fromJson(
+          json['geo_coordinates'] as Map<String, dynamic>,
+        ),
+  geoServiceVerified: json['geo_service_verified'] as String?,
+  locationId: json['location_id'] as String?,
+  name: json['name'] as String?,
+  ownerId: (json['owner_id'] as num?)?.toInt(),
+  updatedAt: json['updated_at'] as String?,
+  userVerified: json['user_verified'] as bool?,
 );
 
 Map<String, dynamic> _$UserLocationToJson(UserLocation instance) =>
     <String, dynamic>{
       'address': instance.address,
-      'createdAt': instance.createdAt,
-      'geoCoordinates': instance.geoCoordinates,
-      'geoServiceVerified': instance.geoServiceVerified,
-      'locationId': instance.locationId,
+      'created_at': instance.createdAt,
+      'geo_coordinates': instance.geoCoordinates,
+      'geo_service_verified': instance.geoServiceVerified,
+      'location_id': instance.locationId,
       'name': instance.name,
-      'ownerId': instance.ownerId,
-      'updatedAt': instance.updatedAt,
-      'userVerified': instance.userVerified,
+      'owner_id': instance.ownerId,
+      'updated_at': instance.updatedAt,
+      'user_verified': instance.userVerified,
     };
 
 TicketAsset _$TicketAssetFromJson(Map<String, dynamic> json) => TicketAsset(
@@ -625,13 +639,13 @@ Map<String, dynamic> _$CameraAlertsToJson(CameraAlerts instance) =>
 
 CameraFeatures _$CameraFeaturesFromJson(Map<String, dynamic> json) =>
     CameraFeatures(
-      motionsEnabled: json['motionsEnabled'] as bool,
-      showRecordings: json['showRecordings'] as bool,
-      advancedMotionEnabled: json['advancedMotionEnabled'] as bool,
-      peopleOnlyEnabled: json['peopleOnlyEnabled'] as bool,
-      shadowCorrectionEnabled: json['shadowCorrectionEnabled'] as bool,
-      motionMessageEnabled: json['motionMessageEnabled'] as bool,
-      nightVisionEnabled: json['nightVisionEnabled'] as bool,
+      motionsEnabled: json['motionsEnabled'] as bool?,
+      showRecordings: json['showRecordings'] as bool?,
+      advancedMotionEnabled: json['advancedMotionEnabled'] as bool?,
+      peopleOnlyEnabled: json['peopleOnlyEnabled'] as bool?,
+      shadowCorrectionEnabled: json['shadowCorrectionEnabled'] as bool?,
+      motionMessageEnabled: json['motionMessageEnabled'] as bool?,
+      nightVisionEnabled: json['nightVisionEnabled'] as bool?,
     );
 
 Map<String, dynamic> _$CameraFeaturesToJson(CameraFeatures instance) =>
@@ -653,8 +667,8 @@ Map<String, dynamic> _$MotionSnoozeToJson(MotionSnooze instance) =>
 
 MotionZones _$MotionZonesFromJson(Map<String, dynamic> json) => MotionZones(
   enableAudio: json['enableAudio'] as bool,
-  activeMotionFilter: (json['activeMotionFilter'] as num).toInt(),
-  sensitivity: (json['sensitivity'] as num).toInt(),
+  activeMotionFilter: (json['activeMotionFilter'] as num?)?.toInt(),
+  sensitivity: (json['sensitivity'] as num?)?.toInt(),
   advancedObjectSettings: json['advancedObjectSettings'],
   zone1: json['zone1'],
   zone2: json['zone2'],
@@ -727,57 +741,58 @@ Map<String, dynamic> _$ServerSettingsToJson(ServerSettings instance) =>
       'ringMediaServerEnabled': instance.ringMediaServerEnabled,
     };
 
-CameraSettingsData _$CameraSettingsDataFromJson(Map<String, dynamic> json) =>
-    CameraSettingsData(
-      enableVod: json['enableVod'],
-      motionZones: MotionZones.fromJson(
-        json['motionZones'] as Map<String, dynamic>,
-      ),
-      motionSnoozePresetProfile: json['motionSnoozePresetProfile'] as String,
-      liveViewPresetProfile: json['liveViewPresetProfile'] as String,
-      liveViewPresets: (json['liveViewPresets'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      motionSnoozePresets: (json['motionSnoozePresets'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      doorbellVolume: (json['doorbellVolume'] as num).toInt(),
-      chimeSettings: json['chimeSettings'] == null
-          ? null
-          : CameraChimeSettings.fromJson(
-              json['chimeSettings'] as Map<String, dynamic>,
-            ),
-      videoSettings: json['videoSettings'],
-      motionAnnouncement: json['motionAnnouncement'] as bool,
-      streamSetting: (json['streamSetting'] as num).toInt(),
-      advancedMotionDetectionEnabled:
-          json['advancedMotionDetectionEnabled'] as bool,
-      advancedMotionDetectionHumanOnlyMode:
-          json['advancedMotionDetectionHumanOnlyMode'] as bool,
-      lumaNightThreshold: (json['lumaNightThreshold'] as num).toInt(),
-      enableAudioRecording: json['enableAudioRecording'] as bool?,
-      peopleDetectionEligible: json['peopleDetectionEligible'] as bool,
-      pirSettings: json['pirSettings'],
-      pirMotionZones: (json['pirMotionZones'] as List<dynamic>?)
-          ?.map((e) => (e as num).toInt())
-          .toList(),
-      floodlightSettings: json['floodlightSettings'] == null
-          ? null
-          : FloodlightSettings.fromJson(
-              json['floodlightSettings'] as Map<String, dynamic>,
-            ),
-      lightScheduleSettings: json['lightScheduleSettings'],
-      lumaLightThreshold: (json['lumaLightThreshold'] as num?)?.toInt(),
-      liveViewDisabled: json['liveViewDisabled'] as bool?,
-      motionDetectionEnabled: json['motionDetectionEnabled'] as bool?,
-      powerMode: json['powerMode'] as String?,
-      sheilaSettings: SheilaSettings.fromJson(
-        json['sheilaSettings'] as Map<String, dynamic>,
-      ),
-      serverSettings: ServerSettings.fromJson(
-        json['serverSettings'] as Map<String, dynamic>,
-      ),
-    );
+CameraSettingsData _$CameraSettingsDataFromJson(
+  Map<String, dynamic> json,
+) => CameraSettingsData(
+  enableVod: json['enableVod'],
+  motionZones: json['motionZones'] == null
+      ? null
+      : MotionZones.fromJson(json['motionZones'] as Map<String, dynamic>),
+  motionSnoozePresetProfile: json['motionSnoozePresetProfile'] as String?,
+  liveViewPresetProfile: json['liveViewPresetProfile'] as String?,
+  liveViewPresets: (json['liveViewPresets'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  motionSnoozePresets: (json['motionSnoozePresets'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  doorbellVolume: (json['doorbellVolume'] as num?)?.toInt(),
+  chimeSettings: json['chimeSettings'] == null
+      ? null
+      : CameraChimeSettings.fromJson(
+          json['chimeSettings'] as Map<String, dynamic>,
+        ),
+  videoSettings: json['videoSettings'],
+  motionAnnouncement: json['motionAnnouncement'] as bool?,
+  streamSetting: (json['streamSetting'] as num?)?.toInt(),
+  advancedMotionDetectionEnabled:
+      json['advancedMotionDetectionEnabled'] as bool?,
+  advancedMotionDetectionHumanOnlyMode:
+      json['advancedMotionDetectionHumanOnlyMode'] as bool?,
+  lumaNightThreshold: (json['lumaNightThreshold'] as num?)?.toInt(),
+  enableAudioRecording: json['enableAudioRecording'] as bool?,
+  peopleDetectionEligible: json['peopleDetectionEligible'] as bool?,
+  pirSettings: json['pirSettings'],
+  pirMotionZones: (json['pirMotionZones'] as List<dynamic>?)
+      ?.map((e) => (e as num).toInt())
+      .toList(),
+  floodlightSettings: json['floodlightSettings'] == null
+      ? null
+      : FloodlightSettings.fromJson(
+          json['floodlightSettings'] as Map<String, dynamic>,
+        ),
+  lightScheduleSettings: json['lightScheduleSettings'],
+  lumaLightThreshold: (json['lumaLightThreshold'] as num?)?.toInt(),
+  liveViewDisabled: json['liveViewDisabled'] as bool?,
+  motionDetectionEnabled: json['motionDetectionEnabled'] as bool?,
+  powerMode: json['powerMode'] as String?,
+  sheilaSettings: json['sheilaSettings'] == null
+      ? null
+      : SheilaSettings.fromJson(json['sheilaSettings'] as Map<String, dynamic>),
+  serverSettings: json['serverSettings'] == null
+      ? null
+      : ServerSettings.fromJson(json['serverSettings'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$CameraSettingsDataToJson(CameraSettingsData instance) =>
     <String, dynamic>{
@@ -811,10 +826,10 @@ Map<String, dynamic> _$CameraSettingsDataToJson(CameraSettingsData instance) =>
     };
 
 CameraOwner _$CameraOwnerFromJson(Map<String, dynamic> json) => CameraOwner(
-  id: (json['id'] as num).toInt(),
-  email: json['email'] as String,
-  firstName: json['firstName'] as String,
-  lastName: json['lastName'] as String,
+  id: (json['id'] as num?)?.toInt(),
+  email: json['email'] as String?,
+  firstName: json['firstName'] as String?,
+  lastName: json['lastName'] as String?,
 );
 
 Map<String, dynamic> _$CameraOwnerToJson(CameraOwner instance) =>
@@ -829,7 +844,7 @@ SirenStatus _$SirenStatusFromJson(Map<String, dynamic> json) => SirenStatus(
   startedAt: json['startedAt'] as String?,
   duration: json['duration'] as String?,
   endsAt: json['endsAt'] as String?,
-  secondsRemaining: (json['secondsRemaining'] as num).toInt(),
+  secondsRemaining: (json['secondsRemaining'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$SirenStatusToJson(SirenStatus instance) =>
@@ -843,45 +858,45 @@ Map<String, dynamic> _$SirenStatusToJson(SirenStatus instance) =>
 CameraHealthData _$CameraHealthDataFromJson(
   Map<String, dynamic> json,
 ) => CameraHealthData(
-  deviceType: json['deviceType'] as String,
-  lastUpdateTime: (json['lastUpdateTime'] as num).toInt(),
-  connected: json['connected'] as bool,
-  rssConnected: json['rssConnected'] as bool,
-  vodEnabled: json['vodEnabled'] as bool,
-  sidewalkConnection: json['sidewalkConnection'] as bool,
-  floodlightOn: json['floodlightOn'] as bool,
+  deviceType: json['deviceType'] as String?,
+  lastUpdateTime: (json['lastUpdateTime'] as num?)?.toInt(),
+  connected: json['connected'] as bool?,
+  rssConnected: json['rssConnected'] as bool?,
+  vodEnabled: json['vodEnabled'] as bool?,
+  sidewalkConnection: json['sidewalkConnection'] as bool?,
+  floodlightOn: json['floodlightOn'] as bool?,
   sirenOn: json['sirenOn'] as bool?,
-  whiteLedOn: json['whiteLedOn'] as bool,
-  nightModeOn: json['nightModeOn'] as bool,
-  hatchOpen: json['hatchOpen'] as bool,
-  packetLoss: (json['packetLoss'] as num).toDouble(),
-  packetLossCategory: json['packetLossCategory'] as String,
-  rssi: (json['rssi'] as num).toInt(),
-  batteryVoltage: (json['batteryVoltage'] as num).toDouble(),
-  wifiIsRingNetwork: json['wifiIsRingNetwork'] as bool,
-  supportedRpcCommands: (json['supportedRpcCommands'] as List<dynamic>)
-      .map((e) => e as String)
+  whiteLedOn: json['whiteLedOn'] as bool?,
+  nightModeOn: json['nightModeOn'] as bool?,
+  hatchOpen: json['hatchOpen'] as bool?,
+  packetLoss: (json['packetLoss'] as num?)?.toDouble(),
+  packetLossCategory: json['packetLossCategory'] as String?,
+  rssi: (json['rssi'] as num?)?.toInt(),
+  batteryVoltage: (json['batteryVoltage'] as num?)?.toDouble(),
+  wifiIsRingNetwork: json['wifiIsRingNetwork'] as bool?,
+  supportedRpcCommands: (json['supportedRpcCommands'] as List<dynamic>?)
+      ?.map((e) => e as String)
       .toList(),
-  otaStatus: json['otaStatus'] as String,
+  otaStatus: json['otaStatus'] as String?,
   extPowerState: (json['extPowerState'] as num?)?.toInt(),
   prefRunMode: json['prefRunMode'] as String?,
   runMode: json['runMode'] as String?,
-  networkConnectionValue: json['networkConnectionValue'] as String,
-  acPower: (json['acPower'] as num).toInt(),
+  networkConnectionValue: json['networkConnectionValue'] as String?,
+  acPower: (json['acPower'] as num?)?.toInt(),
   batteryPresent: json['batteryPresent'] as bool?,
-  externalConnection: json['externalConnection'] as bool,
+  externalConnection: json['externalConnection'] as bool?,
   batteryPercentage: (json['batteryPercentage'] as num?)?.toInt(),
-  batteryPercentageCategory: json['batteryPercentageCategory'] as String,
-  firmwareVersion: json['firmwareVersion'] as String,
-  rssiCategory: json['rssiCategory'] as String,
-  batteryVoltageCategory: json['batteryVoltageCategory'] as String,
-  secondBatteryVoltageCategory: json['secondBatteryVoltageCategory'] as String,
+  batteryPercentageCategory: json['batteryPercentageCategory'] as String?,
+  firmwareVersion: json['firmwareVersion'] as String?,
+  rssiCategory: json['rssiCategory'] as String?,
+  batteryVoltageCategory: json['batteryVoltageCategory'] as String?,
+  secondBatteryVoltageCategory: json['secondBatteryVoltageCategory'] as String?,
   secondBatteryPercentage: (json['secondBatteryPercentage'] as num?)?.toInt(),
   secondBatteryPercentageCategory:
-      json['secondBatteryPercentageCategory'] as String,
-  batterySave: json['batterySave'] as bool,
-  firmwareVersionStatus: json['firmwareVersionStatus'] as String,
-  txRate: (json['txRate'] as num).toInt(),
+      json['secondBatteryPercentageCategory'] as String?,
+  batterySave: json['batterySave'] as bool?,
+  firmwareVersionStatus: json['firmwareVersionStatus'] as String?,
+  txRate: (json['txRate'] as num?)?.toInt(),
   ptzConnected: json['ptzConnected'] as String?,
 );
 
@@ -929,41 +944,49 @@ Map<String, dynamic> _$CameraHealthDataToJson(
 
 BaseCameraData _$BaseCameraDataFromJson(Map<String, dynamic> json) =>
     BaseCameraData(
-      alerts: CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as String,
+      alerts: json['alerts'] == null
+          ? null
+          : CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
+      createdAt: json['createdAt'] as String?,
       deactivatedAt: json['deactivatedAt'] as String?,
-      description: json['description'] as String,
-      deviceId: json['deviceId'] as String,
-      features: CameraFeatures.fromJson(
-        json['features'] as Map<String, dynamic>,
-      ),
-      id: (json['id'] as num).toInt(),
-      isSidewalkGateway: json['isSidewalkGateway'] as bool,
-      locationId: json['locationId'] as String,
+      description: json['description'] as String?,
+      deviceId: json['deviceId'] as String?,
+      features: json['features'] == null
+          ? null
+          : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
+      id: (json['id'] as num?)?.toInt(),
+      isSidewalkGateway: json['isSidewalkGateway'] as bool?,
+      locationId: json['locationId'] as String?,
       motionSnooze: json['motionSnooze'] == null
           ? null
           : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
-      nightModeStatus: json['nightModeStatus'] as String,
-      owned: json['owned'] as bool,
+      nightModeStatus: json['nightModeStatus'] as String?,
+      owned: json['owned'] as bool?,
       ringNetId: json['ringNetId'],
-      settings: CameraSettingsData.fromJson(
-        json['settings'] as Map<String, dynamic>,
-      ),
-      subscribed: json['subscribed'] as bool,
-      subscribedMotions: json['subscribedMotions'] as bool,
-      timeZone: json['timeZone'] as String,
+      settings: json['settings'] == null
+          ? null
+          : CameraSettingsData.fromJson(
+              json['settings'] as Map<String, dynamic>,
+            ),
+      subscribed: json['subscribed'] as bool?,
+      subscribedMotions: json['subscribedMotions'] as bool?,
+      timeZone: json['timeZone'] as String?,
       motionDetectionEnabled: json['motionDetectionEnabled'] as bool?,
       cameraLocationIndoor: json['cameraLocationIndoor'] as bool?,
       facingWindow: json['facingWindow'] as bool?,
       enableIrLed: json['enableIrLed'] as bool?,
-      owner: CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
+      owner: json['owner'] == null
+          ? null
+          : CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
       ledStatus: json['ledStatus'] as String?,
       ringCamLightInstalled: json['ringCamLightInstalled'] as String?,
       ringCamSetupFlow: json['ringCamSetupFlow'] as String?,
       sirenStatus: json['sirenStatus'] == null
           ? null
           : SirenStatus.fromJson(json['sirenStatus'] as Map<String, dynamic>),
-      health: CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
+      health: json['health'] == null
+          ? null
+          : CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BaseCameraDataToJson(BaseCameraData instance) =>
@@ -1004,45 +1027,53 @@ CameraData _$CameraDataFromJson(Map<String, dynamic> json) => CameraData(
   batteryLife2: json['batteryLife2'],
   batteryVoltage: (json['batteryVoltage'] as num?)?.toDouble(),
   batteryVoltage2: (json['batteryVoltage2'] as num?)?.toDouble(),
-  externalConnection: json['externalConnection'] as bool,
-  firmwareVersion: json['firmwareVersion'] as String,
-  latitude: (json['latitude'] as num).toDouble(),
-  longitude: (json['longitude'] as num).toDouble(),
+  externalConnection: json['externalConnection'] as bool?,
+  firmwareVersion: json['firmwareVersion'] as String?,
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
   ringId: json['ringId'],
   stolen: json['stolen'] as bool,
-  alerts: CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
-  createdAt: json['createdAt'] as String,
+  alerts: json['alerts'] == null
+      ? null
+      : CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
+  createdAt: json['createdAt'] as String?,
   deactivatedAt: json['deactivatedAt'] as String?,
-  description: json['description'] as String,
-  deviceId: json['deviceId'] as String,
-  features: CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
-  id: (json['id'] as num).toInt(),
-  isSidewalkGateway: json['isSidewalkGateway'] as bool,
-  locationId: json['locationId'] as String,
+  description: json['description'] as String?,
+  deviceId: json['deviceId'] as String?,
+  features: json['features'] == null
+      ? null
+      : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
+  id: (json['id'] as num?)?.toInt(),
+  isSidewalkGateway: json['isSidewalkGateway'] as bool?,
+  locationId: json['locationId'] as String?,
   motionSnooze: json['motionSnooze'] == null
       ? null
       : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
-  nightModeStatus: json['nightModeStatus'] as String,
-  owned: json['owned'] as bool,
+  nightModeStatus: json['nightModeStatus'] as String?,
+  owned: json['owned'] as bool?,
   ringNetId: json['ringNetId'],
-  settings: CameraSettingsData.fromJson(
-    json['settings'] as Map<String, dynamic>,
-  ),
-  subscribed: json['subscribed'] as bool,
-  subscribedMotions: json['subscribedMotions'] as bool,
-  timeZone: json['timeZone'] as String,
+  settings: json['settings'] == null
+      ? null
+      : CameraSettingsData.fromJson(json['settings'] as Map<String, dynamic>),
+  subscribed: json['subscribed'] as bool?,
+  subscribedMotions: json['subscribedMotions'] as bool?,
+  timeZone: json['timeZone'] as String?,
   motionDetectionEnabled: json['motionDetectionEnabled'] as bool?,
   cameraLocationIndoor: json['cameraLocationIndoor'] as bool?,
   facingWindow: json['facingWindow'] as bool?,
   enableIrLed: json['enableIrLed'] as bool?,
-  owner: CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
+  owner: json['owner'] == null
+      ? null
+      : CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
   ledStatus: json['ledStatus'] as String?,
   ringCamLightInstalled: json['ringCamLightInstalled'] as String?,
   ringCamSetupFlow: json['ringCamSetupFlow'] as String?,
   sirenStatus: json['sirenStatus'] == null
       ? null
       : SirenStatus.fromJson(json['sirenStatus'] as Map<String, dynamic>),
-  health: CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
+  health: json['health'] == null
+      ? null
+      : CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$CameraDataToJson(CameraData instance) =>
@@ -1132,41 +1163,49 @@ OnvifCameraData _$OnvifCameraDataFromJson(Map<String, dynamic> json) =>
       ),
       ownerId: (json['ownerId'] as num).toInt(),
       updatedAt: json['updatedAt'] as String,
-      alerts: CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as String,
+      alerts: json['alerts'] == null
+          ? null
+          : CameraAlerts.fromJson(json['alerts'] as Map<String, dynamic>),
+      createdAt: json['createdAt'] as String?,
       deactivatedAt: json['deactivatedAt'] as String?,
-      description: json['description'] as String,
-      deviceId: json['deviceId'] as String,
-      features: CameraFeatures.fromJson(
-        json['features'] as Map<String, dynamic>,
-      ),
-      id: (json['id'] as num).toInt(),
-      isSidewalkGateway: json['isSidewalkGateway'] as bool,
-      locationId: json['locationId'] as String,
+      description: json['description'] as String?,
+      deviceId: json['deviceId'] as String?,
+      features: json['features'] == null
+          ? null
+          : CameraFeatures.fromJson(json['features'] as Map<String, dynamic>),
+      id: (json['id'] as num?)?.toInt(),
+      isSidewalkGateway: json['isSidewalkGateway'] as bool?,
+      locationId: json['locationId'] as String?,
       motionSnooze: json['motionSnooze'] == null
           ? null
           : MotionSnooze.fromJson(json['motionSnooze'] as Map<String, dynamic>),
-      nightModeStatus: json['nightModeStatus'] as String,
-      owned: json['owned'] as bool,
+      nightModeStatus: json['nightModeStatus'] as String?,
+      owned: json['owned'] as bool?,
       ringNetId: json['ringNetId'],
-      settings: CameraSettingsData.fromJson(
-        json['settings'] as Map<String, dynamic>,
-      ),
-      subscribed: json['subscribed'] as bool,
-      subscribedMotions: json['subscribedMotions'] as bool,
-      timeZone: json['timeZone'] as String,
+      settings: json['settings'] == null
+          ? null
+          : CameraSettingsData.fromJson(
+              json['settings'] as Map<String, dynamic>,
+            ),
+      subscribed: json['subscribed'] as bool?,
+      subscribedMotions: json['subscribedMotions'] as bool?,
+      timeZone: json['timeZone'] as String?,
       motionDetectionEnabled: json['motionDetectionEnabled'] as bool?,
       cameraLocationIndoor: json['cameraLocationIndoor'] as bool?,
       facingWindow: json['facingWindow'] as bool?,
       enableIrLed: json['enableIrLed'] as bool?,
-      owner: CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
+      owner: json['owner'] == null
+          ? null
+          : CameraOwner.fromJson(json['owner'] as Map<String, dynamic>),
       ledStatus: json['ledStatus'] as String?,
       ringCamLightInstalled: json['ringCamLightInstalled'] as String?,
       ringCamSetupFlow: json['ringCamSetupFlow'] as String?,
       sirenStatus: json['sirenStatus'] == null
           ? null
           : SirenStatus.fromJson(json['sirenStatus'] as Map<String, dynamic>),
-      health: CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
+      health: json['health'] == null
+          ? null
+          : CameraHealthData.fromJson(json['health'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OnvifCameraDataToJson(OnvifCameraData instance) =>
@@ -1283,9 +1322,9 @@ Map<String, dynamic> _$IntercomFunctionToJson(IntercomFunction instance) =>
 IntercomChimeSettings _$IntercomChimeSettingsFromJson(
   Map<String, dynamic> json,
 ) => IntercomChimeSettings(
-  type: (json['type'] as num).toInt(),
+  type: (json['type'] as num?)?.toInt(),
   enable: json['enable'] as bool,
-  duration: (json['duration'] as num).toInt(),
+  duration: (json['duration'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$IntercomChimeSettingsToJson(
@@ -1302,8 +1341,8 @@ IntercomSettings _$IntercomSettingsFromJson(Map<String, dynamic> json) =>
       config: json['config'] as String,
       ringToOpen: json['ringToOpen'] as bool,
       intercomType: json['intercomType'] as String,
-      unlockMode: (json['unlockMode'] as num).toInt(),
-      replication: (json['replication'] as num).toInt(),
+      unlockMode: (json['unlockMode'] as num?)?.toInt(),
+      replication: (json['replication'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$IntercomSettingsToJson(IntercomSettings instance) =>
@@ -1320,7 +1359,7 @@ IntercomHandsetSettings _$IntercomHandsetSettingsFromJson(
   Map<String, dynamic> json,
 ) => IntercomHandsetSettings(
   showRecordings: json['showRecordings'] as bool,
-  recordingTtl: (json['recordingTtl'] as num).toInt(),
+  recordingTtl: (json['recordingTtl'] as num?)?.toInt(),
   recordingEnabled: json['recordingEnabled'] as bool,
   keepAlive: json['keepAlive'],
   chimeSettings: IntercomChimeSettings.fromJson(
@@ -1329,18 +1368,18 @@ IntercomHandsetSettings _$IntercomHandsetSettingsFromJson(
   intercomSettings: IntercomSettings.fromJson(
     json['intercomSettings'] as Map<String, dynamic>,
   ),
-  keepAliveAuto: (json['keepAliveAuto'] as num).toInt(),
-  doorbellVolume: (json['doorbellVolume'] as num).toInt(),
-  enableChime: (json['enableChime'] as num).toInt(),
-  theftAlarmEnable: (json['theftAlarmEnable'] as num).toInt(),
-  useCachedDomain: (json['useCachedDomain'] as num).toInt(),
-  useServerIp: (json['useServerIp'] as num).toInt(),
+  keepAliveAuto: (json['keepAliveAuto'] as num?)?.toInt(),
+  doorbellVolume: (json['doorbellVolume'] as num?)?.toInt(),
+  enableChime: (json['enableChime'] as num?)?.toInt(),
+  theftAlarmEnable: (json['theftAlarmEnable'] as num?)?.toInt(),
+  useCachedDomain: (json['useCachedDomain'] as num?)?.toInt(),
+  useServerIp: (json['useServerIp'] as num?)?.toInt(),
   serverDomain: json['serverDomain'] as String,
   serverIp: json['serverIp'],
-  enableLog: (json['enableLog'] as num).toInt(),
+  enableLog: (json['enableLog'] as num?)?.toInt(),
   forcedKeepAlive: json['forcedKeepAlive'],
-  micVolume: (json['micVolume'] as num).toInt(),
-  voiceVolume: (json['voiceVolume'] as num).toInt(),
+  micVolume: (json['micVolume'] as num?)?.toInt(),
+  voiceVolume: (json['voiceVolume'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$IntercomHandsetSettingsToJson(
@@ -1436,7 +1475,7 @@ Map<String, dynamic> _$IntercomHandsetMetadataToJson(
 IntercomHandsetAudioData _$IntercomHandsetAudioDataFromJson(
   Map<String, dynamic> json,
 ) => IntercomHandsetAudioData(
-  id: (json['id'] as num).toInt(),
+  id: (json['id'] as num?)?.toInt(),
   description: json['description'] as String,
   deviceId: json['deviceId'] as String,
   kind: json['kind'] as String,
@@ -2560,20 +2599,20 @@ Map<String, dynamic> _$SocketTicketResponseToJson(
 
 AuthTokenResponse _$AuthTokenResponseFromJson(Map<String, dynamic> json) =>
     AuthTokenResponse(
-      accessToken: json['accessToken'] as String,
-      expiresIn: (json['expiresIn'] as num).toInt(),
-      refreshToken: json['refreshToken'] as String,
+      accessToken: json['access_token'] as String,
+      expiresIn: (json['expires_in'] as num).toInt(),
+      refreshToken: json['refresh_token'] as String,
       scope: json['scope'] as String,
-      tokenType: json['tokenType'] as String,
+      tokenType: json['token_type'] as String,
     );
 
 Map<String, dynamic> _$AuthTokenResponseToJson(AuthTokenResponse instance) =>
     <String, dynamic>{
-      'accessToken': instance.accessToken,
-      'expiresIn': instance.expiresIn,
-      'refreshToken': instance.refreshToken,
+      'access_token': instance.accessToken,
+      'expires_in': instance.expiresIn,
+      'refresh_token': instance.refreshToken,
       'scope': instance.scope,
-      'tokenType': instance.tokenType,
+      'token_type': instance.tokenType,
     };
 
 Auth2faErrorResponse _$Auth2faErrorResponseFromJson(
@@ -2717,8 +2756,8 @@ LocationModeSecurityStatus _$LocationModeSecurityStatusFromJson(
   Map<String, dynamic> json,
 ) => LocationModeSecurityStatus(
   lu: (json['lu'] as num?)?.toInt(),
-  md: json['md'] as String,
-  returnTopic: json['returnTopic'] as String,
+  md: json['md'] as String?,
+  returnTopic: json['returnTopic'] as String?,
 );
 
 Map<String, dynamic> _$LocationModeSecurityStatusToJson(
@@ -2747,7 +2786,7 @@ LocationModeResponse _$LocationModeResponseFromJson(
   Map<String, dynamic> json,
 ) => LocationModeResponse(
   mode: json['mode'] as String,
-  lastUpdateTimeMs: (json['lastUpdateTimeMs'] as num).toInt(),
+  lastUpdateTimeMs: (json['lastUpdateTimeMs'] as num?)?.toInt(),
   securityStatus: LocationModeSecurityStatus.fromJson(
     json['securityStatus'] as Map<String, dynamic>,
   ),

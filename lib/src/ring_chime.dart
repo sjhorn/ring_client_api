@@ -47,8 +47,8 @@ class RingChime {
   /// [initialData] - Initial chime data from the API
   /// [restClient] - REST client for making API requests
   RingChime({required this.initialData, required this.restClient})
-    : id = initialData.id,
-      deviceType = initialData.kind,
+    : id = initialData.id ?? 0,
+      deviceType = initialData.kind ?? 'chime',
       model = ChimeModel.models[initialData.kind] ?? 'Chime',
       onData = BehaviorSubject<ChimeData>.seeded(initialData);
 
@@ -66,13 +66,13 @@ class RingChime {
   ChimeData get data => onData.value;
 
   /// Get chime name (same as description)
-  String get name => data.description;
+  String get name => data.description ?? '';
 
   /// Get chime description
-  String get description => data.description;
+  String get description => data.description ?? '';
 
   /// Get current volume level
-  int get volume => data.settings.volume;
+  int get volume => data.settings?.volume ?? 0;
 
   /// Build a chime API URL
   ///

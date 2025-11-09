@@ -16,7 +16,7 @@ import 'ring_camera.dart' show getBatteryLevel;
 /// multi-unit properties. They allow visitors to call residents and can unlock doors remotely.
 class RingIntercom {
   /// Device ID
-  final int id;
+  final int? id;
 
   /// Device type (kind)
   final String deviceType;
@@ -47,7 +47,7 @@ class RingIntercom {
   /// [initialData] - Initial intercom data from the API
   /// [restClient] - REST client for making API requests
   RingIntercom({required this.initialData, required this.restClient})
-    : id = initialData.id,
+    : id = initialData.id ?? 0,
       deviceType = initialData.kind,
       onData = BehaviorSubject<IntercomHandsetAudioData>.seeded(initialData) {
     // Set up battery level stream with distinct values

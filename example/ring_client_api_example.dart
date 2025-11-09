@@ -1,9 +1,19 @@
+import 'dart:io';
 import 'package:ring_client_api/ring_client_api.dart';
 
 void main() async {
+  // Load refresh token from .env file
+  final envFile = File('.env');
+  final envContent = await envFile.readAsString();
+  final refreshToken = envContent
+      .split('\n')
+      .firstWhere((line) => line.startsWith('refreshToken='))
+      .split('=')[1]
+      .trim();
+
   // Example 1: Create API instance with refresh token
   final api = RingApi(
-    RefreshTokenAuth(refreshToken: 'your-refresh-token-here'),
+    RefreshTokenAuth(refreshToken: refreshToken),
     options: RingApiOptions(
       debug: true,
       cameraStatusPollingSeconds: 20,
@@ -18,19 +28,30 @@ void main() async {
   });
 
   // Example 3: Get all locations
-  final locations = await api.getLocations();
-  print('Found ${locations.length} locations:');
-  for (final location in locations) {
-    print('  - ${location.name} (${location.id})');
-  }
+  print('\n=== Testing API - Getting Locations ===');
+  List locations = [];
+  List cameras = [];
 
-  // Example 4: Get all cameras
-  final cameras = await api.getCameras();
-  print('\nFound ${cameras.length} cameras:');
-  for (final camera in cameras) {
-    print('  - ${camera.name} (${camera.deviceType})');
-    print('    Battery: ${camera.batteryLevel}%');
-    print('    Offline: ${camera.isOffline}');
+  try {
+    locations = await api.getLocations();
+    print('✓ SUCCESS! Found ${locations.length} locations');
+    for (final location in locations) {
+      print('  - Location: ${location.name} (ID: ${location.id})');
+    }
+
+    // Example 4: Get all cameras
+    print('\n=== Getting Cameras ===');
+    cameras = await api.getCameras();
+    print('✓ Found ${cameras.length} cameras');
+    for (final camera in cameras) {
+      print('  - Camera: ${camera.name}');
+      print('    Type: ${camera.deviceType}');
+      print('    Battery: ${camera.batteryLevel ?? "N/A"}');
+      print('    Offline: ${camera.isOffline}');
+    }
+  } catch (e, stack) {
+    print('✗ Error: $e');
+    print('Stack: $stack');
   }
 
   // Example 5: Get a snapshot from a camera
@@ -75,16 +96,25 @@ void main() async {
     }
   }
 
-  // Example 9: Control a location's alarm mode
-  if (locations.isNotEmpty) {
-    final location = locations.first;
-    if (location.hasAlarmBaseStation) {
-      print('\nSetting alarm to away mode...');
+  // Example 9: Get devices from locations with hubs
+  for (final location in locations) {
+    print('\n=== Location: ${location.name} ===');
+    print('Has Hubs: ${location.hasHubs}');
+    print('Has Alarm Base Station: ${location.hasAlarmBaseStation}');
+
+    if (location.hasHubs) {
+      print('Getting devices...');
       try {
-        await location.armAway();
-        print('Alarm armed in away mode');
-      } catch (e) {
-        print('Failed to arm alarm: $e');
+        final devices = await location.getDevices();
+        print('✓ Found ${devices.length} devices');
+        for (final device in devices.take(3)) {
+          print('  - Device: ${device.name}');
+          print('    Type: ${device.deviceType}');
+          print('    Category ID: ${device.categoryId}');
+        }
+      } catch (e, stack) {
+        print('✗ Error getting devices: $e');
+        print('Stack: $stack');
       }
     }
   }

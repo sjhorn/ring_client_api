@@ -26,7 +26,12 @@ class Subscribed {
   /// Unsubscribe from all managed subscriptions
   void unsubscribe() {
     for (final subscription in _subscriptions) {
-      subscription.cancel();
+      try {
+        subscription.cancel();
+      } catch (e, stack) {
+        print('[ERROR] Failed to cancel subscription: $e');
+        print('[STACK] $stack');
+      }
     }
     _subscriptions.clear();
   }

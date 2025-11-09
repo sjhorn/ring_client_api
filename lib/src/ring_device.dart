@@ -30,7 +30,7 @@ class RingDevice extends Subscribed {
   final String deviceType;
 
   /// Device category ID
-  final int categoryId;
+  final int? categoryId;
 
   /// Stream of component devices (devices with this device as parent)
   late final Stream<List<RingDevice>> onComponentDevices;

@@ -323,7 +323,7 @@ class RingApi extends Subscribed {
       chimesById[chime.id] = chime;
     }
 
-    final intercomsById = <int, RingIntercom>{};
+    final intercomsById = <int?, RingIntercom>{};
     for (final intercom in intercoms) {
       intercomsById[intercom.id] = intercom;
     }
@@ -480,11 +480,24 @@ class RingApi extends Subscribed {
     final rawLocations = await fetchRawLocations();
     final devicesResponse = await fetchRingDevices();
 
+    // DEBUG: Log devices response
+    logInfo('[getLocations] Devices response:');
+    logInfo('  Base stations: ${devicesResponse.baseStations.length}');
+    logInfo('  Beam bridges: ${devicesResponse.beamBridges.length}');
+    logInfo('  Doorbots: ${devicesResponse.doorbots.length}');
+    logInfo('  Chimes: ${devicesResponse.chimes.length}');
+    logInfo('  All cameras: ${devicesResponse.allCameras.length}');
+
     // Determine which locations have hubs
     final locationIdsWithHubs = <String>[
-      ...devicesResponse.baseStations.map((x) => x.locationId),
-      ...devicesResponse.beamBridges.map((x) => x.locationId),
+      ...devicesResponse.baseStations.map((x) {
+        logInfo('[getLocations] Base station: ${x.toJson()}');
+        logInfo('[getLocations] Base station locationId: ${x.locationId}');
+        return x.locationId ?? '';
+      }),
+      ...devicesResponse.beamBridges.map((x) => x.locationId ?? ''),
     ];
+    logInfo('[getLocations] Location IDs with hubs: $locationIdsWithHubs');
 
     // Create RingCamera instances
     final cameras = devicesResponse.allCameras.map((data) {
