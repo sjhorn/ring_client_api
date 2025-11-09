@@ -8,22 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'ring_types.dart';
 import 'rest_client.dart';
 import 'util.dart';
-
-// NOTE: getBatteryLevel() will be available from ring_camera.dart when that file is ported.
-// For now, we'll create a placeholder implementation.
-
-/// Get battery level from device data
-///
-/// TODO: This is a placeholder. The actual implementation will be imported from ring_camera.dart
-/// when that file is ported.
-int getBatteryLevel(IntercomHandsetAudioData data) {
-  // Placeholder implementation
-  // The actual implementation in ring_camera.ts extracts battery level from various data fields
-  // Try to parse batteryLife as an integer percentage
-  final batteryLife = data.batteryLife;
-  final parsed = int.tryParse(batteryLife);
-  return parsed ?? 100;
-}
+import 'ring_camera.dart' show getBatteryLevel;
 
 /// Represents a Ring Intercom device
 ///
@@ -43,7 +28,7 @@ class RingIntercom {
   final PublishSubject<void> onRequestUpdate = PublishSubject<void>();
 
   /// Stream of battery level changes
-  late final Stream<int> onBatteryLevel;
+  late final Stream<double?> onBatteryLevel;
 
   /// Stream of doorbell ring events
   final PublishSubject<void> onDing = PublishSubject<void>();
@@ -98,8 +83,8 @@ class RingIntercom {
   /// Check if the intercom is offline
   bool get isOffline => data.alerts.connection == 'offline';
 
-  /// Get current battery level
-  int get batteryLevel => getBatteryLevel(data);
+  /// Get current battery level (null if not available)
+  double? get batteryLevel => getBatteryLevel(data);
 
   /// Build a doorbot API URL
   ///
