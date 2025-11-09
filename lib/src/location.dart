@@ -996,7 +996,10 @@ class Location extends Subscribed {
 
   @override
   void dispose() {
-    disconnect();
+    // Fire off disconnect but don't await since dispose is synchronous
+    disconnect().catchError((e) {
+      logError('Error during dispose: $e');
+    });
     super.dispose();
   }
 }
