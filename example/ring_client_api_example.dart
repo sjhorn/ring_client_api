@@ -22,9 +22,15 @@ void main() async {
   );
 
   // Example 2: Listen for refresh token updates to save the new token
-  api.onRefreshTokenUpdated.listen((update) {
-    print('Refresh token updated: ${update.newRefreshToken}');
-    // TODO: Save the new token to persistent storage
+  api.onRefreshTokenUpdated.listen((update) async {
+    print('Refresh token updated, saving to .env...');
+    try {
+      // Save the updated token back to .env file
+      await envFile.writeAsString('refreshToken=${update.newRefreshToken}\n');
+      print('✓ Refresh token saved to .env');
+    } catch (e) {
+      print('✗ Failed to save refresh token: $e');
+    }
   });
 
   // Example 3: Get all locations
