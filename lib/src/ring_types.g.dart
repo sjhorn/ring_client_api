@@ -8,18 +8,26 @@ part of 'ring_types.dart';
 
 SocketIoMessage _$SocketIoMessageFromJson(Map<String, dynamic> json) =>
     SocketIoMessage(
-      msg: $enumDecode(_$MessageTypeEnumMap, json['msg']),
-      datatype: $enumDecode(_$MessageDataTypeEnumMap, json['datatype']),
-      src: json['src'] as String,
-      body: json['body'] as List<dynamic>,
+      msg: $enumDecodeNullable(_$MessageTypeEnumMap, json['msg']),
+      datatype: $enumDecodeNullable(_$MessageDataTypeEnumMap, json['datatype']),
+      src: json['src'] as String?,
+      body: json['body'] as List<dynamic>?,
+      seq: (json['seq'] as num?)?.toInt(),
+      sessionId: (json['sessionId'] as num?)?.toInt(),
+      status: (json['status'] as num?)?.toInt(),
+      context: json['context'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$SocketIoMessageToJson(SocketIoMessage instance) =>
     <String, dynamic>{
-      'msg': _$MessageTypeEnumMap[instance.msg]!,
-      'datatype': _$MessageDataTypeEnumMap[instance.datatype]!,
+      'msg': _$MessageTypeEnumMap[instance.msg],
+      'datatype': _$MessageDataTypeEnumMap[instance.datatype],
       'src': instance.src,
       'body': instance.body,
+      'seq': instance.seq,
+      'sessionId': instance.sessionId,
+      'status': instance.status,
+      'context': instance.context,
     };
 
 const _$MessageTypeEnumMap = {
@@ -27,6 +35,10 @@ const _$MessageTypeEnumMap = {
   MessageType.sessionInfo: 'SessionInfo',
   MessageType.deviceInfoDocGetList: 'DeviceInfoDocGetList',
   MessageType.deviceInfoSet: 'DeviceInfoSet',
+  MessageType.subscriptionTopicsInfo: 'SubscriptionTopicsInfo',
+  MessageType.dataUpdate: 'DataUpdate',
+  MessageType.passthru: 'Passthru',
+  MessageType.empty: '',
 };
 
 const _$MessageDataTypeEnumMap = {
@@ -35,6 +47,8 @@ const _$MessageDataTypeEnumMap = {
   MessageDataType.deviceInfoDocType: 'DeviceInfoDocType',
   MessageDataType.deviceInfoSetType: 'DeviceInfoSetType',
   MessageDataType.hubDisconnectionEventType: 'HubDisconnectionEventType',
+  MessageDataType.subscriptionTopicType: 'SubscriptionTopicType',
+  MessageDataType.passthruType: 'PassthruType',
 };
 
 AssetSession _$AssetSessionFromJson(Map<String, dynamic> json) => AssetSession(

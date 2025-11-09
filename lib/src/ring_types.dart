@@ -193,6 +193,14 @@ enum MessageType {
   deviceInfoDocGetList,
   @JsonValue('DeviceInfoSet')
   deviceInfoSet,
+  @JsonValue('SubscriptionTopicsInfo')
+  subscriptionTopicsInfo,
+  @JsonValue('DataUpdate')
+  dataUpdate,
+  @JsonValue('Passthru')
+  passthru,
+  @JsonValue('')
+  empty,
 }
 
 /// Message data types
@@ -207,21 +215,33 @@ enum MessageDataType {
   deviceInfoSetType,
   @JsonValue('HubDisconnectionEventType')
   hubDisconnectionEventType,
+  @JsonValue('SubscriptionTopicType')
+  subscriptionTopicType,
+  @JsonValue('PassthruType')
+  passthruType,
 }
 
 /// Socket.IO message structure
 @JsonSerializable()
 class SocketIoMessage {
-  final MessageType msg;
-  final MessageDataType datatype;
-  final String src;
-  final List<dynamic> body;
+  final MessageType? msg;
+  final MessageDataType? datatype;
+  final String? src;
+  final List<dynamic>? body;
+  final int? seq;
+  final int? sessionId;
+  final int? status;
+  final Map<String, dynamic>? context;
 
   const SocketIoMessage({
-    required this.msg,
-    required this.datatype,
-    required this.src,
-    required this.body,
+    this.msg,
+    this.datatype,
+    this.src,
+    this.body,
+    this.seq,
+    this.sessionId,
+    this.status,
+    this.context,
   });
 
   factory SocketIoMessage.fromJson(Map<String, dynamic> json) =>

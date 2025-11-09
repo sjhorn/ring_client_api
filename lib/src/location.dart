@@ -144,11 +144,12 @@ class Location extends Subscribed {
     onDeviceDataUpdate = onDataUpdate
         .where((message) {
           return message.datatype == MessageDataType.deviceInfoDocType &&
-              message.body.isNotEmpty;
+              message.body != null &&
+              message.body!.isNotEmpty;
         })
         .expand((message) {
           // Flatten each device in the body
-          return message.body.map((data) => flattenDeviceData(data));
+          return message.body!.map((data) => flattenDeviceData(data));
         });
 
     // Initialize device list stream
@@ -162,12 +163,12 @@ class Location extends Subscribed {
           final deviceList = message.body;
           final src = message.src;
 
-          if (deviceList.isEmpty) {
+          if (deviceList == null || deviceList.isEmpty) {
             return accumulated;
           }
 
           // Track that we received device list from this asset
-          if (!receivedAssetDeviceLists.contains(src)) {
+          if (src != null && !receivedAssetDeviceLists.contains(src)) {
             receivedAssetDeviceLists.add(src);
           }
 
@@ -202,7 +203,7 @@ class Location extends Subscribed {
 
             return [
               ...updatedDevices,
-              RingDevice(initialData: flatData, location: this, assetId: src),
+              RingDevice(initialData: flatData, location: this, assetId: src ?? ''),
             ];
           });
         }, <RingDevice>[])
@@ -218,9 +219,9 @@ class Location extends Subscribed {
 
     // Initialize session info stream
     onSessionInfo = onDataUpdate
-        .where((m) => m.msg == MessageType.sessionInfo)
+        .where((m) => m.msg == MessageType.sessionInfo && m.body != null)
         .map(
-          (m) => m.body
+          (m) => m.body!
               .map((item) {
                 try {
                   return AssetSession.fromJson(item as Map<String, dynamic>);
@@ -397,8 +398,10 @@ class Location extends Subscribed {
           if (channel == 'DataUpdate') {
             onDataUpdate.add(message);
           }
-        } catch (e) {
-          logError('Error parsing message from server: $event');
+        } catch (e, stack) {
+          logError('Error parsing message from server: $e');
+          logError('Message was: $event');
+          logError('Stack: $stack');
         }
       },
       onError: (error) {
@@ -546,7 +549,7 @@ class Location extends Subscribed {
   Future<List<dynamic>> getNextMessageOfType(MessageType type, String src) {
     return onMessage
         .where((m) => m.msg == type && m.src == src)
-        .map((m) => m.body)
+        .map((m) => m.body ?? [])
         .first;
   }
 
