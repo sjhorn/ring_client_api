@@ -8,3 +8,5 @@ pubspec.lock
 
 # Dgreif port we are basing this on
 ring/
+
+.env
