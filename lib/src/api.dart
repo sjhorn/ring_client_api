@@ -628,21 +628,21 @@ class RingApi extends Subscribed {
   ///
   /// Unsubscribes from all streams, disconnects all locations,
   /// and clears all timers. Call this when you're done using the API.
-  void disconnect() {
+  Future<void> disconnect() async {
     // Unsubscribe from all subscriptions
     unsubscribe();
 
     // Disconnect all locations if they were loaded
     if (_locationsPromise != null) {
-      _locationsPromise!
-          .then((locations) {
-            for (final location in locations) {
-              location.disconnect();
-            }
-          })
-          .catchError((e) {
-            logError('Error disconnecting locations: $e');
-          });
+      try {
+        final locations = await _locationsPromise!;
+        for (final location in locations) {
+          await location.disconnect();
+        }
+      } catch (e, stack) {
+        logError('Error disconnecting locations: $e');
+        logError('Stack: $stack');
+      }
     }
 
     // Clear REST client timeouts

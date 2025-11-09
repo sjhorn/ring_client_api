@@ -121,5 +121,6 @@ void main() async {
 
   // Clean up when done
   print('\nDisconnecting...');
-  api.disconnect();
+  await api.disconnect();
+  print('Disconnected successfully!');
 }

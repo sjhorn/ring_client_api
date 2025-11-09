@@ -153,9 +153,14 @@ class Location extends Subscribed {
         });
 
     // Initialize device list stream
-    onDeviceList = onMessage.where(
-      (m) => m.msg == MessageType.deviceInfoDocGetList,
-    );
+    onDeviceList = onMessage
+        .where((m) {
+          final isDeviceList = m.msg == MessageType.deviceInfoDocGetList;
+          if (isDeviceList) {
+            logInfo('[onDeviceList] Received device list message from ${m.src}');
+          }
+          return isDeviceList;
+        });
 
     // Initialize devices stream with accumulation logic
     onDevices = onDeviceList
@@ -208,12 +213,27 @@ class Location extends Subscribed {
           });
         }, <RingDevice>[])
         .distinct((a, b) => a.length == b.length)
-        .where((_) {
+        .where((deviceList) {
           // Only emit when we've received device lists from all assets
-          return assets != null &&
+          final shouldEmit = assets != null &&
               assets!.every(
                 (asset) => receivedAssetDeviceLists.contains(asset.uuid),
               );
+
+          if (!shouldEmit) {
+            logDebug('[onDevices] Not emitting yet. Received from: $receivedAssetDeviceLists, Total assets: ${assets?.length ?? 0}, Device count: ${deviceList.length}');
+            if (assets != null) {
+              for (final asset in assets!) {
+                if (!receivedAssetDeviceLists.contains(asset.uuid)) {
+                  logDebug('[onDevices] Still waiting for device list from asset: ${asset.uuid}');
+                }
+              }
+            }
+          } else {
+            logInfo('[onDevices] Emitting ${deviceList.length} devices');
+          }
+
+          return shouldEmit;
         })
         .shareReplay(maxSize: 1);
 
@@ -363,15 +383,17 @@ class Location extends Subscribed {
 
     // Set up reconnection handler
     Future<WebSocket> reconnect() {
+      // Don't reconnect if we're disconnecting
+      if (_disconnected) {
+        return Future.value(socket);
+      }
+
       if (reconnecting && connectionPromise != null) {
         return connectionPromise!;
       }
 
       onConnected.add(false);
-
-      if (!_disconnected) {
-        logInfo('Reconnecting location socket.io connection');
-      }
+      logInfo('Reconnecting location socket.io connection');
 
       reconnecting = true;
       socket.close();
@@ -381,11 +403,18 @@ class Location extends Subscribed {
     // Handle incoming messages
     socket.listen(
       (dynamic event) {
+        // Ignore messages if we're disconnecting
+        if (_disconnected) {
+          return;
+        }
+
         try {
           final data = jsonDecode(event as String) as Map<String, dynamic>;
           final messageData = data['msg'] as Map<String, dynamic>;
           final channel = data['channel'] as String;
           final message = SocketIoMessage.fromJson(messageData);
+
+          logDebug('[Socket] Received message: msg=${message.msg}, datatype=${message.datatype}, src=${message.src}, channel=$channel');
 
           onMessage.add(message);
 
@@ -448,15 +477,63 @@ class Location extends Subscribed {
     int? seq,
   }) async {
     final connection = await getConnection();
+
+    // Convert enums to their JSON values
+    final msgJson = _messageTypeToJson(msg);
+    final datatypeJson = datatype != null ? _messageDataTypeToJson(datatype) : null;
+
     final message = {
-      'msg': msg.toString().split('.').last,
-      if (datatype != null) 'datatype': datatype.toString().split('.').last,
+      'msg': msgJson,
+      if (datatypeJson != null) 'datatype': datatypeJson,
       'dst': dst,
       if (body != null) 'body': body,
       'seq': seq ?? _seq++,
     };
 
+    logDebug('[sendMessage] Sending $msgJson to $dst');
     connection.add(jsonEncode({'channel': 'message', 'msg': message}));
+  }
+
+  /// Convert MessageType enum to its JSON string value
+  String _messageTypeToJson(MessageType type) {
+    switch (type) {
+      case MessageType.roomGetList:
+        return 'RoomGetList';
+      case MessageType.sessionInfo:
+        return 'SessionInfo';
+      case MessageType.deviceInfoDocGetList:
+        return 'DeviceInfoDocGetList';
+      case MessageType.deviceInfoSet:
+        return 'DeviceInfoSet';
+      case MessageType.subscriptionTopicsInfo:
+        return 'SubscriptionTopicsInfo';
+      case MessageType.dataUpdate:
+        return 'DataUpdate';
+      case MessageType.passthru:
+        return 'Passthru';
+      case MessageType.empty:
+        return '';
+    }
+  }
+
+  /// Convert MessageDataType enum to its JSON string value
+  String _messageDataTypeToJson(MessageDataType type) {
+    switch (type) {
+      case MessageDataType.roomListV2Type:
+        return 'RoomListV2Type';
+      case MessageDataType.sessionInfoType:
+        return 'SessionInfoType';
+      case MessageDataType.deviceInfoDocType:
+        return 'DeviceInfoDocType';
+      case MessageDataType.deviceInfoSetType:
+        return 'DeviceInfoSetType';
+      case MessageDataType.hubDisconnectionEventType:
+        return 'HubDisconnectionEventType';
+      case MessageDataType.subscriptionTopicType:
+        return 'SubscriptionTopicType';
+      case MessageDataType.passthruType:
+        return 'PassthruType';
+    }
   }
 
   /// Send a command to the security panel
@@ -874,7 +951,7 @@ class Location extends Subscribed {
   /// Disconnect from the location
   ///
   /// Closes WebSocket connection and cleans up all resources
-  void disconnect() {
+  Future<void> disconnect() async {
     _disconnected = true;
     unsubscribe();
 
@@ -884,35 +961,37 @@ class Location extends Subscribed {
     }
 
     // Disconnect all devices
-    getDevices()
-        .then((devices) {
-          for (final device in devices) {
-            device.disconnect();
-          }
-        })
-        .catchError((error, stack) {
-          logError('[Location.disconnect getDevices] $error');
-          logError('[Stack] $stack');
-        });
+    try {
+      final devices = await getDevices().timeout(Duration(seconds: 2));
+      for (final device in devices) {
+        device.disconnect();
+      }
+    } catch (error, stack) {
+      logError('[Location.disconnect getDevices] $error');
+      logError('[Stack] $stack');
+    }
 
     // Close WebSocket connection
     if (connectionPromise != null) {
-      connectionPromise!
-          .then((connection) {
-            connection.close();
-          })
-          .catchError((error, stack) {
-            logError('[Location.disconnect connectionPromise] $error');
-            logError('[Stack] $stack');
-          });
+      try {
+        final connection = await connectionPromise!;
+        await connection.close();
+      } catch (error, stack) {
+        // Ignore "Location has been disconnected" error - this is expected
+        // when a reconnect is scheduled but we disconnect before it completes
+        if (!error.toString().contains('Location has been disconnected')) {
+          logError('[Location.disconnect connectionPromise] $error');
+          logError('[Stack] $stack');
+        }
+      }
     }
 
     // Close all subjects
-    onMessage.close();
-    onDataUpdate.close();
-    onConnected.close();
-    onLocationMode.close();
-    _onLocationModeRequested.close();
+    await onMessage.close();
+    await onDataUpdate.close();
+    await onConnected.close();
+    await onLocationMode.close();
+    await _onLocationModeRequested.close();
   }
 
   @override
