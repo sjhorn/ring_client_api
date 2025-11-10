@@ -73,7 +73,31 @@ int getEndOfToday() {
 ///
 /// Returns the minimum battery level from all available battery sources,
 /// or null if no battery is present.
+///
+/// Accepts either a CameraData object or a Map (for testing).
 double? getBatteryLevel(dynamic data) {
+  // Handle Map input (for testing)
+  if (data is Map) {
+    final levels = <double>[];
+
+    final level1 = parseBatteryLife(data['battery_life']);
+    if (level1 != null) {
+      levels.add(level1);
+    }
+
+    final level2 = parseBatteryLife(data['battery_life_2']);
+    if (level2 != null) {
+      levels.add(level2);
+    }
+
+    if (levels.isEmpty) {
+      return null;
+    }
+
+    return levels.reduce((a, b) => a < b ? a : b);
+  }
+
+  // Handle CameraData object
   if (data is! CameraData) {
     return null;
   }
