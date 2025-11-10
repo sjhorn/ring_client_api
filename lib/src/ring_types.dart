@@ -2561,14 +2561,20 @@ class CvProperties {
 /// Camera event structure
 @JsonSerializable()
 class CameraEvent {
+  @JsonKey(name: 'created_at')
   final String createdAt;
+  @JsonKey(name: 'cv_properties')
   final CvProperties cvProperties;
+  @JsonKey(name: 'ding_id')
   final int dingId;
+  @JsonKey(name: 'ding_id_str')
   final String dingIdStr;
+  @JsonKey(name: 'doorbot_id')
   final int doorbotId;
   final bool favorite;
   final DingKind kind;
   final bool recorded;
+  @JsonKey(name: 'recording_status')
   final String recordingStatus; // 'ready' or 'audio_ready'
   final String state; // 'timed_out' or 'completed'
 
@@ -2594,6 +2600,7 @@ class CameraEvent {
 /// Pagination metadata
 @JsonSerializable()
 class PaginationMeta {
+  @JsonKey(name: 'pagination_key')
   final String paginationKey;
 
   const PaginationMeta({required this.paginationKey});

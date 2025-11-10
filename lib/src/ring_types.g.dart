@@ -2106,39 +2106,39 @@ Map<String, dynamic> _$CvPropertiesToJson(CvProperties instance) =>
     };
 
 CameraEvent _$CameraEventFromJson(Map<String, dynamic> json) => CameraEvent(
-  createdAt: json['createdAt'] as String,
+  createdAt: json['created_at'] as String,
   cvProperties: CvProperties.fromJson(
-    json['cvProperties'] as Map<String, dynamic>,
+    json['cv_properties'] as Map<String, dynamic>,
   ),
-  dingId: (json['dingId'] as num).toInt(),
-  dingIdStr: json['dingIdStr'] as String,
-  doorbotId: (json['doorbotId'] as num).toInt(),
+  dingId: (json['ding_id'] as num).toInt(),
+  dingIdStr: json['ding_id_str'] as String,
+  doorbotId: (json['doorbot_id'] as num).toInt(),
   favorite: json['favorite'] as bool,
   kind: json['kind'] as String,
   recorded: json['recorded'] as bool,
-  recordingStatus: json['recordingStatus'] as String,
+  recordingStatus: json['recording_status'] as String,
   state: json['state'] as String,
 );
 
 Map<String, dynamic> _$CameraEventToJson(CameraEvent instance) =>
     <String, dynamic>{
-      'createdAt': instance.createdAt,
-      'cvProperties': instance.cvProperties,
-      'dingId': instance.dingId,
-      'dingIdStr': instance.dingIdStr,
-      'doorbotId': instance.doorbotId,
+      'created_at': instance.createdAt,
+      'cv_properties': instance.cvProperties,
+      'ding_id': instance.dingId,
+      'ding_id_str': instance.dingIdStr,
+      'doorbot_id': instance.doorbotId,
       'favorite': instance.favorite,
       'kind': instance.kind,
       'recorded': instance.recorded,
-      'recordingStatus': instance.recordingStatus,
+      'recording_status': instance.recordingStatus,
       'state': instance.state,
     };
 
 PaginationMeta _$PaginationMetaFromJson(Map<String, dynamic> json) =>
-    PaginationMeta(paginationKey: json['paginationKey'] as String);
+    PaginationMeta(paginationKey: json['pagination_key'] as String);
 
 Map<String, dynamic> _$PaginationMetaToJson(PaginationMeta instance) =>
-    <String, dynamic>{'paginationKey': instance.paginationKey};
+    <String, dynamic>{'pagination_key': instance.paginationKey};
 
 CameraEventResponse _$CameraEventResponseFromJson(Map<String, dynamic> json) =>
     CameraEventResponse(

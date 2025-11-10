@@ -9,4 +9,5 @@ pubspec.lock
 # Dgreif port we are basing this on
 ring/
 
+# Environment file containing sensitive information
 .env
