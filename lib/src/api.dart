@@ -481,23 +481,23 @@ class RingApi extends Subscribed {
     final devicesResponse = await fetchRingDevices();
 
     // DEBUG: Log devices response
-    logInfo('[getLocations] Devices response:');
-    logInfo('  Base stations: ${devicesResponse.baseStations.length}');
-    logInfo('  Beam bridges: ${devicesResponse.beamBridges.length}');
-    logInfo('  Doorbots: ${devicesResponse.doorbots.length}');
-    logInfo('  Chimes: ${devicesResponse.chimes.length}');
-    logInfo('  All cameras: ${devicesResponse.allCameras.length}');
+    logDebug('[getLocations] Devices response:');
+    logDebug('  Base stations: ${devicesResponse.baseStations.length}');
+    logDebug('  Beam bridges: ${devicesResponse.beamBridges.length}');
+    logDebug('  Doorbots: ${devicesResponse.doorbots.length}');
+    logDebug('  Chimes: ${devicesResponse.chimes.length}');
+    logDebug('  All cameras: ${devicesResponse.allCameras.length}');
 
     // Determine which locations have hubs
     final locationIdsWithHubs = <String>[
       ...devicesResponse.baseStations.map((x) {
-        logInfo('[getLocations] Base station: ${x.toJson()}');
-        logInfo('[getLocations] Base station locationId: ${x.locationId}');
+        logDebug('[getLocations] Base station: ${x.toJson()}');
+        logDebug('[getLocations] Base station locationId: ${x.locationId}');
         return x.locationId ?? '';
       }),
       ...devicesResponse.beamBridges.map((x) => x.locationId ?? ''),
     ];
-    logInfo('[getLocations] Location IDs with hubs: $locationIdsWithHubs');
+    logDebug('[getLocations] Location IDs with hubs: $locationIdsWithHubs');
 
     // Create RingCamera instances
     final cameras = devicesResponse.allCameras.map((data) {

@@ -157,7 +157,7 @@ class Location extends Subscribed {
         .where((m) {
           final isDeviceList = m.msg == MessageType.deviceInfoDocGetList;
           if (isDeviceList) {
-            logInfo('[onDeviceList] Received device list message from ${m.src}');
+            logDebug('[onDeviceList] Received device list message from ${m.src}');
           }
           return isDeviceList;
         });
@@ -230,7 +230,7 @@ class Location extends Subscribed {
               }
             }
           } else {
-            logInfo('[onDevices] Emitting ${deviceList.length} devices');
+            logDebug('[onDevices] Emitting ${deviceList.length} devices');
           }
 
           return shouldEmit;
@@ -343,7 +343,7 @@ class Location extends Subscribed {
       throw Exception('Location has been disconnected');
     }
 
-    logInfo('Creating location socket.io connection - $name');
+    logDebug('Creating location socket.io connection - $name');
 
     // Request ticket and assets from Ring API
     final response = await restClient.request<Map<String, dynamic>>(
@@ -393,7 +393,7 @@ class Location extends Subscribed {
       }
 
       onConnected.add(false);
-      logInfo('Reconnecting location socket.io connection');
+      logDebug('Reconnecting location socket.io connection');
 
       reconnecting = true;
       socket.close();
@@ -419,7 +419,7 @@ class Location extends Subscribed {
           onMessage.add(message);
 
           if (message.datatype == MessageDataType.deviceInfoDocType) {
-            logInfo('Location connection told to reconnect');
+            logDebug('Location connection told to reconnect');
             reconnect();
             return;
           }
@@ -445,7 +445,7 @@ class Location extends Subscribed {
 
     reconnecting = false;
     onConnected.add(true);
-    logInfo('Ring connected to socket.io server');
+    logDebug('Ring connected to socket.io server');
 
     // Request device lists from all assets
     for (final asset in supportedAssets) {

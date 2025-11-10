@@ -15,7 +15,7 @@ void main() async {
   final api = RingApi(
     RefreshTokenAuth(refreshToken: refreshToken),
     options: RingApiOptions(
-      debug: true,
+      debug: false, // Set to true for detailed debug logging
       cameraStatusPollingSeconds: 20,
       locationModePollingSeconds: 20,
     ),
