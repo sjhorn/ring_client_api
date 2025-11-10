@@ -9,6 +9,8 @@ We will aim to create a TODO.md that we maintain and add a git commit and messag
 
 For typescript types and json mapping be sure to address the snake_case to camelCase. Also aim to use ./ring for the source code rather than github.
 
+Let's aim to avoid using the word comprehensive in our commits, documentation and tests. 
+
 Key points:
 - Programming language: Dart 
 - Package structure:

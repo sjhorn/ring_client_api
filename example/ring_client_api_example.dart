@@ -67,7 +67,13 @@ void main() async {
     try {
       final snapshot = await camera.getSnapshot();
       print('Snapshot received: ${snapshot.length} bytes');
-      // TODO: Save snapshot to file
+
+      // Save snapshot to file
+      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+      final filename = 'snapshot_${camera.name.replaceAll(' ', '_')}_$timestamp.jpg';
+      final file = File(filename);
+      await file.writeAsBytes(snapshot);
+      print('✓ Snapshot saved to: $filename');
     } catch (e) {
       print('Failed to get snapshot: $e');
     }
