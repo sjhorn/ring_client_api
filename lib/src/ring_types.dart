@@ -1314,42 +1314,77 @@ class SirenStatus {
 /// Camera health structure
 @JsonSerializable()
 class CameraHealthData {
+  @JsonKey(name: 'device_type')
   final String? deviceType;
+  @JsonKey(name: 'last_update_time')
   final int? lastUpdateTime;
   final bool? connected;
+  @JsonKey(name: 'rss_connected')
   final bool? rssConnected;
+  @JsonKey(name: 'vod_enabled')
   final bool? vodEnabled;
+  @JsonKey(name: 'sidewalk_connection')
   final bool? sidewalkConnection;
+  @JsonKey(name: 'floodlight_on')
   final bool? floodlightOn;
+  @JsonKey(name: 'siren_on')
   final bool? sirenOn;
+  @JsonKey(name: 'white_led_on')
   final bool? whiteLedOn;
+  @JsonKey(name: 'night_mode_on')
   final bool? nightModeOn;
+  @JsonKey(name: 'hatch_open')
   final bool? hatchOpen;
+  @JsonKey(name: 'packet_loss')
   final double? packetLoss;
+  @JsonKey(name: 'packet_loss_category')
   final String? packetLossCategory; // 'good' or other string
   final int? rssi;
+  @JsonKey(name: 'battery_voltage')
   final double? batteryVoltage;
+  @JsonKey(name: 'wifi_is_ring_network')
   final bool? wifiIsRingNetwork;
+  @JsonKey(name: 'supported_rpc_commands')
   final List<String>? supportedRpcCommands;
+  @JsonKey(name: 'ota_status')
   final String? otaStatus; // 'successful' or other string
+  @JsonKey(name: 'ext_power_state')
   final int? extPowerState; // 0 or other number
+  @JsonKey(name: 'pref_run_mode')
   final String? prefRunMode; // 'low_power' or other string
+  @JsonKey(name: 'run_mode')
   final String? runMode; // 'low_power', 'full_power', or other string
+  @JsonKey(name: 'network_connection_value')
   final String? networkConnectionValue; // 'wifi' or other string
+  @JsonKey(name: 'ac_power')
   final int? acPower; // 0 if not on ac power, 1 if ac power
+  @JsonKey(name: 'battery_present')
   final bool? batteryPresent;
+  @JsonKey(name: 'external_connection')
   final bool? externalConnection;
+  @JsonKey(name: 'battery_percentage')
   final int? batteryPercentage; // 0 - 100
+  @JsonKey(name: 'battery_percentage_category')
   final String? batteryPercentageCategory; // 'very_good', 'unknown', or other
+  @JsonKey(name: 'firmware_version')
   final String? firmwareVersion; // e.g., 'cam-1.12.13000'
+  @JsonKey(name: 'rssi_category')
   final String? rssiCategory; // 'good' or other string
+  @JsonKey(name: 'battery_voltage_category')
   final String? batteryVoltageCategory; // 'very_good' or other string
+  @JsonKey(name: 'second_battery_voltage_category')
   final String? secondBatteryVoltageCategory; // 'unknown' or other string
+  @JsonKey(name: 'second_battery_percentage')
   final int? secondBatteryPercentage; // 0 - 100
+  @JsonKey(name: 'second_battery_percentage_category')
   final String? secondBatteryPercentageCategory; // 'unknown' or other string
+  @JsonKey(name: 'battery_save')
   final bool? batterySave;
+  @JsonKey(name: 'firmware_version_status')
   final String? firmwareVersionStatus; // 'Up to Date'
+  @JsonKey(name: 'tx_rate')
   final int? txRate;
+  @JsonKey(name: 'ptz_connected')
   final String? ptzConnected; // 'penguin' or other string
 
   const CameraHealthData({
@@ -1471,14 +1506,21 @@ class BaseCameraData {
 class CameraData extends BaseCameraData {
   final String kind; // RingCameraKind except onvif_camera
   final String address;
+  @JsonKey(name: 'battery_life')
   final dynamic batteryLife; // number, string, or null
+  @JsonKey(name: 'battery_life_2')
   final dynamic batteryLife2; // number, string, or null
+  @JsonKey(name: 'battery_voltage')
   final double? batteryVoltage;
+  @JsonKey(name: 'battery_voltage_2')
   final double? batteryVoltage2;
+  @JsonKey(name: 'external_connection')
   final bool? externalConnection;
+  @JsonKey(name: 'firmware_version')
   final String? firmwareVersion;
   final double? latitude;
   final double? longitude;
+  @JsonKey(name: 'ring_id')
   final dynamic ringId;
   final bool stolen;
 

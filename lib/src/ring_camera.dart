@@ -92,8 +92,8 @@ double? getBatteryLevel(dynamic data) {
 
   final health = data.health;
   if (levels.isEmpty ||
-      health == null ||
-      (health.batteryPercentage == null &&
+      (health != null &&
+          health.batteryPercentage == null &&
           health.batteryPresent != true &&
           health.secondBatteryPercentage == null)) {
     return null;
