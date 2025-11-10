@@ -602,8 +602,10 @@ class BaseStation {
   final String? address;
   final List<dynamic>? alerts;
   final String? description;
+  @JsonKey(name: 'device_id')
   final String? deviceId;
   final dynamic features;
+  @JsonKey(name: 'firmware_version')
   final Firmware? firmwareVersion;
   final int? id;
   final String? kind;
@@ -613,9 +615,11 @@ class BaseStation {
   final double? longitude;
   final bool? owned;
   final BaseStationOwner? owner;
+  @JsonKey(name: 'ring_id')
   final dynamic ringId;
   final dynamic settings;
   final bool? stolen;
+  @JsonKey(name: 'time_zone')
   final String? timeZone;
 
   const BaseStation({
@@ -649,7 +653,9 @@ class BaseStation {
 class BaseStationOwner {
   final int? id;
   final String? email;
+  @JsonKey(name: 'first_name')
   final String? firstName;
+  @JsonKey(name: 'last_name')
   final String? lastName;
 
   const BaseStationOwner({
@@ -668,16 +674,20 @@ class BaseStationOwner {
 /// Beam bridge device data
 @JsonSerializable()
 class BeamBridge {
+  @JsonKey(name: 'created_at')
   final String createdAt;
   final String description;
+  @JsonKey(name: 'hardware_id')
   final String hardwareId;
   final int id;
   final String kind;
   @JsonKey(name: 'location_id')
   final String locationId;
   final BeamBridgeMetadata metadata;
+  @JsonKey(name: 'owner_id')
   final int ownerId;
   final String role;
+  @JsonKey(name: 'updated_at')
   final String updatedAt;
 
   const BeamBridge({
@@ -703,6 +713,7 @@ class BeamBridge {
 @JsonSerializable()
 class BeamBridgeMetadata {
   final bool ethernet;
+  @JsonKey(name: 'legacy_fw_migrated')
   final bool legacyFwMigrated;
 
   const BeamBridgeMetadata({
@@ -720,9 +731,13 @@ class BeamBridgeMetadata {
 @JsonSerializable()
 class ChimeSettings {
   final int? volume;
+  @JsonKey(name: 'ding_audio_user_id')
   final String? dingAudioUserId;
+  @JsonKey(name: 'ding_audio_id')
   final String? dingAudioId;
+  @JsonKey(name: 'motion_audio_user_id')
   final String? motionAudioUserId;
+  @JsonKey(name: 'motion_audio_id')
   final String? motionAudioId;
 
   const ChimeSettings({
@@ -742,6 +757,7 @@ class ChimeSettings {
 /// Chime features structure
 @JsonSerializable()
 class ChimeFeatures {
+  @JsonKey(name: 'ringtones_enabled')
   final bool? ringtonesEnabled;
 
   const ChimeFeatures({this.ringtonesEnabled});
@@ -769,6 +785,7 @@ class ChimeAlerts {
 /// Chime do not disturb structure
 @JsonSerializable()
 class ChimeDoNotDisturb {
+  @JsonKey(name: 'seconds_left')
   final int? secondsLeft;
 
   const ChimeDoNotDisturb({this.secondsLeft});
@@ -783,7 +800,9 @@ class ChimeDoNotDisturb {
 @JsonSerializable()
 class ChimeOwner {
   final int? id;
+  @JsonKey(name: 'first_name')
   final String? firstName;
+  @JsonKey(name: 'last_name')
   final String? lastName;
   final String? email;
 
@@ -805,8 +824,11 @@ class ChimeOwner {
 class ChimeData {
   final int? id;
   final String? description;
+  @JsonKey(name: 'device_id')
   final String? deviceId;
+  @JsonKey(name: 'time_zone')
   final String? timeZone;
+  @JsonKey(name: 'firmware_version')
   final Firmware? firmwareVersion;
   final String? kind;
   final double? latitude;
@@ -816,9 +838,12 @@ class ChimeData {
   final ChimeFeatures? features;
   final bool? owned;
   final ChimeAlerts? alerts;
+  @JsonKey(name: 'do_not_disturb')
   final ChimeDoNotDisturb? doNotDisturb;
   final bool? stolen;
+  @JsonKey(name: 'location_id')
   final String? locationId;
+  @JsonKey(name: 'ring_id')
   final dynamic ringId;
   final ChimeOwner? owner;
 
@@ -898,6 +923,7 @@ class ChimeUpdateSettings {
 /// Ringtone audio structure
 @JsonSerializable()
 class RingtoneAudio {
+  @JsonKey(name: 'user_id')
   final String userId;
   final String id;
   final String description;
@@ -925,9 +951,13 @@ class RingtoneAudio {
 /// Ringtone options structure
 @JsonSerializable()
 class RingtoneOptions {
+  @JsonKey(name: 'default_ding_user_id')
   final String defaultDingUserId;
+  @JsonKey(name: 'default_ding_id')
   final String defaultDingId;
+  @JsonKey(name: 'default_motion_user_id')
   final String defaultMotionUserId;
+  @JsonKey(name: 'default_motion_id')
   final String defaultMotionId;
   final List<RingtoneAudio> audios;
 
@@ -1033,8 +1063,10 @@ class UserLocation {
 /// Ticket asset structure
 @JsonSerializable()
 class TicketAsset {
+  @JsonKey(name: 'doorbotId')
   final int doorbotId;
   final AssetKind kind;
+  @JsonKey(name: 'onBattery')
   final bool onBattery;
   final String status; // 'online' or 'offline'
   final String uuid;
@@ -1058,6 +1090,7 @@ class TicketAsset {
 class CameraAlerts {
   final String connection; // 'online', 'offline', or other string
   final String? battery; // 'low' or other string values
+  @JsonKey(name: 'ota_status')
   final String? otaStatus; // 'timeout' or other string values
 
   const CameraAlerts({required this.connection, this.battery, this.otaStatus});
@@ -1071,12 +1104,19 @@ class CameraAlerts {
 /// Camera features structure
 @JsonSerializable()
 class CameraFeatures {
+  @JsonKey(name: 'motions_enabled')
   final bool? motionsEnabled;
+  @JsonKey(name: 'show_recordings')
   final bool? showRecordings;
+  @JsonKey(name: 'advanced_motion_enabled')
   final bool? advancedMotionEnabled;
+  @JsonKey(name: 'people_only_enabled')
   final bool? peopleOnlyEnabled;
+  @JsonKey(name: 'shadow_correction_enabled')
   final bool? shadowCorrectionEnabled;
+  @JsonKey(name: 'motion_message_enabled')
   final bool? motionMessageEnabled;
+  @JsonKey(name: 'night_vision_enabled')
   final bool? nightVisionEnabled;
 
   const CameraFeatures({
@@ -1111,9 +1151,12 @@ class MotionSnooze {
 /// Motion zones structure
 @JsonSerializable()
 class MotionZones {
+  @JsonKey(name: 'enable_audio')
   final bool enableAudio;
+  @JsonKey(name: 'active_motion_filter')
   final int? activeMotionFilter;
   final int? sensitivity;
+  @JsonKey(name: 'advanced_object_settings')
   final dynamic advancedObjectSettings;
   final dynamic zone1;
   final dynamic zone2;
@@ -1157,17 +1200,19 @@ class CameraChimeSettings {
 /// Floodlight settings structure
 @JsonSerializable()
 class FloodlightSettings {
-  final int priority;
-  final int duration;
+  final int? priority;
+  final int? duration;
   final int? brightness;
-  final bool alwaysOn;
+  @JsonKey(name: 'always_on')
+  final bool? alwaysOn;
+  @JsonKey(name: 'always_on_duration')
   final int? alwaysOnDuration;
 
   const FloodlightSettings({
-    required this.priority,
-    required this.duration,
+    this.priority,
+    this.duration,
     this.brightness,
-    required this.alwaysOn,
+    this.alwaysOn,
     this.alwaysOnDuration,
   });
 
@@ -1180,7 +1225,9 @@ class FloodlightSettings {
 /// Sheila settings structure
 @JsonSerializable()
 class SheilaSettings {
+  @JsonKey(name: 'cv_processing_enabled')
   final bool? cvProcessingEnabled;
+  @JsonKey(name: 'local_storage_enabled')
   final bool? localStorageEnabled; // true for Ring Edge devices
 
   const SheilaSettings({this.cvProcessingEnabled, this.localStorageEnabled});
@@ -1194,6 +1241,7 @@ class SheilaSettings {
 /// Server settings structure
 @JsonSerializable()
 class ServerSettings {
+  @JsonKey(name: 'ring_media_server_enabled')
   final bool ringMediaServerEnabled;
 
   const ServerSettings({required this.ringMediaServerEnabled});
@@ -1207,31 +1255,57 @@ class ServerSettings {
 /// Camera settings structure
 @JsonSerializable()
 class CameraSettingsData {
+  @JsonKey(name: 'enable_vod')
   final dynamic enableVod; // bool or int (1)
-  final MotionZones? motionZones;
+  @JsonKey(name: 'motion_zones')
+  final dynamic motionZones; // MotionZones object or array
+  @JsonKey(name: 'motion_snooze_preset_profile')
   final String? motionSnoozePresetProfile;
+  @JsonKey(name: 'live_view_preset_profile')
   final String? liveViewPresetProfile;
+  @JsonKey(name: 'live_view_presets')
   final List<String>? liveViewPresets;
+  @JsonKey(name: 'motion_snooze_presets')
   final List<String>? motionSnoozePresets;
+  @JsonKey(name: 'doorbell_volume')
   final int? doorbellVolume;
+  @JsonKey(name: 'chime_settings')
   final CameraChimeSettings? chimeSettings;
+  @JsonKey(name: 'video_settings')
   final dynamic videoSettings;
+  @JsonKey(name: 'motion_announcement')
   final bool? motionAnnouncement;
+  @JsonKey(name: 'stream_setting')
   final int? streamSetting;
+  @JsonKey(name: 'advanced_motion_detection_enabled')
   final bool? advancedMotionDetectionEnabled;
+  @JsonKey(name: 'advanced_motion_detection_human_only_mode')
   final bool? advancedMotionDetectionHumanOnlyMode;
+  @JsonKey(name: 'luma_night_threshold')
   final int? lumaNightThreshold;
+  @JsonKey(name: 'enable_audio_recording')
   final bool? enableAudioRecording;
+  @JsonKey(name: 'people_detection_eligible')
   final bool? peopleDetectionEligible;
+  @JsonKey(name: 'pir_settings')
   final dynamic pirSettings;
+  @JsonKey(name: 'pir_motion_zones')
   final List<int>? pirMotionZones;
+  @JsonKey(name: 'floodlight_settings')
   final FloodlightSettings? floodlightSettings;
+  @JsonKey(name: 'light_schedule_settings')
   final dynamic lightScheduleSettings;
+  @JsonKey(name: 'luma_light_threshold')
   final int? lumaLightThreshold;
+  @JsonKey(name: 'live_view_disabled')
   final bool? liveViewDisabled; // set by modes
+  @JsonKey(name: 'motion_detection_enabled')
   final bool? motionDetectionEnabled; // set by modes or Record Motion toggle
+  @JsonKey(name: 'power_mode')
   final String? powerMode; // 'battery' or 'wired'
+  @JsonKey(name: 'sheila_settings')
   final SheilaSettings? sheilaSettings;
+  @JsonKey(name: 'server_settings')
   final ServerSettings? serverSettings;
 
   const CameraSettingsData({
@@ -1274,7 +1348,9 @@ class CameraSettingsData {
 class CameraOwner {
   final int? id;
   final String? email;
+  @JsonKey(name: 'first_name')
   final String? firstName;
+  @JsonKey(name: 'last_name')
   final String? lastName;
 
   const CameraOwner({
@@ -1293,9 +1369,12 @@ class CameraOwner {
 /// Siren status structure
 @JsonSerializable()
 class SirenStatus {
+  @JsonKey(name: 'started_at')
   final String? startedAt;
   final String? duration;
+  @JsonKey(name: 'ends_at')
   final String? endsAt;
+  @JsonKey(name: 'seconds_remaining')
   final int? secondsRemaining;
 
   const SirenStatus({
@@ -1437,31 +1516,48 @@ class CameraHealthData {
 @JsonSerializable()
 class BaseCameraData {
   final CameraAlerts? alerts;
+  @JsonKey(name: 'created_at')
   final String? createdAt;
+  @JsonKey(name: 'deactivated_at')
   final String? deactivatedAt;
   final String? description;
+  @JsonKey(name: 'device_id')
   final String? deviceId;
   final CameraFeatures? features;
   final int? id;
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool? isSidewalkGateway;
   @JsonKey(name: 'location_id')
   final String? locationId;
+  @JsonKey(name: 'motion_snooze')
   final MotionSnooze? motionSnooze;
+  @JsonKey(name: 'night_mode_status')
   final String? nightModeStatus; // 'unknown', 'true', or 'false'
   final bool? owned;
+  @JsonKey(name: 'ring_net_id')
   final dynamic ringNetId;
   final CameraSettingsData? settings;
   final bool? subscribed;
+  @JsonKey(name: 'subscribed_motions')
   final bool? subscribedMotions;
+  @JsonKey(name: 'time_zone')
   final String? timeZone;
+  @JsonKey(name: 'motion_detection_enabled')
   final bool? motionDetectionEnabled;
+  @JsonKey(name: 'camera_location_indoor')
   final bool? cameraLocationIndoor;
+  @JsonKey(name: 'facing_window')
   final bool? facingWindow;
+  @JsonKey(name: 'enable_ir_led')
   final bool? enableIrLed;
   final CameraOwner? owner;
-  final String? ledStatus; // 'on' or 'off'
-  final String? ringCamLightInstalled; // 'true' or 'false'
-  final String? ringCamSetupFlow; // 'floodlight' or other
+  @JsonKey(name: 'led_status')
+  final dynamic ledStatus; // 'on', 'off', or object
+  @JsonKey(name: 'ring_cam_light_installed')
+  final dynamic ringCamLightInstalled; // 'true', 'false', or other types
+  @JsonKey(name: 'ring_cam_setup_flow')
+  final dynamic ringCamSetupFlow; // 'floodlight' or other types
+  @JsonKey(name: 'siren_status')
   final SirenStatus? sirenStatus;
   final CameraHealthData? health;
 
@@ -1576,6 +1672,7 @@ class CameraData extends BaseCameraData {
 /// ONVIF camera third party properties
 @JsonSerializable()
 class OnvifThirdPartyProperties {
+  @JsonKey(name: 'amzn_dsn')
   final String amznDsn;
   final String uuid;
 
@@ -1590,12 +1687,19 @@ class OnvifThirdPartyProperties {
 /// ONVIF camera metadata
 @JsonSerializable()
 class OnvifCameraMetadata {
+  @JsonKey(name: 'legacy_fw_migrated')
   final bool legacyFwMigrated;
+  @JsonKey(name: 'imported_from_amazon')
   final bool importedFromAmazon;
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool isSidewalkGateway;
+  @JsonKey(name: 'third_party_manufacturer')
   final String thirdPartyManufacturer;
+  @JsonKey(name: 'third_party_model')
   final String thirdPartyModel;
+  @JsonKey(name: 'third_party_dsn')
   final String thirdPartyDsn;
+  @JsonKey(name: 'third_party_properties')
   final OnvifThirdPartyProperties thirdPartyProperties;
 
   const OnvifCameraMetadata({
@@ -1619,7 +1723,9 @@ class OnvifCameraMetadata {
 class OnvifCameraData extends BaseCameraData {
   final String kind; // Should be 'onvif_camera'
   final OnvifCameraMetadata metadata;
+  @JsonKey(name: 'owner_id')
   final int ownerId;
+  @JsonKey(name: 'updated_at')
   final String updatedAt;
 
   const OnvifCameraData({
@@ -1666,6 +1772,7 @@ class OnvifCameraData extends BaseCameraData {
 /// Third party garage door opener properties
 @JsonSerializable()
 class ThirdPartyGdoProperties {
+  @JsonKey(name: 'key_access_point_associated')
   final String keyAccessPointAssociated; // 'true' or 'false'
 
   const ThirdPartyGdoProperties({required this.keyAccessPointAssociated});
@@ -1679,10 +1786,15 @@ class ThirdPartyGdoProperties {
 /// Third party garage door opener metadata
 @JsonSerializable()
 class ThirdPartyGdoMetadata {
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool isSidewalkGateway;
+  @JsonKey(name: 'third_party_manufacturer')
   final String thirdPartyManufacturer;
+  @JsonKey(name: 'third_party_model')
   final String thirdPartyModel;
+  @JsonKey(name: 'third_party_properties')
   final ThirdPartyGdoProperties thirdPartyProperties;
+  @JsonKey(name: 'integration_type')
   final String integrationType; // 'Key by Amazon' or other string
 
   const ThirdPartyGdoMetadata({
@@ -1705,14 +1817,21 @@ class ThirdPartyGarageDoorOpener {
   final int id;
   final String kind; // Should be 'third_party_gdo'
   final String description;
+  @JsonKey(name: 'location_id')
   final String locationId;
+  @JsonKey(name: 'owner_id')
   final int ownerId;
+  @JsonKey(name: 'hardware_id')
   final String hardwareId;
+  @JsonKey(name: 'created_at')
   final String createdAt;
+  @JsonKey(name: 'updated_at')
   final String updatedAt;
   final String role; // 'owner' or other string
   final ThirdPartyGdoMetadata metadata;
+  @JsonKey(name: 'ring_net_id')
   final dynamic ringNetId;
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool isSidewalkGateway;
 
   const ThirdPartyGarageDoorOpener({
@@ -1773,8 +1892,11 @@ class IntercomChimeSettings {
 class IntercomSettings {
   final String predecessor;
   final String config;
+  @JsonKey(name: 'ring_to_open')
   final bool ringToOpen;
+  @JsonKey(name: 'intercom_type')
   final String intercomType; // 'DF' or other string
+  @JsonKey(name: 'unlock_mode')
   final int? unlockMode;
   final int? replication;
 
@@ -1796,23 +1918,41 @@ class IntercomSettings {
 /// Intercom handset audio settings
 @JsonSerializable()
 class IntercomHandsetSettings {
+  @JsonKey(name: 'show_recordings')
   final bool showRecordings;
+  @JsonKey(name: 'recording_ttl')
   final int? recordingTtl;
+  @JsonKey(name: 'recording_enabled')
   final bool recordingEnabled;
+  @JsonKey(name: 'keep_alive')
   final dynamic keepAlive;
+  @JsonKey(name: 'chime_settings')
   final IntercomChimeSettings chimeSettings;
+  @JsonKey(name: 'intercom_settings')
   final IntercomSettings intercomSettings;
+  @JsonKey(name: 'keep_alive_auto')
   final int? keepAliveAuto;
+  @JsonKey(name: 'doorbell_volume')
   final int? doorbellVolume;
+  @JsonKey(name: 'enable_chime')
   final int? enableChime;
+  @JsonKey(name: 'theft_alarm_enable')
   final int? theftAlarmEnable;
+  @JsonKey(name: 'use_cached_domain')
   final int? useCachedDomain;
+  @JsonKey(name: 'use_server_ip')
   final int? useServerIp;
+  @JsonKey(name: 'server_domain')
   final String serverDomain; // 'fw.ring.com' or other string
+  @JsonKey(name: 'server_ip')
   final dynamic serverIp;
+  @JsonKey(name: 'enable_log')
   final int? enableLog;
+  @JsonKey(name: 'forced_keep_alive')
   final dynamic forcedKeepAlive;
+  @JsonKey(name: 'mic_volume')
   final int? micVolume;
+  @JsonKey(name: 'voice_volume')
   final int? voiceVolume;
 
   const IntercomHandsetSettings({
@@ -1845,16 +1985,27 @@ class IntercomHandsetSettings {
 /// Intercom handset audio features
 @JsonSerializable()
 class IntercomHandsetFeatures {
+  @JsonKey(name: 'motion_zone_recommendation')
   final bool motionZoneRecommendation;
+  @JsonKey(name: 'motions_enabled')
   final bool motionsEnabled;
+  @JsonKey(name: 'show_recordings')
   final bool showRecordings;
+  @JsonKey(name: 'show_vod_settings')
   final bool showVodSettings;
+  @JsonKey(name: 'rich_notifications_eligible')
   final bool richNotificationsEligible;
+  @JsonKey(name: 'show_24x7_lite')
   final bool show24x7Lite;
+  @JsonKey(name: 'show_offline_motion_events')
   final bool showOfflineMotionEvents;
+  @JsonKey(name: 'cfes_eligible')
   final bool cfesEligible;
+  @JsonKey(name: 'sheila_camera_eligible')
   final bool? sheilaCameraEligible;
+  @JsonKey(name: 'sheila_camera_processing_eligible')
   final bool? sheilaCameraProcessingEligible;
+  @JsonKey(name: 'chime_auto_detect_capable')
   final bool chimeAutoDetectCapable;
 
   const IntercomHandsetFeatures({
@@ -1881,6 +2032,7 @@ class IntercomHandsetFeatures {
 @JsonSerializable()
 class IntercomHandsetAlerts {
   final String connection; // 'online', 'offline', or other string
+  @JsonKey(name: 'ota_status')
   final String? otaStatus; // 'no_ota' or other string
 
   const IntercomHandsetAlerts({required this.connection, this.otaStatus});
@@ -1895,9 +2047,13 @@ class IntercomHandsetAlerts {
 @JsonSerializable()
 class IntercomHandsetMetadata {
   final bool ethernet;
+  @JsonKey(name: 'legacy_fw_migrated')
   final bool legacyFwMigrated;
+  @JsonKey(name: 'imported_from_amazon')
   final bool importedFromAmazon;
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool isSidewalkGateway;
+  @JsonKey(name: 'key_access_point_associated')
   final bool keyAccessPointAssociated;
 
   const IntercomHandsetMetadata({
@@ -1919,6 +2075,7 @@ class IntercomHandsetMetadata {
 class IntercomHandsetAudioData {
   final int? id;
   final String description;
+  @JsonKey(name: 'device_id')
   final String deviceId;
   final String kind; // Should be 'intercom_handset_audio'
   final IntercomFunction function;
@@ -1927,14 +2084,22 @@ class IntercomHandsetAudioData {
   final bool owned;
   final CameraOwner owner;
   final IntercomHandsetAlerts alerts;
+  @JsonKey(name: 'firmware_version')
   final String firmwareVersion; // 'Up to Date' or other string
+  @JsonKey(name: 'location_id')
   final String locationId;
+  @JsonKey(name: 'time_zone')
   final String timeZone;
+  @JsonKey(name: 'created_at')
   final String createdAt;
+  @JsonKey(name: 'ring_net_id')
   final dynamic ringNetId;
+  @JsonKey(name: 'is_sidewalk_gateway')
   final bool isSidewalkGateway;
   final bool subscribed;
+  @JsonKey(name: 'deactivated_at')
   final String? deactivatedAt;
+  @JsonKey(name: 'battery_life')
   final String batteryLife;
   final IntercomHandsetMetadata metadata;
 
@@ -2022,10 +2187,15 @@ class DayNightConfig {
 /// Advanced object settings
 @JsonSerializable()
 class AdvancedObjectSettings {
+  @JsonKey(name: 'human_detection_confidence')
   final DayNightConfig humanDetectionConfidence;
+  @JsonKey(name: 'motion_zone_overlap')
   final DayNightConfig motionZoneOverlap;
+  @JsonKey(name: 'object_size_maximum')
   final DayNightConfig objectSizeMaximum;
+  @JsonKey(name: 'object_size_minimum')
   final DayNightConfig objectSizeMinimum;
+  @JsonKey(name: 'object_time_overlap')
   final DayNightConfig objectTimeOverlap;
 
   const AdvancedObjectSettings({
@@ -2045,7 +2215,9 @@ class AdvancedObjectSettings {
 /// Advanced motion settings
 @JsonSerializable()
 class AdvancedMotionSettings {
+  @JsonKey(name: 'active_motion_filter')
   final int activeMotionFilter;
+  @JsonKey(name: 'advanced_object_settings')
   final AdvancedObjectSettings advancedObjectSettings;
 
   const AdvancedMotionSettings({
@@ -2064,6 +2236,7 @@ class AdvancedMotionSettings {
 class DeviceChimeSettings {
   final int duration;
   final bool enable;
+  @JsonKey(name: 'enable_ext')
   final bool enableExt;
   final int type;
 
@@ -2083,23 +2256,41 @@ class DeviceChimeSettings {
 /// Motion settings
 @JsonSerializable()
 class MotionSettings {
+  @JsonKey(name: 'enable_audio')
   final bool enableAudio;
+  @JsonKey(name: 'motion_detection_enabled')
   final bool motionDetectionEnabled;
+  @JsonKey(name: 'enable_ir_led')
   final bool enableIrLed;
+  @JsonKey(name: 'advanced_motion_detection_enabled')
   final bool advancedMotionDetectionEnabled;
+  @JsonKey(name: 'advanced_motion_detection_mode')
   final String advancedMotionDetectionMode;
+  @JsonKey(name: 'advanced_motion_detection_human_only_mode')
   final bool advancedMotionDetectionHumanOnlyMode;
+  @JsonKey(name: 'advanced_motion_detection_loitering_mode')
   final bool advancedMotionDetectionLoiteringMode;
+  @JsonKey(name: 'motion_snooze_privacy_timeout')
   final int motionSnoozePrivacyTimeout;
+  @JsonKey(name: 'advanced_motion_zones_enabled')
   final bool advancedMotionZonesEnabled;
+  @JsonKey(name: 'advanced_motion_zones_type')
   final String advancedMotionZonesType;
+  @JsonKey(name: 'enable_indoor_mode')
   final bool enableIndoorMode;
+  @JsonKey(name: 'enable_pir_validation')
   final bool enablePirValidation;
+  @JsonKey(name: 'loitering_threshold')
   final int loiteringThreshold;
+  @JsonKey(name: 'enable_rlmd')
   final bool enableRlmd;
+  @JsonKey(name: 'enable_recording')
   final bool enableRecording;
+  @JsonKey(name: 'end_detection')
   final int endDetection;
+  @JsonKey(name: 'advanced_motion_recording_human_mode')
   final bool advancedMotionRecordingHumanMode;
+  @JsonKey(name: 'advanced_motion_glance_enabled')
   final bool advancedMotionGlanceEnabled;
 
   const MotionSettings({
@@ -2132,12 +2323,19 @@ class MotionSettings {
 /// Video settings
 @JsonSerializable()
 class VideoSettings {
+  @JsonKey(name: 'exposure_control')
   final int exposureControl;
+  @JsonKey(name: 'night_color_enable')
   final bool nightColorEnable;
+  @JsonKey(name: 'hdr_enable')
   final bool hdrEnable;
+  @JsonKey(name: 'clip_length_max')
   final int clipLengthMax;
+  @JsonKey(name: 'clip_length_min')
   final int clipLengthMin;
+  @JsonKey(name: 'ae_mode')
   final int aeMode;
+  @JsonKey(name: 'ae_mask')
   final String aeMask;
 
   const VideoSettings({
@@ -2160,7 +2358,9 @@ class VideoSettings {
 @JsonSerializable()
 class VodSettings {
   final bool enable;
+  @JsonKey(name: 'toggled_at')
   final String toggledAt; // date
+  @JsonKey(name: 'use_cached_vod_domain')
   final bool useCachedVodDomain;
 
   const VodSettings({
@@ -2178,8 +2378,11 @@ class VodSettings {
 /// Volume settings
 @JsonSerializable()
 class VolumeSettings {
+  @JsonKey(name: 'doorbell_volume')
   final int doorbellVolume;
+  @JsonKey(name: 'mic_volume')
   final int micVolume;
+  @JsonKey(name: 'voice_volume')
   final int voiceVolume;
 
   const VolumeSettings({
@@ -2200,10 +2403,15 @@ class CvDetectionTypes {
   final CvDetectionType human;
   final CvDetectionType loitering;
   final CvDetectionType motion;
+  @JsonKey(name: 'moving_vehicle')
   final CvDetectionType movingVehicle;
+  @JsonKey(name: 'nearby_pom')
   final CvDetectionType nearbyPom;
+  @JsonKey(name: 'other_motion')
   final CvDetectionType otherMotion;
+  @JsonKey(name: 'package_delivery')
   final CvDetectionType packageDelivery;
+  @JsonKey(name: 'package_pickup')
   final CvDetectionType packagePickup;
 
   const CvDetectionTypes({
@@ -2227,6 +2435,7 @@ class CvDetectionTypes {
 @JsonSerializable()
 class CvThreshold {
   final int loitering;
+  @JsonKey(name: 'package_delivery')
   final int packageDelivery;
 
   const CvThreshold({required this.loitering, required this.packageDelivery});
@@ -2240,6 +2449,7 @@ class CvThreshold {
 /// CV settings
 @JsonSerializable()
 class CvSettings {
+  @JsonKey(name: 'detection_types')
   final CvDetectionTypes detectionTypes;
   final CvThreshold threshold;
 
@@ -2254,16 +2464,27 @@ class CvSettings {
 /// General settings
 @JsonSerializable()
 class GeneralSettings {
+  @JsonKey(name: 'enable_audio_recording')
   final bool enableAudioRecording;
+  @JsonKey(name: 'lite_24x7_enabled')
   final bool lite24x7Enabled;
+  @JsonKey(name: 'offline_motion_event_enabled')
   final bool offlineMotionEventEnabled;
+  @JsonKey(name: 'lite_24x7_subscribed')
   final bool lite24x7Subscribed;
+  @JsonKey(name: 'offline_motion_event_subscribed')
   final bool offlineMotionEventSubscribed;
+  @JsonKey(name: 'firmwares_locked')
   final bool firmwaresLocked;
+  @JsonKey(name: 'utc_offset')
   final String utcOffset;
+  @JsonKey(name: 'theft_alarm_enable')
   final bool theftAlarmEnable;
+  @JsonKey(name: 'use_wrapup_domain')
   final bool useWrapupDomain;
+  @JsonKey(name: 'power_mode')
   final String powerMode; // 'battery' or 'wired'
+  @JsonKey(name: 'data_collection_enabled')
   final bool dataCollectionEnabled;
 
   const GeneralSettings({
@@ -2289,6 +2510,7 @@ class GeneralSettings {
 /// Keep alive settings
 @JsonSerializable()
 class KeepAliveSettings {
+  @JsonKey(name: 'keep_alive_auto')
   final int keepAliveAuto;
 
   const KeepAliveSettings({required this.keepAliveAuto});
@@ -2302,9 +2524,13 @@ class KeepAliveSettings {
 /// PIR settings
 @JsonSerializable()
 class PirSettings {
+  @JsonKey(name: 'sensitivity_1')
   final int sensitivity1;
+  @JsonKey(name: 'sensitivity_2')
   final int sensitivity2;
+  @JsonKey(name: 'sensitivity_3')
   final int sensitivity3;
+  @JsonKey(name: 'zone_enable')
   final int zoneEnable;
 
   const PirSettings({
@@ -2323,12 +2549,19 @@ class PirSettings {
 /// Snapshot settings
 @JsonSerializable()
 class SnapshotSettings {
+  @JsonKey(name: 'frequency_secs')
   final int frequencySecs;
+  @JsonKey(name: 'lite_24x7_resolution_p')
   final int lite24x7ResolutionP;
+  @JsonKey(name: 'ome_resolution_p')
   final int omeResolutionP;
+  @JsonKey(name: 'max_upload_kb')
   final int maxUploadKb;
+  @JsonKey(name: 'frequency_after_secs')
   final int frequencyAfterSecs;
+  @JsonKey(name: 'period_after_secs')
   final int periodAfterSecs;
+  @JsonKey(name: 'close_container')
   final int closeContainer;
 
   const SnapshotSettings({
@@ -2350,18 +2583,31 @@ class SnapshotSettings {
 /// Client device settings
 @JsonSerializable()
 class ClientDeviceSettings {
+  @JsonKey(name: 'ringtones_enabled')
   final bool ringtonesEnabled;
+  @JsonKey(name: 'people_only_enabled')
   final bool peopleOnlyEnabled;
+  @JsonKey(name: 'advanced_motion_enabled')
   final bool advancedMotionEnabled;
+  @JsonKey(name: 'motion_message_enabled')
   final bool motionMessageEnabled;
+  @JsonKey(name: 'shadow_correction_enabled')
   final bool shadowCorrectionEnabled;
+  @JsonKey(name: 'night_vision_enabled')
   final bool nightVisionEnabled;
+  @JsonKey(name: 'light_schedule_enabled')
   final bool lightScheduleEnabled;
+  @JsonKey(name: 'rich_notifications_eligible')
   final bool richNotificationsEligible;
+  @JsonKey(name: 'show_24x7_lite')
   final bool show24x7Lite;
+  @JsonKey(name: 'show_offline_motion_events')
   final bool showOfflineMotionEvents;
+  @JsonKey(name: 'cfes_eligible')
   final bool cfesEligible;
+  @JsonKey(name: 'show_radar_data')
   final bool showRadarData;
+  @JsonKey(name: 'motion_zone_recommendation')
   final bool motionZoneRecommendation;
 
   const ClientDeviceSettings({
@@ -2389,6 +2635,7 @@ class ClientDeviceSettings {
 /// Alexa settings
 @JsonSerializable()
 class AlexaSettings {
+  @JsonKey(name: 'delay_ms')
   final int delayMs;
 
   const AlexaSettings({required this.delayMs});
@@ -2402,6 +2649,7 @@ class AlexaSettings {
 /// Autoreply settings
 @JsonSerializable()
 class AutoreplySettings {
+  @JsonKey(name: 'delay_ms')
   final int delayMs;
 
   const AutoreplySettings({required this.delayMs});
@@ -2415,7 +2663,9 @@ class AutoreplySettings {
 /// Concierge settings
 @JsonSerializable()
 class ConciergeSettings {
+  @JsonKey(name: 'alexa_settings')
   final AlexaSettings? alexaSettings;
+  @JsonKey(name: 'autoreply_settings')
   final AutoreplySettings? autoreplySettings;
   final String? mode;
 
@@ -2434,18 +2684,31 @@ class ConciergeSettings {
 /// Camera device settings data (complete structure)
 @JsonSerializable()
 class CameraDeviceSettingsData {
+  @JsonKey(name: 'advanced_motion_settings')
   final AdvancedMotionSettings advancedMotionSettings;
+  @JsonKey(name: 'chime_settings')
   final DeviceChimeSettings chimeSettings;
+  @JsonKey(name: 'motion_settings')
   final MotionSettings motionSettings;
+  @JsonKey(name: 'video_settings')
   final VideoSettings videoSettings;
+  @JsonKey(name: 'vod_settings')
   final VodSettings vodSettings;
+  @JsonKey(name: 'volume_settings')
   final VolumeSettings volumeSettings;
+  @JsonKey(name: 'cv_settings')
   final CvSettings cvSettings;
+  @JsonKey(name: 'general_settings')
   final GeneralSettings generalSettings;
+  @JsonKey(name: 'keep_alive_settings')
   final KeepAliveSettings keepAliveSettings;
+  @JsonKey(name: 'pir_settings')
   final PirSettings pirSettings;
+  @JsonKey(name: 'snapshot_settings')
   final SnapshotSettings snapshotSettings;
+  @JsonKey(name: 'client_device_settings')
   final ClientDeviceSettings clientDeviceSettings;
+  @JsonKey(name: 'concierge_settings')
   final ConciergeSettings? conciergeSettings;
 
   const CameraDeviceSettingsData({
@@ -2478,19 +2741,32 @@ typedef HealthCategory = String?;
 @JsonSerializable()
 class ChimeHealth {
   final int id;
+  @JsonKey(name: 'wifi_name')
   final String wifiName;
+  @JsonKey(name: 'battery_percentage')
   final HealthCategory batteryPercentage;
+  @JsonKey(name: 'battery_percentage_category')
   final HealthCategory batteryPercentageCategory;
+  @JsonKey(name: 'battery_voltage')
   final double? batteryVoltage;
+  @JsonKey(name: 'battery_voltage_category')
   final HealthCategory batteryVoltageCategory;
+  @JsonKey(name: 'latest_signal_strength')
   final int latestSignalStrength;
+  @JsonKey(name: 'latest_signal_category')
   final HealthCategory latestSignalCategory;
+  @JsonKey(name: 'average_signal_strength')
   final int averageSignalStrength;
+  @JsonKey(name: 'average_signal_category')
   final HealthCategory averageSignalCategory;
   final Firmware firmware;
+  @JsonKey(name: 'updated_at')
   final String updatedAt;
+  @JsonKey(name: 'wifi_is_ring_network')
   final bool wifiIsRingNetwork;
+  @JsonKey(name: 'packet_loss_category')
   final HealthCategory packetLossCategory;
+  @JsonKey(name: 'packet_loss_strength')
   final int packetLossStrength;
 
   const ChimeHealth({
@@ -2520,8 +2796,11 @@ class ChimeHealth {
 /// Camera health information (extends ChimeHealth)
 @JsonSerializable()
 class CameraHealth extends ChimeHealth {
+  @JsonKey(name: 'transformer_voltage')
   final int? transformerVoltage;
+  @JsonKey(name: 'transformer_voltage_category')
   final String? transformerVoltageCategory; // 'good' or other
+  @JsonKey(name: 'ext_power_state')
   final int? extPowerState;
 
   const CameraHealth({
@@ -2584,8 +2863,11 @@ class DingStateConstants {
 /// CV properties structure
 @JsonSerializable()
 class CvProperties {
+  @JsonKey(name: 'detection_type')
   final dynamic detectionType;
+  @JsonKey(name: 'person_detected')
   final dynamic personDetected;
+  @JsonKey(name: 'stream_broken')
   final dynamic streamBroken;
 
   const CvProperties({
@@ -2695,18 +2977,27 @@ class CameraEventOptions {
 /// Video search result
 @JsonSerializable()
 class VideoSearchResult {
+  @JsonKey(name: 'ding_id')
   final String dingId;
+  @JsonKey(name: 'created_at')
   final int createdAt;
+  @JsonKey(name: 'hq_url')
   final String? hqUrl;
+  @JsonKey(name: 'lq_url')
   final String lqUrl;
+  @JsonKey(name: 'preroll_duration')
   final dynamic prerollDuration;
+  @JsonKey(name: 'thumbnail_url')
   final String thumbnailUrl;
+  @JsonKey(name: 'untranscoded_url')
   final String untranscodedUrl;
   final DingKind kind;
   final String state; // 'timed_out' or 'completed'
+  @JsonKey(name: 'had_subscription')
   final bool hadSubscription;
   final bool favorite;
   final int duration;
+  @JsonKey(name: 'cv_properties')
   final CvProperties cvProperties;
 
   const VideoSearchResult({
@@ -2734,6 +3025,7 @@ class VideoSearchResult {
 /// Video search response
 @JsonSerializable()
 class VideoSearchResponse {
+  @JsonKey(name: 'video_search')
   final List<VideoSearchResult> videoSearch;
 
   const VideoSearchResponse({required this.videoSearch});
@@ -2747,8 +3039,11 @@ class VideoSearchResponse {
 /// Periodical footage structure
 @JsonSerializable()
 class PeriodicalFootage {
+  @JsonKey(name: 'start_ms')
   final int startMs;
+  @JsonKey(name: 'end_ms')
   final int endMs;
+  @JsonKey(name: 'playback_ms')
   final int playbackMs;
   final String kind; // 'online_periodical' or 'offline_periodical'
   final String url;
@@ -2774,7 +3069,9 @@ class PeriodicalFootage {
 /// Periodic footage metadata
 @JsonSerializable()
 class PeriodicFootageMeta {
+  @JsonKey(name: 'pagination_key')
   final int paginationKey;
+  @JsonKey(name: 'butch_size')
   final int butchSize;
 
   const PeriodicFootageMeta({
@@ -2793,6 +3090,7 @@ class PeriodicFootageMeta {
 class PeriodicFootageResponse {
   final PeriodicFootageMeta meta;
   final List<PeriodicalFootage> data;
+  @JsonKey(name: 'responseTimestamp')
   final int responseTimestamp;
 
   const PeriodicFootageResponse({
@@ -2888,12 +3186,18 @@ class PushNotificationAndroidConfig {
 /// Push notification analytics
 @JsonSerializable()
 class PushNotificationAnalytics {
+  @JsonKey(name: 'server_correlation_id')
   final String serverCorrelationId;
+  @JsonKey(name: 'server_id')
   final String serverId; // 'com.ring.pns' or other string
   final String subcategory;
+  @JsonKey(name: 'triggered_at')
   final int triggeredAt;
+  @JsonKey(name: 'sent_at')
   final int sentAt;
+  @JsonKey(name: 'referring_item_type')
   final String referringItemType;
+  @JsonKey(name: 'referring_item_id')
   final String referringItemId;
 
   const PushNotificationAnalytics({
@@ -2915,6 +3219,7 @@ class PushNotificationAnalytics {
 /// Push notification device
 @JsonSerializable()
 class PushNotificationDevice {
+  @JsonKey(name: 'e2ee_enabled')
   final bool e2eeEnabled;
   final int id;
   final String kind; // RingCameraKind or RingDeviceType
@@ -2937,8 +3242,10 @@ class PushNotificationDevice {
 @JsonSerializable()
 class PushNotificationDing {
   final String id;
+  @JsonKey(name: 'created_at')
   final String createdAt;
   final String subtype; // 'other_motion', 'motion', 'ding', 'human', etc.
+  @JsonKey(name: 'detection_type')
   final String? detectionType; // NotificationDetectionType
 
   const PushNotificationDing({
@@ -2971,9 +3278,13 @@ class PushNotificationEventito {
 /// Push notification live session
 @JsonSerializable()
 class PushNotificationLiveSession {
+  @JsonKey(name: 'streaming_data_hash')
   final String streamingDataHash;
+  @JsonKey(name: 'active_streaming_profile')
   final String activeStreamingProfile; // 'rms' or other string
+  @JsonKey(name: 'default_audio_route')
   final String defaultAudioRoute;
+  @JsonKey(name: 'max_duration')
   final int maxDuration;
 
   const PushNotificationLiveSession({
@@ -2995,7 +3306,9 @@ class PushNotificationEvent {
   final PushNotificationDing ding;
   final PushNotificationEventito eventito;
   final String riid;
+  @JsonKey(name: 'is_sidewalk')
   final bool isSidewalk;
+  @JsonKey(name: 'live_session')
   final PushNotificationLiveSession liveSession;
 
   const PushNotificationEvent({
@@ -3047,6 +3360,7 @@ class PushNotificationDingData {
 /// Push notification image
 @JsonSerializable()
 class PushNotificationImage {
+  @JsonKey(name: 'snapshot_uuid')
   final String snapshotUuid;
 
   const PushNotificationImage({required this.snapshotUuid});
@@ -3061,6 +3375,7 @@ class PushNotificationImage {
 @JsonSerializable()
 class PushNotificationDingV2 {
   final String version; // '2.0.0' or other string
+  @JsonKey(name: 'android_config')
   final PushNotificationAndroidConfig androidConfig;
   final PushNotificationAnalytics analytics;
   final PushNotificationDingData data;
@@ -3096,7 +3411,9 @@ class PushNotificationAps {
 /// Push notification alarm meta
 @JsonSerializable()
 class PushNotificationAlarmMeta {
+  @JsonKey(name: 'device_zid')
   final int deviceZid;
+  @JsonKey(name: 'location_id')
   final String locationId;
 
   const PushNotificationAlarmMeta({
@@ -3310,21 +3627,34 @@ class UserPreferences {
 class UserProfile {
   final int id;
   final String email;
+  @JsonKey(name: 'first_name')
   final String firstName;
+  @JsonKey(name: 'last_name')
   final String lastName;
+  @JsonKey(name: 'phone_number')
   final String phoneNumber;
+  @JsonKey(name: 'authentication_token')
   final String authenticationToken;
   final Map<String, dynamic> features;
+  @JsonKey(name: 'user_preferences')
   final UserPreferences userPreferences;
+  @JsonKey(name: 'hardware_id')
   final String hardwareId;
+  @JsonKey(name: 'explorer_program_terms')
   final dynamic explorerProgramTerms;
+  @JsonKey(name: 'user_flow')
   final String userFlow; // 'ring' or other string
+  @JsonKey(name: 'app_brand')
   final String appBrand;
   final String country;
   final String status; // 'legacy' or other string
+  @JsonKey(name: 'created_at')
   final String createdAt;
+  @JsonKey(name: 'tfa_enabled')
   final bool tfaEnabled;
+  @JsonKey(name: 'tfa_phone_number')
   final String? tfaPhoneNumber;
+  @JsonKey(name: 'account_type')
   final String accountType; // 'ring' or other string
 
   const UserProfile({

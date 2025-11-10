@@ -7,6 +7,8 @@ The focus will be porting each file to match the same name and also port the tes
 
 We will aim to create a TODO.md that we maintain and add a git commit and message for each step we take on this porting journey. 
 
+For typescript types and json mapping be sure to address the snake_case to camelCase. Also aim to use ./ring for the source code rather than github.
+
 Key points:
 - Programming language: Dart 
 - Package structure:
