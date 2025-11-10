@@ -658,12 +658,7 @@ class BaseStationOwner {
   @JsonKey(name: 'last_name')
   final String? lastName;
 
-  const BaseStationOwner({
-    this.id,
-    this.email,
-    this.firstName,
-    this.lastName,
-  });
+  const BaseStationOwner({this.id, this.email, this.firstName, this.lastName});
 
   factory BaseStationOwner.fromJson(Map<String, dynamic> json) =>
       _$BaseStationOwnerFromJson(json);
@@ -806,12 +801,7 @@ class ChimeOwner {
   final String? lastName;
   final String? email;
 
-  const ChimeOwner({
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.email,
-  });
+  const ChimeOwner({this.id, this.firstName, this.lastName, this.email});
 
   factory ChimeOwner.fromJson(Map<String, dynamic> json) =>
       _$ChimeOwnerFromJson(json);
@@ -1353,12 +1343,7 @@ class CameraOwner {
   @JsonKey(name: 'last_name')
   final String? lastName;
 
-  const CameraOwner({
-    this.id,
-    this.email,
-    this.firstName,
-    this.lastName,
-  });
+  const CameraOwner({this.id, this.email, this.firstName, this.lastName});
 
   factory CameraOwner.fromJson(Map<String, dynamic> json) =>
       _$CameraOwnerFromJson(json);
@@ -1875,11 +1860,7 @@ class IntercomChimeSettings {
   final bool enable;
   final int? duration;
 
-  const IntercomChimeSettings({
-    this.type,
-    required this.enable,
-    this.duration,
-  });
+  const IntercomChimeSettings({this.type, required this.enable, this.duration});
 
   factory IntercomChimeSettings.fromJson(Map<String, dynamic> json) =>
       _$IntercomChimeSettingsFromJson(json);
@@ -3783,11 +3764,7 @@ class LocationModeSecurityStatus {
   final String? md; // 'none' or other string
   final String? returnTopic;
 
-  const LocationModeSecurityStatus({
-    this.lu,
-    this.md,
-    this.returnTopic,
-  });
+  const LocationModeSecurityStatus({this.lu, this.md, this.returnTopic});
 
   factory LocationModeSecurityStatus.fromJson(Map<String, dynamic> json) =>
       _$LocationModeSecurityStatusFromJson(json);

@@ -79,18 +79,25 @@ void stripSensitiveFields(dynamic input) {
   }
 }
 
-/// Log device data for debugging purposes
+/// Get anonymized device data for debugging
 ///
-/// This function will be used by CLI tools to output anonymized device data.
-/// The actual implementation will need access to RingApi which will be
-/// added when we port the api.ts file.
-Future<String> getAnonymizedDeviceData(
+/// This function takes locations and amazonKeyLocks data and anonymizes it
+/// by stripping sensitive fields before returning as JSON.
+String getAnonymizedDeviceData(
   dynamic locations,
   dynamic amazonKeyLocks,
-) async {
+) {
   final results = {'locations': locations, 'amazonKeyLocks': amazonKeyLocks};
 
   stripSensitiveFields(results);
 
   return jsonEncode(results);
 }
+
+/// Log device data from Ring account for debugging
+///
+/// This CLI tool fetches all device data from a Ring account,
+/// anonymizes it, and outputs it for debugging and discovering new device types.
+///
+/// Note: This function is defined here but should be called from a CLI script
+/// in the bin/ directory to avoid circular dependencies.

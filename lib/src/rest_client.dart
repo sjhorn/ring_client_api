@@ -168,6 +168,7 @@ Future<ResponseError> _responseToError(http.Response response) async {
 Future<DataResponse<T>> requestWithRetry<T>(
   RequestOptions options, {
   int retryCount = 0,
+  http.Client? client,
 }) async {
   try {
     // Prepare headers
@@ -201,9 +202,10 @@ Future<DataResponse<T>> requestWithRetry<T>(
     }
 
     // Make the request with timeout
-    final client = http.Client();
+    final httpClient = client ?? http.Client();
+    final shouldCloseClient = client == null;
     try {
-      final streamedResponse = await client
+      final streamedResponse = await httpClient
           .send(request)
           .timeout(
             options.timeout,
@@ -268,7 +270,9 @@ Future<DataResponse<T>> requestWithRetry<T>(
         timeMillis: timeMillis,
       );
     } finally {
-      client.close();
+      if (shouldCloseClient) {
+        httpClient.close();
+      }
     }
   } catch (e) {
     // Check if this is a network error (no response from server)
@@ -288,7 +292,11 @@ Future<DataResponse<T>> requestWithRetry<T>(
       }
 
       await delay(5000);
-      return requestWithRetry<T>(options, retryCount: retryCount + 1);
+      return requestWithRetry<T>(
+        options,
+        retryCount: retryCount + 1,
+        client: client,
+      );
     }
 
     rethrow;
@@ -361,7 +369,9 @@ _AuthConfig? _parseAuthConfig(String? rawRefreshToken) {
   try {
     final decoded = fromBase64(rawRefreshToken);
     // ignore: avoid_print
-    print('[DEBUG] Decoded refresh token: ${decoded.substring(0, min(100, decoded.length))}...');
+    print(
+      '[DEBUG] Decoded refresh token: ${decoded.substring(0, min(100, decoded.length))}...',
+    );
     final config = jsonDecode(decoded) as Map<String, dynamic>;
     if (config['rt'] == null) {
       // ignore: avoid_print
@@ -369,7 +379,9 @@ _AuthConfig? _parseAuthConfig(String? rawRefreshToken) {
       return null;
     }
     // ignore: avoid_print
-    print('[DEBUG] Successfully parsed auth config with rt field (length: ${(config['rt'] as String).length})');
+    print(
+      '[DEBUG] Successfully parsed auth config with rt field (length: ${(config['rt'] as String).length})',
+    );
     return _AuthConfig.fromJson(config);
   } catch (e) {
     // ignore: avoid_print
@@ -414,11 +426,15 @@ class RingRestClient {
 
   final dynamic _authOptions;
 
+  /// Optional HTTP client for testing
+  final http.Client? httpClient;
+
   /// Create a new Ring REST client
   ///
   /// Provide either [EmailAuth] or [RefreshTokenAuth] for authentication.
   /// Optionally provide [SessionOptions] for custom session configuration.
-  RingRestClient(dynamic authOptions)
+  /// Optionally provide [httpClient] for dependency injection (primarily for testing).
+  RingRestClient(dynamic authOptions, {this.httpClient})
     : _authOptions = authOptions,
       baseSessionMetadata = {
         'api_version': apiVersion,
@@ -428,13 +444,17 @@ class RingRestClient {
     if (authOptions is RefreshTokenAuth) {
       refreshToken = authOptions.refreshToken;
       // ignore: avoid_print
-      print('[DEBUG] Got refresh token from auth options: ${refreshToken?.substring(0, min(50, refreshToken?.length ?? 0))}...');
+      print(
+        '[DEBUG] Got refresh token from auth options: ${refreshToken?.substring(0, min(50, refreshToken?.length ?? 0))}...',
+      );
     }
 
     // Parse auth config
     _authConfig = _parseAuthConfig(refreshToken);
     // ignore: avoid_print
-    print('[DEBUG] Auth config parsed: ${_authConfig != null ? "success (rt length: ${_authConfig!.rt.length})" : "null"}');
+    print(
+      '[DEBUG] Auth config parsed: ${_authConfig != null ? "success (rt length: ${_authConfig!.rt.length})" : "null"}',
+    );
 
     // Initialize hardware ID
     final systemId = authOptions is EmailAuth
@@ -524,7 +544,9 @@ class RingRestClient {
       // ignore: avoid_print
       print('[DEBUG]   grantData: $grantData');
       // ignore: avoid_print
-      print('[DEBUG]   refresh_token length: ${grantData['refresh_token']?.length}');
+      print(
+        '[DEBUG]   refresh_token length: ${grantData['refresh_token']?.length}',
+      );
       final response = await requestWithRetry<Map<String, dynamic>>(
         RequestOptions(
           url: 'https://oauth.ring.com/oauth/token',
@@ -541,25 +563,36 @@ class RingRestClient {
             'User-Agent': 'android:com.ringapp',
           },
         ),
+        client: httpClient,
       );
 
       // ignore: avoid_print
       print('[DEBUG] Auth response received, parsing...');
       // ignore: avoid_print
       print('[DEBUG] Response data type: ${response.data.runtimeType}');
-      final data = response.data as Map<String, dynamic>;
+      final data = response.data;
       // ignore: avoid_print
       print('[DEBUG] Response data keys: ${data.keys.toList()}');
       // ignore: avoid_print
-      print('[DEBUG] access_token: ${data['access_token']?.runtimeType} (null: ${data['access_token'] == null})');
+      print(
+        '[DEBUG] access_token: ${data['access_token']?.runtimeType} (null: ${data['access_token'] == null})',
+      );
       // ignore: avoid_print
-      print('[DEBUG] expires_in: ${data['expires_in']?.runtimeType} (null: ${data['expires_in'] == null})');
+      print(
+        '[DEBUG] expires_in: ${data['expires_in']?.runtimeType} (null: ${data['expires_in'] == null})',
+      );
       // ignore: avoid_print
-      print('[DEBUG] refresh_token: ${data['refresh_token']?.runtimeType} (null: ${data['refresh_token'] == null})');
+      print(
+        '[DEBUG] refresh_token: ${data['refresh_token']?.runtimeType} (null: ${data['refresh_token'] == null})',
+      );
       // ignore: avoid_print
-      print('[DEBUG] scope: ${data['scope']?.runtimeType} (null: ${data['scope'] == null})');
+      print(
+        '[DEBUG] scope: ${data['scope']?.runtimeType} (null: ${data['scope'] == null})',
+      );
       // ignore: avoid_print
-      print('[DEBUG] token_type: ${data['token_type']?.runtimeType} (null: ${data['token_type'] == null})');
+      print(
+        '[DEBUG] token_type: ${data['token_type']?.runtimeType} (null: ${data['token_type'] == null})',
+      );
       final authTokenResponse = AuthTokenResponse.fromJson(response.data);
       final oldRefreshToken = refreshToken;
 
@@ -683,6 +716,7 @@ class RingRestClient {
         },
         headers: {'authorization': 'Bearer ${authToken.accessToken}'},
       ),
+      client: httpClient,
     );
 
     return ProfileResponse.fromJson(response.data);
@@ -768,6 +802,7 @@ class RingRestClient {
             'User-Agent': 'android:com.ringapp',
           },
         ),
+        client: httpClient,
       );
     } catch (e) {
       if (e is ResponseError) {

@@ -16,10 +16,22 @@ This package is a Dart port of the popular [ring-client-api](https://github.com/
 - Support for Ring Doorbells and Cameras
 - Ring Alarm System integration
 - Smart Lighting control
-- Real-time push notifications via Firebase
-- WebRTC video streaming support
+- Real-time push notifications via WebSocket
+- WebRTC video streaming support (via companion Flutter package)
 - Historical event data
 - Device status monitoring and control
+- Camera snapshots
+- Event history and playback
+- Two-factor authentication (2FA) support
+- CLI tools for authentication and device data
+
+## Streaming Support
+
+This core package provides REST API and WebSocket functionality. For full WebRTC video streaming in Flutter apps, use the companion package:
+
+**[ring_client_api_flutter](https://pub.dev/packages/ring_client_api_flutter)** - Full video streaming with flutter_webrtc
+
+See [WEBRTC_OPTIONS.md](WEBRTC_OPTIONS.md) for detailed information about streaming options.
 
 ## Troubleshooting Issues
 
@@ -48,16 +60,30 @@ First, generate a `refreshToken` using the Ring authentication process. You will
 import 'package:ring_client_api/ring_client_api.dart';
 
 void main() async {
+  // Create API instance with refresh token authentication
   final ringApi = RingApi(
-    refreshToken: 'your_refresh_token_here',
-
-    // The following are all optional. See below for details
-    cameraStatusPollingSeconds: 20,
-    locationIds: [
-      '488e4800-fcde-4493-969b-d1a06f683102',
-      '4bbed7a7-06df-4f18-b3af-291c89854d60',
-    ],
+    RefreshTokenAuth(refreshToken: 'your_refresh_token_here'),
+    options: RingApiOptions(
+      debug: false,
+      cameraStatusPollingSeconds: 20,
+      locationModePollingSeconds: 20,
+      avoidSnapshotBatteryDrain: false,
+      controlCenterDisplayName: 'My Dart App',
+    ),
   );
+
+  // Listen for refresh token updates to save the new token
+  ringApi.onRefreshTokenUpdated.listen((update) {
+    print('New refresh token: ${update.newRefreshToken}');
+    // Save the updated token to secure storage
+  });
+
+  // Get locations and cameras
+  final locations = await ringApi.getLocations();
+  final cameras = await ringApi.getCameras();
+
+  // Clean up when done
+  await ringApi.disconnect();
 }
 ```
 

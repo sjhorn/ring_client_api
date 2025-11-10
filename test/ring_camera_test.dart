@@ -5,35 +5,23 @@ void main() {
   group('Ring Camera', () {
     group('battery level', () {
       test('should handle string battery life', () {
-        expect(
-          getBatteryLevel({'battery_life': '49'}),
-          equals(49.0),
-        );
+        expect(getBatteryLevel({'battery_life': '49'}), equals(49.0));
       });
 
       test('should handle null battery life', () {
-        expect(
-          getBatteryLevel({'battery_life': null}),
-          equals(null),
-        );
+        expect(getBatteryLevel({'battery_life': null}), equals(null));
       });
 
       test('should handle right battery only', () {
         expect(
-          getBatteryLevel({
-            'battery_life': null,
-            'battery_life_2': 24,
-          }),
+          getBatteryLevel({'battery_life': null, 'battery_life_2': 24}),
           equals(24.0),
         );
       });
 
       test('should handle left battery only', () {
         expect(
-          getBatteryLevel({
-            'battery_life': 76,
-            'battery_life_2': null,
-          }),
+          getBatteryLevel({'battery_life': 76, 'battery_life_2': null}),
           equals(76.0),
         );
       });
@@ -41,17 +29,11 @@ void main() {
       test('should handle dual batteries', () {
         // Should return the minimum of the two batteries
         expect(
-          getBatteryLevel({
-            'battery_life': '92',
-            'battery_life_2': 84,
-          }),
+          getBatteryLevel({'battery_life': '92', 'battery_life_2': 84}),
           equals(84.0),
         );
         expect(
-          getBatteryLevel({
-            'battery_life': '92',
-            'battery_life_2': 100,
-          }),
+          getBatteryLevel({'battery_life': '92', 'battery_life_2': 100}),
           equals(92.0),
         );
       });

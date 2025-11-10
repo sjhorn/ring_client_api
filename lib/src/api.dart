@@ -495,7 +495,7 @@ class RingApi extends Subscribed {
         logDebug('[getLocations] Base station locationId: ${x.locationId}');
         return x.locationId ?? '';
       }),
-      ...devicesResponse.beamBridges.map((x) => x.locationId ?? ''),
+      ...devicesResponse.beamBridges.map((x) => x.locationId),
     ];
     logDebug('[getLocations] Location IDs with hubs: $locationIdsWithHubs');
 

@@ -19,6 +19,10 @@ export 'src/ring_device.dart';
 // Type definitions
 export 'src/ring_types.dart';
 
+// Streaming types
+export 'src/streaming/peer_connection.dart';
+export 'src/streaming/streaming_messages.dart';
+
 // Utilities
 export 'src/util.dart';
 export 'src/subscribed.dart';

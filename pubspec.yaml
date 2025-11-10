@@ -42,3 +42,7 @@ dev_dependencies:
   # Code generation
   build_runner: ^2.4.0
   json_serializable: ^6.8.0
+
+# Prevent false positive for Ring's public Firebase API key
+false_secrets:
+  - /lib/src/api.dart

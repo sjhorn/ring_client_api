@@ -47,7 +47,9 @@ RingDeviceData flattenDeviceData(dynamic data) {
     return RingDeviceData.fromJson(result);
   } catch (e, stack) {
     logError('[flattenDeviceData] Error parsing device data: $e');
-    logError('[flattenDeviceData] JSON was: ${result.toString().substring(0, 500)}...');
+    logError(
+      '[flattenDeviceData] JSON was: ${result.toString().substring(0, 500)}...',
+    );
     logError('[flattenDeviceData] Stack: $stack');
     rethrow;
   }
@@ -153,14 +155,13 @@ class Location extends Subscribed {
         });
 
     // Initialize device list stream
-    onDeviceList = onMessage
-        .where((m) {
-          final isDeviceList = m.msg == MessageType.deviceInfoDocGetList;
-          if (isDeviceList) {
-            logDebug('[onDeviceList] Received device list message from ${m.src}');
-          }
-          return isDeviceList;
-        });
+    onDeviceList = onMessage.where((m) {
+      final isDeviceList = m.msg == MessageType.deviceInfoDocGetList;
+      if (isDeviceList) {
+        logDebug('[onDeviceList] Received device list message from ${m.src}');
+      }
+      return isDeviceList;
+    });
 
     // Initialize devices stream with accumulation logic
     onDevices = onDeviceList
@@ -208,24 +209,33 @@ class Location extends Subscribed {
 
             return [
               ...updatedDevices,
-              RingDevice(initialData: flatData, location: this, assetId: src ?? ''),
+              RingDevice(
+                initialData: flatData,
+                location: this,
+                assetId: src ?? '',
+              ),
             ];
           });
         }, <RingDevice>[])
         .distinct((a, b) => a.length == b.length)
         .where((deviceList) {
           // Only emit when we've received device lists from all assets
-          final shouldEmit = assets != null &&
+          final shouldEmit =
+              assets != null &&
               assets!.every(
                 (asset) => receivedAssetDeviceLists.contains(asset.uuid),
               );
 
           if (!shouldEmit) {
-            logDebug('[onDevices] Not emitting yet. Received from: $receivedAssetDeviceLists, Total assets: ${assets?.length ?? 0}, Device count: ${deviceList.length}');
+            logDebug(
+              '[onDevices] Not emitting yet. Received from: $receivedAssetDeviceLists, Total assets: ${assets?.length ?? 0}, Device count: ${deviceList.length}',
+            );
             if (assets != null) {
               for (final asset in assets!) {
                 if (!receivedAssetDeviceLists.contains(asset.uuid)) {
-                  logDebug('[onDevices] Still waiting for device list from asset: ${asset.uuid}');
+                  logDebug(
+                    '[onDevices] Still waiting for device list from asset: ${asset.uuid}',
+                  );
                 }
               }
             }
@@ -241,18 +251,16 @@ class Location extends Subscribed {
     onSessionInfo = onDataUpdate
         .where((m) => m.msg == MessageType.sessionInfo && m.body != null)
         .map(
-          (m) => m.body!
-              .map((item) {
-                try {
-                  return AssetSession.fromJson(item as Map<String, dynamic>);
-                } catch (e, stack) {
-                  logError('[AssetSession.fromJson] Error: $e');
-                  logError('[AssetSession.fromJson] JSON: $item');
-                  logError('[AssetSession.fromJson] Stack: $stack');
-                  rethrow;
-                }
-              })
-              .toList(),
+          (m) => m.body!.map((item) {
+            try {
+              return AssetSession.fromJson(item as Map<String, dynamic>);
+            } catch (e, stack) {
+              logError('[AssetSession.fromJson] Error: $e');
+              logError('[AssetSession.fromJson] JSON: $item');
+              logError('[AssetSession.fromJson] Stack: $stack');
+              rethrow;
+            }
+          }).toList(),
         );
 
     // Subscribe to device stream immediately
@@ -414,7 +422,9 @@ class Location extends Subscribed {
           final channel = data['channel'] as String;
           final message = SocketIoMessage.fromJson(messageData);
 
-          logDebug('[Socket] Received message: msg=${message.msg}, datatype=${message.datatype}, src=${message.src}, channel=$channel');
+          logDebug(
+            '[Socket] Received message: msg=${message.msg}, datatype=${message.datatype}, src=${message.src}, channel=$channel',
+          );
 
           onMessage.add(message);
 
@@ -480,7 +490,9 @@ class Location extends Subscribed {
 
     // Convert enums to their JSON values
     final msgJson = _messageTypeToJson(msg);
-    final datatypeJson = datatype != null ? _messageDataTypeToJson(datatype) : null;
+    final datatypeJson = datatype != null
+        ? _messageDataTypeToJson(datatype)
+        : null;
 
     final message = {
       'msg': msgJson,

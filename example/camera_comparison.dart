@@ -29,10 +29,18 @@ void main() async {
       print('  ID: ${camera.id}');
       print('  Type: ${camera.deviceType}');
       print('  Battery Level: ${camera.batteryLevel ?? "null"}');
-      print('  Battery Life: ${camera.data is CameraData ? (camera.data as CameraData).batteryLife ?? "null" : "N/A"}');
-      print('  Battery Life 2: ${camera.data is CameraData ? (camera.data as CameraData).batteryLife2 ?? "null" : "N/A"}');
-      print('  Battery Voltage: ${camera.data is CameraData ? (camera.data as CameraData).batteryVoltage ?? "null" : "N/A"}');
-      print('  External Connection: ${camera.data is CameraData ? (camera.data as CameraData).externalConnection ?? "null" : "N/A"}');
+      print(
+        '  Battery Life: ${camera.data is CameraData ? (camera.data as CameraData).batteryLife ?? "null" : "N/A"}',
+      );
+      print(
+        '  Battery Life 2: ${camera.data is CameraData ? (camera.data as CameraData).batteryLife2 ?? "null" : "N/A"}',
+      );
+      print(
+        '  Battery Voltage: ${camera.data is CameraData ? (camera.data as CameraData).batteryVoltage ?? "null" : "N/A"}',
+      );
+      print(
+        '  External Connection: ${camera.data is CameraData ? (camera.data as CameraData).externalConnection ?? "null" : "N/A"}',
+      );
       print('  Offline: ${camera.isOffline}');
       print('');
     }

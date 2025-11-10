@@ -70,7 +70,8 @@ void main() async {
 
       // Save snapshot to file
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
-      final filename = 'snapshot_${camera.name.replaceAll(' ', '_')}_$timestamp.jpg';
+      final filename =
+          'snapshot_${camera.name.replaceAll(' ', '_')}_$timestamp.jpg';
       final file = File(filename);
       await file.writeAsBytes(snapshot);
       print('✓ Snapshot saved to: $filename');
