@@ -216,6 +216,19 @@ Ring has restrictions on refresh tokens that may cause them to expire. Make sure
 
 See the [example](example/) directory for a complete example application.
 
+## Documentation
+
+This package includes comprehensive documentation to help you understand the implementation and migrate from the TypeScript version:
+
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history, release notes, and feature list for v0.1.0
+- **[TODO.md](TODO.md)** - Complete project implementation checklist showing all 11 phases of the port
+- **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Detailed guide to differences between TypeScript and Dart implementations, including language features, patterns, and migration guide
+- **[GAP_ANALYSIS.md](GAP_ANALYSIS.md)** - Comprehensive analysis showing 100% REST API coverage compared to the original TypeScript library
+
+For information about intentional feature exclusions (WebRTC video streaming, FFmpeg integration, Push Notifications), see the companion package documentation:
+- **[ring_camera](https://github.com/sjhorn/ring_camera)** - Flutter package with full WebRTC streaming support
+- **[ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api)** - Detailed roadmap for platform-specific features
+
 ## Additional information
 
 This package is a port of the TypeScript [ring-client-api](https://github.com/dgreif/ring) library by Dusty Greif.
