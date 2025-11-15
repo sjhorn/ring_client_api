@@ -8,9 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'ring_types.dart';
 import 'subscribed.dart';
 import 'util.dart';
-
-// TODO: Import Location class when location.dart is ported
-// import 'location.dart';
+import 'location.dart';
 
 /// Represents a Ring device (Z-Wave or other connected device)
 ///
@@ -39,8 +37,7 @@ class RingDevice extends Subscribed {
   final RingDeviceData initialData;
 
   /// Location this device belongs to
-  final dynamic
-  location; // TODO: Change to Location type when location.dart is available
+  final Location location;
 
   /// Asset ID of the location
   final String assetId;
@@ -59,18 +56,21 @@ class RingDevice extends Subscribed {
        id = initialData.zid,
        deviceType = initialData.deviceType,
        categoryId = initialData.categoryId {
-    // Set up component devices stream
-    // TODO: Implement when Location class is available
-    // This should filter devices from location.onDevices where parentZid == this.id
-    onComponentDevices = const Stream.empty();
+    // Set up component devices stream - filters devices where parentZid == this.id
+    onComponentDevices = location.onDevices
+        .map((devices) {
+          return devices
+              .where((device) => device.data.parentZid == id)
+              .toList();
+        })
+        .distinct((a, b) => a.length == b.length);
 
     // Subscribe to device data updates from the location
-    // TODO: Implement when Location class is available
-    // addSubscription(
-    //   location.onDeviceDataUpdate
-    //       .where((update) => update.zid == zid)
-    //       .listen((update) => updateData(update)),
-    // );
+    addSubscription(
+      location.onDeviceDataUpdate
+          .where((update) => update.zid == zid)
+          .listen((update) => updateData(update)),
+    );
   }
 
   /// Update device data with partial update
@@ -128,19 +128,14 @@ class RingDevice extends Subscribed {
   ///
   /// [body] - The information to set (will be merged with device ID)
   Future<void> setInfo(Map<String, dynamic> body) {
-    // TODO: Implement when Location class is available
-    // return location.sendMessage({
-    //   'msg': 'DeviceInfoSet',
-    //   'datatype': 'DeviceInfoSetType',
-    //   'dst': assetId,
-    //   'body': [
-    //     {
-    //       'zid': zid,
-    //       ...body,
-    //     },
-    //   ],
-    // });
-    throw UnimplementedError('Location.sendMessage not yet implemented');
+    return location.sendMessage(
+      msg: MessageType.deviceInfoSet,
+      datatype: MessageDataType.deviceInfoSetType,
+      dst: assetId,
+      body: [
+        {'zid': zid, ...body},
+      ],
+    );
   }
 
   /// Send a command to this device

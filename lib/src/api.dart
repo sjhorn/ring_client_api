@@ -158,11 +158,14 @@ class RingApi extends Subscribed {
     }
 
     // Set ffmpeg path if provided
-    // Note: ffmpeg configuration would be handled by a separate ffmpeg module
-    // which hasn't been ported yet. This is a placeholder.
+    // Note: FFmpeg functionality is platform-specific and not implemented in this
+    // core package. For video transcoding, use platform-specific implementations
+    // or the ring_camera package for Flutter apps.
     if (options.ffmpegPath != null) {
       logDebug('ffmpegPath provided: ${options.ffmpegPath}');
-      // TODO: setFfmpegPath(options.ffmpegPath) when ffmpeg module is ported
+      logDebug(
+        'Note: FFmpeg functionality requires platform-specific implementation',
+      );
     }
   }
 
@@ -392,31 +395,29 @@ class RingApi extends Subscribed {
 
   /// Register for push notifications (placeholder - requires Firebase implementation)
   ///
-  /// Push notifications require a Firebase Cloud Messaging implementation.
-  /// This is a placeholder that documents the required functionality.
+  /// Push notifications are a planned future feature.
   ///
-  /// TODO: Implement push notification receiver using Firebase Cloud Messaging.
+  /// FUTURE ENHANCEMENT: Firebase Cloud Messaging integration
   /// The TypeScript version uses @eneris/push-receiver which connects to FCM.
-  /// For Dart, you would need to:
+  /// To implement this in Dart/Flutter, you would need to:
   /// 1. Use firebase_messaging package or implement FCM protocol directly
-  /// 2. Register with Ring's FCM project (firebase config in TypeScript source)
+  /// 2. Register with Ring's FCM project using these credentials:
+  ///    - apiKey: 'AIzaSyCv-hdFBmmdBBJadNy-TFwB-xN_H5m3Bk8'
+  ///    - projectId: 'ring-17770'
+  ///    - messagingSenderId: '876313859327'
+  ///    - appId: '1:876313859327:android:e10ec6ddb3c81f39'
   /// 3. Handle credential persistence and updates
   /// 4. Route notifications to appropriate devices
   ///
-  /// Firebase config from TypeScript:
-  /// - apiKey: 'AIzaSyCv-hdFBmmdBBJadNy-TFwB-xN_H5m3Bk8'
-  /// - projectId: 'ring-17770'
-  /// - messagingSenderId: '876313859327'
-  /// - appId: '1:876313859327:android:e10ec6ddb3c81f39'
+  /// For now, use WebSocket connections (via Location) for real-time updates.
   Future<void> _registerPushReceiver(
     List<RingCamera> cameras,
     List<RingIntercom> intercoms,
   ) async {
-    // TODO: Implement push notification receiver
-    // For now, just log that push notifications are not yet implemented
+    // Push notifications not yet implemented - use WebSocket for real-time updates
     logDebug(
-      'Push notifications are not yet implemented in the Dart port. '
-      'This feature requires Firebase Cloud Messaging integration.',
+      'Push notifications are a future enhancement. '
+      'Using WebSocket connections for real-time device updates.',
     );
 
     // The TypeScript implementation does the following:

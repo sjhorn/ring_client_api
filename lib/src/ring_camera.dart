@@ -158,11 +158,17 @@ String? cleanSnapshotUuid(String? uuid) {
   return uuid.replaceAll(RegExp(r':.*$'), '');
 }
 
-// TODO: WebRTC streaming classes - not implemented in this package
-// For WebRTC streaming functionality, use the ring_client_api_flutter package
-// which provides full WebRTC support via flutter_webrtc.
+// WebRTC streaming is NOT implemented in this core package.
+// This package provides REST API and WebSocket functionality only.
 //
-// See: https://pub.dev/packages/ring_client_api_flutter
+// For full WebRTC video streaming support, use the companion package:
+// ring_camera - https://github.com/sjhorn/ring_camera
+//
+// The Flutter package provides:
+// - Live video streaming with WebRTC
+// - Two-way audio support
+// - Flutter widgets (RingCameraViewer, RingCameraSnapshotViewer)
+// - Full platform support (iOS, Android, Web, macOS, Windows, Linux)
 
 /// FFmpeg options for video transcoding
 class FfmpegOptions {
@@ -171,7 +177,7 @@ class FfmpegOptions {
   const FfmpegOptions({required this.output});
 }
 
-/// Streaming session (placeholder - TODO: implement when streaming module is ported)
+/// Streaming session placeholder - use ring_camera for full implementation
 class StreamingSession {
   final RingCamera camera;
 
@@ -186,7 +192,7 @@ class StreamingSession {
   Stream<void> get onCallEnded => Stream.empty();
 }
 
-/// Simple WebRTC session (placeholder - TODO: implement when streaming module is ported)
+/// Simple WebRTC session placeholder - use ring_camera for full implementation
 class SimpleWebRtcSession {
   final RingCamera camera;
   final RingRestClient restClient;
@@ -603,7 +609,7 @@ class RingCamera extends Subscribed {
   /// Create a WebRTC streaming ticket
   ///
   /// Returns a ticket string that can be used with a WebRTC implementation
-  /// (e.g., flutter_webrtc in ring_client_api_flutter package).
+  /// (e.g., flutter_webrtc in ring_camera package).
   ///
   /// The ticket is used to authenticate the WebSocket signaling connection.
   Future<String> createWebrtcTicket() async {
@@ -621,12 +627,12 @@ class RingCamera extends Subscribed {
   /// Start a live call (streaming session)
   ///
   /// **NOT IMPLEMENTED** in this package.
-  /// For WebRTC streaming functionality, use the ring_client_api_flutter package.
+  /// For WebRTC streaming functionality, use the ring_camera package.
   Future<StreamingSession> startLiveCall() async {
     throw UnimplementedError(
       'WebRTC streaming is not implemented in ring_client_api.\n'
-      'For Flutter apps with streaming support, use the ring_client_api_flutter package:\n'
-      'https://pub.dev/packages/ring_client_api_flutter',
+      'For Flutter apps with streaming support, use the ring_camera package:\n'
+      'https://github.com/sjhorn/ring_camera',
     );
   }
 

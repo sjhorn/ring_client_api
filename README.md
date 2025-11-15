@@ -29,9 +29,7 @@ This package is a Dart port of the popular [ring-client-api](https://github.com/
 
 This core package provides REST API and WebSocket functionality. For full WebRTC video streaming in Flutter apps, use the companion package:
 
-**[ring_client_api_flutter](https://pub.dev/packages/ring_client_api_flutter)** - Full video streaming with flutter_webrtc
-
-See [WEBRTC_OPTIONS.md](WEBRTC_OPTIONS.md) for detailed information about streaming options.
+**[ring_camera](https://github.com/sjhorn/ring_camera)** - Full video streaming with flutter_webrtc
 
 ## Troubleshooting Issues
 

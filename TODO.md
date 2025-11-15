@@ -99,7 +99,7 @@ This is a port of the TypeScript ring-client-api to Dart. The original project i
 **IMPORTANT**: Full WebRTC streaming is **NOT implemented in this package** (`ring_client_api`).
 The `ring_client_api` package is a pure Dart library that provides REST API and WebSocket functionality only.
 
-**For WebRTC video streaming**, use the separate **[ring_client_api_flutter](https://pub.dev/packages/ring_client_api_flutter)** package which provides full streaming support using flutter_webrtc.
+**For WebRTC video streaming**, use the separate **[ring_camera](https://github.com/sjhorn/ring_camera)** package which provides full streaming support using flutter_webrtc.
 
 ### Core Package (Pure Dart)
 - [x] Port `streaming/streaming-messages.ts` → `lib/src/streaming/streaming_messages.dart` (~86 lines)
@@ -117,12 +117,12 @@ The `ring_client_api` package is a pure Dart library that provides REST API and 
   - Documentation for WebRTC implementation
 
 ### Companion Flutter Package ✅
-- [x] Create `ring_client_api_flutter` package
+- [x] Create `ring_camera` package
   - [x] Package structure and pubspec.yaml
   - [x] Implement `FlutterPeerConnection` using flutter_webrtc
   - [x] Create `RingCameraViewer` widget (live streaming)
   - [x] Create `RingCameraSnapshotViewer` widget (battery-friendly)
-  - [x] Write comprehensive README
+  - [x] Write README
   - [x] Create example Flutter app
     - Camera list with authentication
     - Live streaming viewer
@@ -148,13 +148,13 @@ The TypeScript implementation uses `werift`, a pure JavaScript WebRTC library fo
 
 **Two-Package Architecture:**
 - ✅ `ring_client_api` - Core pure Dart package with interface definitions
-- ✅ `ring_client_api_flutter` - Full WebRTC implementation using flutter_webrtc
+- ✅ `ring_camera` - Full WebRTC implementation using flutter_webrtc
 
 **What Works:**
 - Message type definitions
 - Simple WebRTC session (REST API only)
 - Interface definitions for platform implementations
-- **Full WebRTC streaming in Flutter apps** (via ring_client_api_flutter)
+- **Full WebRTC streaming in Flutter apps** (via ring_camera)
 - Two-way audio support
 - Snapshot viewer for battery-powered cameras
 
@@ -208,7 +208,7 @@ Remaining examples (optional):
 - [ ] Port `return-audio-example.ts` → `example/return_audio_example.dart` ⚠️ Requires WebRTC
 - [ ] Create browser example equivalent (if applicable)
 
-**Note**: Examples marked with ⚠️ require full WebRTC streaming support. For WebRTC functionality in Flutter apps, use the companion package `ring_client_api_flutter`.
+**Note**: Examples marked with ⚠️ require full WebRTC streaming support. For WebRTC functionality in Flutter apps, use the companion package `ring_camera`.
 
 ---
 

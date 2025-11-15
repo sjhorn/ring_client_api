@@ -268,7 +268,7 @@ class FlutterPeerConnection implements BasicPeerConnection {
 **Key Differences:**
 - **TypeScript**: Uses `werift` - pure JavaScript WebRTC
 - **Dart Core**: Provides interface stubs and SimpleWebRtcSession (REST-based)
-- **Dart Flutter**: Full implementation in separate `ring_client_api_flutter` package
+- **Dart Flutter**: Full implementation in separate `ring_camera` package
 - **Dart CLI**: Not feasible without pure Dart WebRTC (pure_dart_webrtc is incomplete)
 
 ### 10. FFmpeg Integration
@@ -503,7 +503,7 @@ ring_client_api/
    - Dart has stronger typing for exceptions
 
 5. **WebRTC Streaming:**
-   - Use `ring_client_api_flutter` package for Flutter apps
+   - Use `ring_camera` package for Flutter apps
    - Core package provides REST-based SimpleWebRtcSession
 
 ### Code Comparison Example:
