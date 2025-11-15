@@ -31,6 +31,8 @@ This core package provides REST API and WebSocket functionality. For full WebRTC
 
 **[ring_camera](https://github.com/sjhorn/ring_camera)** - Full video streaming with flutter_webrtc
 
+**Note**: Features intentionally not implemented in this core package (WebRTC, FFmpeg, Push Notifications) are tracked in [ring_camera/TODO.md](../ring_camera/TODO.md#features-tracked-from-ring_client_api) with detailed implementation plans.
+
 ## Troubleshooting Issues
 
 If you are having issues, please search existing [Issues](https://github.com/sjhorn/ring_client_api/issues) before opening a new one.
