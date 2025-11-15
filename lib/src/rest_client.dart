@@ -627,6 +627,7 @@ class RingRestClient {
         print('[DEBUG] Auth with refresh token failed: $requestError');
         refreshToken = null;
         _authConfig = null;
+        _clearPreviousAuth(); // Clear auth promise before retrying
         logError(requestError);
         return getAuth();
       }

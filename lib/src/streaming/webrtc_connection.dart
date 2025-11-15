@@ -19,9 +19,7 @@ class StreamingConnectionOptions {
   /// Optional factory for creating custom peer connections
   final BasicPeerConnection Function()? createPeerConnection;
 
-  StreamingConnectionOptions({
-    this.createPeerConnection,
-  });
+  StreamingConnectionOptions({this.createPeerConnection});
 }
 
 /// WebRTC connection for streaming Ring camera video

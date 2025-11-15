@@ -158,17 +158,11 @@ String? cleanSnapshotUuid(String? uuid) {
   return uuid.replaceAll(RegExp(r':.*$'), '');
 }
 
-// TODO: WebRTC streaming classes - to be implemented when streaming modules are ported
-// These are placeholders for the streaming functionality:
-// - WebrtcConnection: Handles WebRTC connection for streaming
-// - StreamingSession: Manages streaming session with ffmpeg transcoding
-// - SimpleWebRtcSession: Simplified WebRTC session for browser use
-
-/// Options for streaming connection
-class StreamingConnectionOptions {
-  // TODO: Add streaming connection options when streaming module is ported
-  const StreamingConnectionOptions();
-}
+// TODO: WebRTC streaming classes - not implemented in this package
+// For WebRTC streaming functionality, use the ring_client_api_flutter package
+// which provides full WebRTC support via flutter_webrtc.
+//
+// See: https://pub.dev/packages/ring_client_api_flutter
 
 /// FFmpeg options for video transcoding
 class FfmpegOptions {
@@ -606,30 +600,34 @@ class RingCamera extends Subscribed {
     return CameraHealth.fromJson(deviceHealth);
   }
 
-  /// Create a streaming connection (TODO: implement when WebRTC module is ported)
-  Future<dynamic> _createStreamingConnection(
-    StreamingConnectionOptions options,
-  ) async {
-    await restClient.request<Map<String, dynamic>>(
+  /// Create a WebRTC streaming ticket
+  ///
+  /// Returns a ticket string that can be used with a WebRTC implementation
+  /// (e.g., flutter_webrtc in ring_client_api_flutter package).
+  ///
+  /// The ticket is used to authenticate the WebSocket signaling connection.
+  Future<String> createWebrtcTicket() async {
+    final response = await restClient.request<Map<String, dynamic>>(
       RequestOptions(
         method: 'POST',
         url: appApi('clap/ticket/request/signalsocket'),
       ),
     );
 
-    // TODO: Parse ticket and return WebrtcConnection when streaming module is ported
-    // final ticket = SocketTicketResponse.fromJson(response.data);
-    throw UnimplementedError(
-      'WebRTC streaming not yet implemented in Dart port',
-    );
+    final ticketResponse = SocketTicketResponse.fromJson(response.data);
+    return ticketResponse.ticket;
   }
 
   /// Start a live call (streaming session)
-  Future<StreamingSession> startLiveCall([
-    StreamingConnectionOptions options = const StreamingConnectionOptions(),
-  ]) async {
-    final connection = await _createStreamingConnection(options);
-    return StreamingSession(this, connection);
+  ///
+  /// **NOT IMPLEMENTED** in this package.
+  /// For WebRTC streaming functionality, use the ring_client_api_flutter package.
+  Future<StreamingSession> startLiveCall() async {
+    throw UnimplementedError(
+      'WebRTC streaming is not implemented in ring_client_api.\n'
+      'For Flutter apps with streaming support, use the ring_client_api_flutter package:\n'
+      'https://pub.dev/packages/ring_client_api_flutter',
+    );
   }
 
   /// Remove a ding notification by ID

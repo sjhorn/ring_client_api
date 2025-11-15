@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 /// Ring Authentication CLI
 ///
 /// This CLI tool helps you obtain a refresh token for use with ring_client_api.

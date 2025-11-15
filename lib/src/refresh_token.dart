@@ -16,7 +16,9 @@ import 'util.dart';
 Future<String> acquireRefreshToken() async {
   final email = await requestInput('Email: ');
   final password = await requestInput('Password: ');
-  final restClient = RingRestClient(EmailAuth(email: email, password: password));
+  final restClient = RingRestClient(
+    EmailAuth(email: email, password: password),
+  );
 
   Future<AuthTokenResponse> getAuthWith2fa() async {
     final code = await requestInput('2fa Code: ');

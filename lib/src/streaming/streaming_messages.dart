@@ -13,10 +13,7 @@ class SessionBody {
   @JsonKey(name: 'session_id')
   final String sessionId;
 
-  SessionBody({
-    required this.doorbotId,
-    required this.sessionId,
-  });
+  SessionBody({required this.doorbotId, required this.sessionId});
 
   factory SessionBody.fromJson(Map<String, dynamic> json) =>
       _$SessionBodyFromJson(json);
@@ -29,10 +26,7 @@ class AnswerMessage {
   final String method; // 'sdp'
   final AnswerBody body;
 
-  AnswerMessage({
-    required this.method,
-    required this.body,
-  });
+  AnswerMessage({required this.method, required this.body});
 
   factory AnswerMessage.fromJson(Map<String, dynamic> json) =>
       _$AnswerMessageFromJson(json);
@@ -63,10 +57,7 @@ class IceCandidateMessage {
   final String method; // 'ice'
   final IceCandidateBody body;
 
-  IceCandidateMessage({
-    required this.method,
-    required this.body,
-  });
+  IceCandidateMessage({required this.method, required this.body});
 
   factory IceCandidateMessage.fromJson(Map<String, dynamic> json) =>
       _$IceCandidateMessageFromJson(json);
@@ -97,10 +88,7 @@ class SessionCreatedMessage {
   final String method; // 'session_created'
   final SessionBody body;
 
-  SessionCreatedMessage({
-    required this.method,
-    required this.body,
-  });
+  SessionCreatedMessage({required this.method, required this.body});
 
   factory SessionCreatedMessage.fromJson(Map<String, dynamic> json) =>
       _$SessionCreatedMessageFromJson(json);
@@ -113,10 +101,7 @@ class SessionStartedMessage {
   final String method; // 'session_started'
   final SessionBody body;
 
-  SessionStartedMessage({
-    required this.method,
-    required this.body,
-  });
+  SessionStartedMessage({required this.method, required this.body});
 
   factory SessionStartedMessage.fromJson(Map<String, dynamic> json) =>
       _$SessionStartedMessageFromJson(json);
@@ -129,10 +114,7 @@ class PongMessage {
   final String method; // 'pong'
   final SessionBody body;
 
-  PongMessage({
-    required this.method,
-    required this.body,
-  });
+  PongMessage({required this.method, required this.body});
 
   factory PongMessage.fromJson(Map<String, dynamic> json) =>
       _$PongMessageFromJson(json);
@@ -145,10 +127,7 @@ class NotificationMessage {
   final String method; // 'notification'
   final NotificationBody body;
 
-  NotificationMessage({
-    required this.method,
-    required this.body,
-  });
+  NotificationMessage({required this.method, required this.body});
 
   factory NotificationMessage.fromJson(Map<String, dynamic> json) =>
       _$NotificationMessageFromJson(json);
@@ -180,10 +159,7 @@ class CameraStartedMessage {
   final String method; // 'camera_started'
   final SessionBody body;
 
-  CameraStartedMessage({
-    required this.method,
-    required this.body,
-  });
+  CameraStartedMessage({required this.method, required this.body});
 
   factory CameraStartedMessage.fromJson(Map<String, dynamic> json) =>
       _$CameraStartedMessageFromJson(json);
@@ -196,10 +172,7 @@ class StreamInfoMessage {
   final String method; // 'stream_info'
   final StreamInfoBody body;
 
-  StreamInfoMessage({
-    required this.method,
-    required this.body,
-  });
+  StreamInfoMessage({required this.method, required this.body});
 
   factory StreamInfoMessage.fromJson(Map<String, dynamic> json) =>
       _$StreamInfoMessageFromJson(json);
@@ -257,10 +230,7 @@ class CloseMessage {
   final String method; // 'close'
   final CloseBody body;
 
-  CloseMessage({
-    required this.method,
-    required this.body,
-  });
+  CloseMessage({required this.method, required this.body});
 
   factory CloseMessage.fromJson(Map<String, dynamic> json) =>
       _$CloseMessageFromJson(json);
@@ -288,10 +258,7 @@ class CloseReason {
   final int code;
   final String text;
 
-  CloseReason({
-    required this.code,
-    required this.text,
-  });
+  CloseReason({required this.code, required this.text});
 
   factory CloseReason.fromJson(Map<String, dynamic> json) =>
       _$CloseReasonFromJson(json);

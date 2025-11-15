@@ -96,6 +96,11 @@ This is a port of the TypeScript ring-client-api to Dart. The original project i
 
 ## Phase 6: Streaming (WebRTC) ✅ COMPLETE
 
+**IMPORTANT**: Full WebRTC streaming is **NOT implemented in this package** (`ring_client_api`).
+The `ring_client_api` package is a pure Dart library that provides REST API and WebSocket functionality only.
+
+**For WebRTC video streaming**, use the separate **[ring_client_api_flutter](https://pub.dev/packages/ring_client_api_flutter)** package which provides full streaming support using flutter_webrtc.
+
 ### Core Package (Pure Dart)
 - [x] Port `streaming/streaming-messages.ts` → `lib/src/streaming/streaming_messages.dart` (~86 lines)
   - Full implementation with JSON serialization
@@ -197,11 +202,13 @@ The TypeScript implementation uses `werift`, a pure JavaScript WebRTC library fo
 - [x] Verify examples work with live Ring API data
 
 Remaining examples (optional):
-- [ ] Port `chime-example.ts` → `example/chime_example.dart`
-- [ ] Port `stream-example.ts` → `example/stream_example.dart`
-- [ ] Port `record-example.ts` → `example/record_example.dart`
-- [ ] Port `return-audio-example.ts` → `example/return_audio_example.dart`
+- [x] Port `chime-example.ts` → `example/chime_example.dart` ✅
+- [ ] Port `stream-example.ts` → `example/stream_example.dart` ⚠️ Requires WebRTC
+- [ ] Port `record-example.ts` → `example/record_example.dart` ⚠️ Requires WebRTC
+- [ ] Port `return-audio-example.ts` → `example/return_audio_example.dart` ⚠️ Requires WebRTC
 - [ ] Create browser example equivalent (if applicable)
+
+**Note**: Examples marked with ⚠️ require full WebRTC streaming support. For WebRTC functionality in Flutter apps, use the companion package `ring_client_api_flutter`.
 
 ---
 
@@ -295,11 +302,12 @@ dev_dependencies:
 - ✅ Snapshot retrieval
 - ✅ Camera health and battery monitoring
 
-### Testing
+### Testing & Examples
 - ✅ Live API testing with 20 cameras
 - ✅ Battery data verified matching TypeScript implementation
 - ✅ Camera comparison example working
 - ✅ Main example demonstrating all major features
+- ✅ Chime example for Ring Chime device control
 
 ---
 
@@ -312,23 +320,18 @@ dev_dependencies:
 - Phase 3: Core API Client ✅
 - Phase 4: Device Models ✅
 - Phase 5: Location and Main API ✅
-- Phase 6: Streaming (WebRTC) ✅ **COMPLETE with Flutter companion package**
+- Phase 6: Streaming (WebRTC) ✅ - completed in ../ring_camera companion project
 - Phase 7: Testing ✅
 - Phase 8: Examples ✅
 - Phase 9: CLI Tools ✅
 - Phase 10: Documentation and Polish ✅
 - Phase 11: Publishing ⏳
 
-**Last updated**: 2025-11-10
+**Last updated**: 2025-11-11
 
 ---
 
 ## Next Steps
-
-1. **Streaming Support** (Phase 6)
-   - Evaluate WebRTC library options for Dart
-   - Port streaming-related modules
-   - Test with live camera streams
 
 2. **Testing** (Phase 7)
    - Port existing TypeScript tests

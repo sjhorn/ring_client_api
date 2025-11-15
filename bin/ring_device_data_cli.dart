@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 /// Ring Device Data CLI
 ///
 /// This CLI tool fetches all device data from your Ring account,
@@ -22,9 +23,7 @@ Future<void> main() async {
     );
 
     final token = await acquireRefreshToken();
-    final ringApi = RingApi(
-      RefreshTokenAuth(refreshToken: token),
-    );
+    final ringApi = RingApi(RefreshTokenAuth(refreshToken: token));
 
     print('Successfully logged in. Fetching devices...');
 

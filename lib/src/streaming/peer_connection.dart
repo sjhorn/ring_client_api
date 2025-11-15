@@ -52,11 +52,7 @@ class RTCIceCandidate {
   final int? sdpMLineIndex;
   final String? sdpMid;
 
-  RTCIceCandidate({
-    required this.candidate,
-    this.sdpMLineIndex,
-    this.sdpMid,
-  });
+  RTCIceCandidate({required this.candidate, this.sdpMLineIndex, this.sdpMid});
 }
 
 /// SDP offer/answer
@@ -64,10 +60,7 @@ class SessionDescription {
   final String type; // 'offer' or 'answer'
   final String sdp;
 
-  SessionDescription({
-    required this.type,
-    required this.sdp,
-  });
+  SessionDescription({required this.type, required this.sdp});
 }
 
 /// Basic peer connection interface
@@ -110,10 +103,13 @@ abstract class BasicPeerConnection {
 /// 4. Handle ICE candidates and STUN servers
 class WeriftPeerConnection extends Subscribed implements BasicPeerConnection {
   final _onIceCandidateController = PublishSubject<RTCIceCandidate>();
-  final _onConnectionStateController = ReplaySubject<ConnectionState>(maxSize: 1);
+  final _onConnectionStateController = ReplaySubject<ConnectionState>(
+    maxSize: 1,
+  );
 
   @override
-  Stream<RTCIceCandidate> get onIceCandidate => _onIceCandidateController.stream;
+  Stream<RTCIceCandidate> get onIceCandidate =>
+      _onIceCandidateController.stream;
 
   @override
   Stream<ConnectionState> get onConnectionState =>

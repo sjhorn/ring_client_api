@@ -83,10 +83,7 @@ void stripSensitiveFields(dynamic input) {
 ///
 /// This function takes locations and amazonKeyLocks data and anonymizes it
 /// by stripping sensitive fields before returning as JSON.
-String getAnonymizedDeviceData(
-  dynamic locations,
-  dynamic amazonKeyLocks,
-) {
+String getAnonymizedDeviceData(dynamic locations, dynamic amazonKeyLocks) {
   final results = {'locations': locations, 'amazonKeyLocks': amazonKeyLocks};
 
   stripSensitiveFields(results);

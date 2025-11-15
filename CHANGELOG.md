@@ -72,8 +72,7 @@ First release of the Dart port of the TypeScript ring-client-api library. This r
 - **Total**: 25 tests, all passing
 
 ### Known Limitations
-- **WebRTC Streaming**: Not yet implemented (requires platform-specific WebRTC library)
-- **CLI Tools**: Authentication and device data CLI tools not yet ported
+- **WebRTC Streaming**: Not implemented in this package. For full WebRTC video streaming support, use the companion **[ring_client_api_flutter](https://pub.dev/packages/ring_client_api_flutter)** package which provides complete streaming functionality via flutter_webrtc.
 - **Browser Support**: Primarily tested on Dart VM, browser support may vary
 
 ### Dependencies

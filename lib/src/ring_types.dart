@@ -3506,12 +3506,10 @@ class PushNotificationIntercomUnlockGcmData {
 @JsonSerializable()
 class SocketTicketResponse {
   final String ticket;
-  final int responseTimestampe; // Note: typo in original API
+  final int?
+  responseTimestampe; // Note: typo in original API (nullable because not always present)
 
-  const SocketTicketResponse({
-    required this.ticket,
-    required this.responseTimestampe,
-  });
+  const SocketTicketResponse({required this.ticket, this.responseTimestampe});
 
   factory SocketTicketResponse.fromJson(Map<String, dynamic> json) =>
       _$SocketTicketResponseFromJson(json);

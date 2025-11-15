@@ -50,9 +50,7 @@ class SimpleWebRtcSession {
       RequestOptions(
         method: 'POST',
         url: _liveViewUrl('end'),
-        json: {
-          'session_id': sessionId,
-        },
+        json: {'session_id': sessionId},
       ),
     );
 

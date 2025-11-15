@@ -2604,7 +2604,7 @@ SocketTicketResponse _$SocketTicketResponseFromJson(
   Map<String, dynamic> json,
 ) => SocketTicketResponse(
   ticket: json['ticket'] as String,
-  responseTimestampe: (json['responseTimestampe'] as num).toInt(),
+  responseTimestampe: (json['responseTimestampe'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$SocketTicketResponseToJson(
