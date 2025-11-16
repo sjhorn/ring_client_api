@@ -360,11 +360,11 @@ dev_dependencies:
 - Phase 10: Documentation and Polish ✅
 - Phase 11: Publishing ✅
 
-**Last updated**: 2025-11-15
+**Last updated**: 2025-11-16
 
 ---
 
-## 🎯 Project Status: PUBLISHED v0.1.0
+## 🎯 Project Status: PUBLISHED v0.1.1
 
 ### ✅ All Phases Complete (1-11)
 - Project setup, core types, API client, device models, location management
@@ -376,12 +376,13 @@ dev_dependencies:
 
 ### 📦 Published Package
 - **Package**: https://pub.dev/packages/ring_client_api
-- **Version**: 0.1.0
+- **Version**: 0.1.1 (latest)
 - **Status**: Available for installation
+- **Previous**: v0.1.0 - Initial release
 
-**Remaining Git Tasks:**
-- Create git tag v0.1.0
-- Push commits and tags to GitHub
+### Version History
+- **v0.1.1** (2025-11-16) - Documentation fixes, new CLI tool, release process
+- **v0.1.0** (2025-11-15) - Initial release
 
 ---
 

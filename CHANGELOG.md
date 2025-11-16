@@ -1,3 +1,20 @@
+## 0.1.1 - 2025-11-16
+
+### Fixed
+- Fixed broken relative links to ring_camera package in README.md, TODO.md, and GAP_ANALYSIS.md - now using absolute GitHub URLs
+- Links now display correctly on pub.dev
+
+### Added
+- New CLI tool: `bin/list_cameras.dart` - quickly list all cameras with names and IDs
+- CLI Tools documentation section in README.md documenting all three command-line utilities
+- Detailed release process in AGENTS.md with 11-step workflow including version bumping
+
+### Changed
+- Updated AGENTS.md with pre-release checklist and standard publishing procedure
+- Improved documentation discoverability
+
+---
+
 ## 0.1.0 - Initial Release
 
 ### Overview
