@@ -48,16 +48,119 @@ dart analyze
 ---
 
 ## Build & Publish
-```bash
-# Build the package (if relevant, e.g., for Flutter or platform-specific)
-dart compile <executable> --output=...
 
-# Publish to pub.dev
+### Pre-Release Checklist
+Before publishing a new version, ensure:
+- [ ] All tests pass: `dart test`
+- [ ] Code is formatted: `dart format .`
+- [ ] No analyzer issues: `dart analyze`
+- [ ] Documentation is updated
+- [ ] Examples work correctly
+
+### Release Process (Default Standard)
+
+This is the standard process for publishing releases to pub.dev:
+
+**1. Bump Version in `pubspec.yaml`**
+```yaml
+version: X.Y.Z  # Update according to semantic versioning
+```
+
+**2. Update `CHANGELOG.md`**
+Add release notes under a new version heading:
+```markdown
+## X.Y.Z - Release Date
+
+### Added
+- New features
+
+### Changed
+- Modified features
+
+### Fixed
+- Bug fixes
+
+### Removed
+- Deprecated features
+```
+
+**3. Update `TODO.md`**
+- Mark completed phases/tasks
+- Update project status
+- Update "Last updated" date
+
+**4. Run Pre-Publishing Checks**
+```bash
+# Verify all tests pass
+dart test
+
+# Check for analyzer issues
+dart analyze
+
+# Dry run publish
 dart pub publish --dry-run
+```
+
+**5. Commit Version Bump**
+```bash
+git add pubspec.yaml CHANGELOG.md TODO.md
+git commit -m "Bump version to vX.Y.Z"
+```
+
+**6. Publish to pub.dev**
+```bash
 dart pub publish
 ```
 
-> **Note**: Ensure version updates in `pubspec.yaml`, update `CHANGELOG.md`, and tag the release in Git.
+**7. Create Git Tag**
+```bash
+git tag -a vX.Y.Z -m "Release vX.Y.Z - Brief description
+
+Features:
+- Feature 1
+- Feature 2
+
+Published to pub.dev: https://pub.dev/packages/ring_client_api"
+```
+
+**8. Update TODO.md Post-Publish**
+Mark publishing phase as complete and update package links.
+
+**9. Commit Post-Publish Updates**
+```bash
+git add TODO.md
+git commit -m "Mark Phase 11 complete - vX.Y.Z published to pub.dev"
+```
+
+**10. Push to GitHub**
+```bash
+git push origin main
+git push origin vX.Y.Z
+```
+
+**11. Create GitHub Release** (Optional)
+- Go to https://github.com/sjhorn/ring_client_api/releases
+- Create release from tag vX.Y.Z
+- Copy CHANGELOG.md content for release notes
+
+### CLI Tools
+
+This package includes three command-line tools:
+
+**ring_auth_cli.dart** - Obtain refresh tokens via interactive authentication
+```bash
+dart run bin/ring_auth_cli.dart
+```
+
+**ring_device_data_cli.dart** - Fetch and anonymize device data for debugging
+```bash
+dart run bin/ring_device_data_cli.dart <refresh_token>
+```
+
+**list_cameras.dart** - List all cameras with names and IDs
+```bash
+dart run bin/list_cameras.dart <refresh_token>
+```
 
 ---
 
@@ -146,5 +249,5 @@ A: Yes — treat it as living documentation.  [oai_citation:2‡agents.md](https
 ---
 
 ## Change History of this File
-- **v0.1.0** — Initial draft based on generic Dart package template  
-- … (future updates to be listed here)  
+- **v0.1.0** — Initial draft based on generic Dart package template
+- **v0.1.0 Post-Publish** — Added detailed release process with version bumping, documented CLI tools, added pre-release checklist  

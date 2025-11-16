@@ -31,7 +31,7 @@ This core package provides REST API and WebSocket functionality. For full WebRTC
 
 **[ring_camera](https://github.com/sjhorn/ring_camera)** - Full video streaming with flutter_webrtc
 
-**Note**: Features intentionally not implemented in this core package (WebRTC, FFmpeg, Push Notifications) are tracked in [ring_camera/TODO.md](../ring_camera/TODO.md#features-tracked-from-ring_client_api) with detailed implementation plans.
+**Note**: Features intentionally not implemented in this core package (WebRTC, FFmpeg, Push Notifications) are tracked in [ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api) with detailed implementation plans.
 
 ## Troubleshooting Issues
 
@@ -211,6 +211,31 @@ Some other useful properties:
 ## Refresh Token
 
 Ring has restrictions on refresh tokens that may cause them to expire. Make sure to handle token refresh properly in your application to maintain a stable connection.
+
+## CLI Tools
+
+This package includes command-line tools to help with authentication and debugging:
+
+### ring_auth_cli.dart
+Obtain a refresh token by authenticating with your Ring account:
+```bash
+dart run bin/ring_auth_cli.dart
+```
+This interactive CLI will prompt for your email/password and handle 2FA if required.
+
+### ring_device_data_cli.dart
+Fetch and anonymize device data for debugging purposes:
+```bash
+dart run bin/ring_device_data_cli.dart <refresh_token>
+```
+Outputs device information with sensitive data removed.
+
+### list_cameras.dart
+List all cameras associated with your Ring account:
+```bash
+dart run bin/list_cameras.dart <refresh_token>
+```
+Displays camera names and IDs for quick reference.
 
 ## Example
 

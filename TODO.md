@@ -430,7 +430,7 @@ This project includes comprehensive documentation:
 - **[CLAUDE.md](CLAUDE.md)** - Project-specific Claude Code configuration
 
 ### Related Documentation:
-- **[ring_camera/TODO.md](../ring_camera/TODO.md)** - Companion Flutter package with intentional exclusions (WebRTC, FFmpeg, Push Notifications)
+- **[ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md)** - Companion Flutter package with intentional exclusions (WebRTC, FFmpeg, Push Notifications)
 
 ---
 

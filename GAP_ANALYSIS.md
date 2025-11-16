@@ -220,7 +220,7 @@ Core methods verified:
 ## Intentional Exclusions (3 items)
 
 **NOTE**: All intentional exclusions are tracked in detail in the companion `ring_camera` package:
-📋 **See**: [../ring_camera/TODO.md - Features Tracked from ring_client_api](../ring_camera/TODO.md#features-tracked-from-ring_client_api)
+📋 **See**: [ring_camera/TODO.md - Features Tracked from ring_client_api](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api)
 
 ### 1. ⚠️ FFmpeg Integration (`ffmpeg.ts`)
 
@@ -242,7 +242,7 @@ Core methods verified:
 2. Implement platform-specific FFmpeg integration
 3. Use `getRecordingUrl()` to download videos for external processing
 
-**Implementation Plan**: See [ring_camera/TODO.md § FFmpeg Integration & Recording](../ring_camera/TODO.md#2--ffmpeg-integration--recording)
+**Implementation Plan**: See [ring_camera/TODO.md § FFmpeg Integration & Recording](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#2--ffmpeg-integration--recording)
 
 ---
 
@@ -282,7 +282,7 @@ Core methods verified:
 - Clear pointers to `ring_camera` package
 - Documented in README, CHANGELOG, and source code
 
-**Implementation Details**: See [ring_camera/TODO.md § WebRTC Video Streaming](../ring_camera/TODO.md#1--webrtc-video-streaming)
+**Implementation Details**: See [ring_camera/TODO.md § WebRTC Video Streaming](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#1--webrtc-video-streaming)
 
 ---
 
@@ -317,7 +317,7 @@ Core methods verified:
 - For Flutter: Can implement using `firebase_messaging` package
 - For CLI: Not applicable (use WebSocket)
 
-**Implementation Plan**: See [ring_camera/TODO.md § Push Notifications (FCM Integration)](../ring_camera/TODO.md#3--push-notifications-fcm-integration)
+**Implementation Plan**: See [ring_camera/TODO.md § Push Notifications (FCM Integration)](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#3--push-notifications-fcm-integration)
 
 ---
 
