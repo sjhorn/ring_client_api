@@ -277,7 +277,7 @@ Remaining examples (optional):
 
 - [x] Run `dart pub publish --dry-run`
   - **✅ Zero warnings, zero errors!**
-  - Package size: 102 KB
+  - Package size: 111 KB (v0.1.1)
   - All validations passed
 - [x] Address any pub.dev publishing warnings
   - No warnings to address
@@ -286,9 +286,10 @@ Remaining examples (optional):
 - [x] Verify analyzer
   - Zero issues found
 - [x] Publish to pub.dev
-  - **✅ Published v0.1.0 successfully!**
+  - **✅ Published v0.1.0 successfully!** (2025-11-15)
+  - **✅ Published v0.1.1 successfully!** (2025-11-16)
   - Available at https://pub.dev/packages/ring_client_api
-- [ ] Create git tag v0.1.0
+- [x] Create git tags (v0.1.0, v0.1.1)
 - [ ] Push to GitHub
 
 **Published!** 🎉
