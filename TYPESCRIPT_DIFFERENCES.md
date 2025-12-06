@@ -242,7 +242,7 @@ class RingCamera extends Subscribed {
 ```typescript
 import { RTCPeerConnection } from 'werift'
 
-class WeriftPeerConnection {
+class WebRTCPeerConnection {
   private pc = new RTCPeerConnection({
     codecs: { /* ... */ },
     iceServers: ringIceServers.map(server => ({ urls: server }))

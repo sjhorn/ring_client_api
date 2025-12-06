@@ -11,13 +11,14 @@ This is a port of the TypeScript ring-client-api to Dart. The original project i
 - 2 CLI tools
 
 **Port Stats (Dart):**
-- ~12,400 lines of Dart code
-- 13 core source files (lib/src/)
+- ~13,500 lines of Dart code
+- 18 core source files (lib/src/ including streaming/)
 - 4 test files with 29 tests (all passing)
 - 3 example files
-- 2 CLI tools
+- 4 CLI tools (including stream_camera.dart)
 - Full RingDevice implementation with Location integration
-- Zero analyzer issues, zero publishing warnings
+- Full WebRTC streaming using webrtc_dart (pure Dart port of werift)
+- Zero analyzer issues
 
 ---
 
@@ -110,73 +111,62 @@ This is a port of the TypeScript ring-client-api to Dart. The original project i
 
 ## Phase 6: Streaming (WebRTC) ✅ COMPLETE
 
-**IMPORTANT**: Full WebRTC streaming is **NOT implemented in this package** (`ring_client_api`).
-The `ring_client_api` package is a pure Dart library that provides REST API and WebSocket functionality only.
+**Full WebRTC streaming is now implemented** in this package using `webrtc_dart` (a pure Dart port of werift).
 
-**For WebRTC video streaming**, use the separate **[ring_camera](https://github.com/sjhorn/ring_camera)** package which provides full streaming support using flutter_webrtc.
-
-### Core Package (Pure Dart)
+### Core Package (Pure Dart) - FULLY IMPLEMENTED
 - [x] Port `streaming/streaming-messages.ts` → `lib/src/streaming/streaming_messages.dart` (~86 lines)
   - Full implementation with JSON serialization
 - [x] Port `streaming/simple-webrtc-session.ts` → `lib/src/streaming/simple_webrtc_session.dart` (~55 lines)
   - **Fully functional** - REST-based simple streaming
-- [x] Create stub `streaming/peer-connection.ts` → `lib/src/streaming/peer_connection.dart` (~175 lines)
-  - Interface definitions provided
-  - Documentation for WebRTC implementation
-- [x] Create stub `streaming/webrtc-connection.ts` → `lib/src/streaming/webrtc_connection.dart` (~336 lines)
-  - Interface definitions provided
-  - Documentation for WebRTC implementation
-- [x] Create stub `streaming/streaming-session.ts` → `lib/src/streaming/streaming_session.dart` (~256 lines)
-  - Interface definitions provided
-  - Documentation for WebRTC implementation
+- [x] Port `streaming/peer-connection.ts` → `lib/src/streaming/peer_connection.dart` (~300 lines)
+  - **Fully implemented** using webrtc_dart (pure Dart port of werift)
+  - WebRTCPeerConnection wraps RtcPeerConnection
+  - ICE candidate handling, SDP offers/answers
+  - Audio transceiver (sendrecv) for two-way audio
+  - Video transceiver (recvonly) for receiving video
+- [x] Port `streaming/webrtc-connection.ts` → `lib/src/streaming/webrtc_connection.dart` (~400 lines)
+  - **Fully implemented** - WebSocket signaling to Ring servers
+  - Connects to `wss://api.prod.signalling.ring.devices.a2z.com`
+  - SDP/ICE exchange, session lifecycle management
+  - 5-second ping for Ring Edge connections
+- [x] Port `streaming/streaming-session.ts` → `lib/src/streaming/streaming_session.dart` (~440 lines)
+  - **Fully implemented** - FFmpeg transcoding via dart:io Process
+  - RtpSplitter for UDP packet forwarding
+  - startTranscoding() for video recording
+  - transcodeReturnAudio() for two-way audio
 
-### Companion Flutter Package ✅
-- [x] Create `ring_camera` package
-  - [x] Package structure and pubspec.yaml
-  - [x] Implement `FlutterPeerConnection` using flutter_webrtc
-  - [x] Create `RingCameraViewer` widget (live streaming)
-  - [x] Create `RingCameraSnapshotViewer` widget (battery-friendly)
-  - [x] Write README
-  - [x] Create example Flutter app
-    - Camera list with authentication
-    - Live streaming viewer
-    - Snapshot viewer
-    - Camera controls (light, siren)
-    - Two-way audio toggle
-  - [x] Pass all analyzer checks
+### CLI Tools
+- [x] Create `bin/stream_camera.dart` - Record video from Ring camera
+  - Uses WebRTC connection and FFmpeg transcoding
+  - Command: `dart run bin/stream_camera.dart 30 recording.mp4`
+
+### Companion Flutter Package (Alternative)
+- [x] `ring_camera` package - Flutter-specific implementation using flutter_webrtc
+  - Use this for Flutter apps that prefer flutter_webrtc over webrtc_dart
 
 ### Documentation
 - [x] Create `WEBRTC_OPTIONS.md` (~400+ lines)
-  - Detailed analysis of Dart WebRTC options
-  - Comparison of pure_dart_webrtc, flutter_webrtc, dart_webrtc
-  - Recommendations for implementation approaches
 - [x] Create `TYPESCRIPT_DIFFERENCES.md` (~500+ lines)
-  - Complete guide to differences between TypeScript and Dart implementations
-  - Language differences, null safety, JSON serialization
-  - Streams vs Observables, testing approaches
-  - Migration guide for developers following the port
 
-**WebRTC Implementation Strategy:**
+**WebRTC Implementation:**
 
-The TypeScript implementation uses `werift`, a pure JavaScript WebRTC library for Node.js. Dart does not have an equivalent pure-Dart WebRTC implementation suitable for non-browser, non-Flutter applications.
-
-**Two-Package Architecture:**
-- ✅ `ring_client_api` - Core pure Dart package with interface definitions
-- ✅ `ring_camera` - Full WebRTC implementation using flutter_webrtc
+This package now includes **full WebRTC streaming** using:
+- `webrtc_dart` - Pure Dart port of werift (located at `../webrtc_dart`)
+- FFmpeg - Spawned as subprocess via `dart:io` Process (no native libraries)
 
 **What Works:**
-- Message type definitions
-- Simple WebRTC session (REST API only)
-- Interface definitions for platform implementations
-- **Full WebRTC streaming in Flutter apps** (via ring_camera)
+- Full WebRTC peer connections (pure Dart)
+- WebSocket signaling to Ring servers
+- SDP offer/answer exchange
+- ICE candidate handling
+- RTP packet forwarding
+- FFmpeg transcoding to MP4/other formats
 - Two-way audio support
-- Snapshot viewer for battery-powered cameras
+- Video recording from cameras
 
-**What's Platform-Specific:**
-- Full WebRTC peer connections (use flutter_webrtc for Flutter)
-- Video/audio transcoding with FFmpeg
-- RTP packet handling
-- Native platform support (iOS, Android, Web, macOS, Windows, Linux)
+**Requirements:**
+- FFmpeg must be installed and in PATH for transcoding
+- webrtc_dart package (path dependency to ../webrtc_dart)
 
 ---
 
@@ -221,12 +211,11 @@ The TypeScript implementation uses `werift`, a pure JavaScript WebRTC library fo
 
 Remaining examples (optional):
 - [x] Port `chime-example.ts` → `example/chime_example.dart` ✅
-- [ ] Port `stream-example.ts` → `example/stream_example.dart` ⚠️ Requires WebRTC
-- [ ] Port `record-example.ts` → `example/record_example.dart` ⚠️ Requires WebRTC
-- [ ] Port `return-audio-example.ts` → `example/return_audio_example.dart` ⚠️ Requires WebRTC
+- [x] Stream/record example → `bin/stream_camera.dart` ✅ (CLI tool for recording)
+- [x] Port `return-audio-example.ts` → `example/return_audio_example.dart` ✅ (two-way audio demo)
 - [ ] Create browser example equivalent (if applicable)
 
-**Note**: Examples marked with ⚠️ require full WebRTC streaming support. For WebRTC functionality in Flutter apps, use the companion package `ring_camera`.
+**Note**: WebRTC streaming is now fully implemented using webrtc_dart. The `bin/stream_camera.dart` CLI tool demonstrates recording video from cameras.
 
 ---
 
@@ -240,6 +229,14 @@ Remaining examples (optional):
   - Fetches and anonymizes device data for debugging
   - Removes sensitive information
   - Fully functional
+- [x] Create `bin/list_cameras.dart`
+  - Lists all cameras with names and IDs
+  - Fully functional
+- [x] Create `bin/stream_camera.dart`
+  - Records video from Ring camera using WebRTC
+  - Uses webrtc_dart for peer connection
+  - Uses FFmpeg for transcoding
+  - Command: `dart run bin/stream_camera.dart 30 recording.mp4`
 
 ---
 
@@ -361,27 +358,28 @@ dev_dependencies:
 - Phase 10: Documentation and Polish ✅
 - Phase 11: Publishing ✅
 
-**Last updated**: 2025-11-16
+**Last updated**: 2025-12-06
 
 ---
 
-## 🎯 Project Status: PUBLISHED v0.1.1
+## 🎯 Project Status: v0.2.0 Ready
 
 ### ✅ All Phases Complete (1-11)
 - Project setup, core types, API client, device models, location management
-- WebRTC interface definitions (full implementation in companion package)
+- **Full WebRTC streaming implementation using webrtc_dart (pure Dart)**
+- FFmpeg transcoding via dart:io Process
+- Two-way audio support
 - Comprehensive testing suite with 29 tests
 - Working examples and CLI tools
 - Complete documentation and polish
-- **Published to pub.dev** 🚀
 
-### 📦 Published Package
+### 📦 Package Status
 - **Package**: https://pub.dev/packages/ring_client_api
-- **Version**: 0.1.1 (latest)
-- **Status**: Available for installation
-- **Previous**: v0.1.0 - Initial release
+- **Version**: 0.2.0 (pending - requires webrtc_dart on pub.dev)
+- **Previous**: v0.1.1 (latest on pub.dev)
 
 ### Version History
+- **v0.2.0** (2025-12-06) - Full WebRTC streaming, two-way audio, FFmpeg transcoding
 - **v0.1.1** (2025-11-16) - Documentation fixes, new CLI tool, release process
 - **v0.1.0** (2025-11-15) - Initial release
 
@@ -436,10 +434,16 @@ This project includes comprehensive documentation:
 
 ---
 
-## Next Steps for v0.2.0 (Future)
+## v0.2.0 Complete ✅
 
-- Expand example collection
-- Performance optimizations
-- Additional device type support
-- Community feedback integration
-- Consider additional streaming options
+- [x] Full WebRTC streaming implementation using webrtc_dart
+- [x] FFmpeg transcoding via dart:io Process
+- [x] stream_camera.dart CLI tool
+- [x] Two-way audio example (return_audio_example.dart)
+
+## Next Steps for v0.3.0 (Future)
+
+- [ ] Publish webrtc_dart to pub.dev (currently path dependency)
+- [ ] Performance optimizations
+- [ ] Additional device type support
+- [ ] Community feedback integration

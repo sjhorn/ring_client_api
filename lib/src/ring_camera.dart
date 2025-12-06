@@ -11,6 +11,9 @@ import 'ring_types.dart';
 import 'rest_client.dart';
 import 'util.dart';
 import 'subscribed.dart';
+import 'streaming/streaming_session.dart' as streaming;
+import 'streaming/webrtc_connection.dart';
+import 'streaming/simple_webrtc_session.dart' as simple;
 
 /// Union type for camera data - either CameraData or OnvifCameraData
 typedef AnyCameraData =
@@ -158,47 +161,10 @@ String? cleanSnapshotUuid(String? uuid) {
   return uuid.replaceAll(RegExp(r':.*$'), '');
 }
 
-// WebRTC streaming is NOT implemented in this core package.
-// This package provides REST API and WebSocket functionality only.
-//
-// For full WebRTC video streaming support, use the companion package:
-// ring_camera - https://github.com/sjhorn/ring_camera
-//
-// The Flutter package provides:
-// - Live video streaming with WebRTC
-// - Two-way audio support
-// - Flutter widgets (RingCameraViewer, RingCameraSnapshotViewer)
-// - Full platform support (iOS, Android, Web, macOS, Windows, Linux)
-
-/// FFmpeg options for video transcoding
-class FfmpegOptions {
-  final List<String> output;
-
-  const FfmpegOptions({required this.output});
-}
-
-/// Streaming session placeholder - use ring_camera for full implementation
-class StreamingSession {
-  final RingCamera camera;
-
-  StreamingSession(this.camera, dynamic connection);
-
-  Future<void> startTranscoding(FfmpegOptions options) async {
-    throw UnimplementedError(
-      'Streaming functionality not yet implemented in Dart port',
-    );
-  }
-
-  Stream<void> get onCallEnded => Stream.empty();
-}
-
-/// Simple WebRTC session placeholder - use ring_camera for full implementation
-class SimpleWebRtcSession {
-  final RingCamera camera;
-  final RingRestClient restClient;
-
-  SimpleWebRtcSession(this.camera, this.restClient);
-}
+/// Re-export streaming types for convenience
+typedef StreamingSession = streaming.StreamingSession;
+typedef FfmpegOptions = streaming.FfmpegOptions;
+typedef SimpleWebRTCSession = simple.SimpleWebRTCSession;
 
 /// Ring camera device
 ///
@@ -612,7 +578,7 @@ class RingCamera extends Subscribed {
   /// (e.g., flutter_webrtc in ring_camera package).
   ///
   /// The ticket is used to authenticate the WebSocket signaling connection.
-  Future<String> createWebrtcTicket() async {
+  Future<String> createWebRTCTicket() async {
     final response = await restClient.request<Map<String, dynamic>>(
       RequestOptions(
         method: 'POST',
@@ -626,14 +592,36 @@ class RingCamera extends Subscribed {
 
   /// Start a live call (streaming session)
   ///
-  /// **NOT IMPLEMENTED** in this package.
-  /// For WebRTC streaming functionality, use the ring_camera package.
-  Future<StreamingSession> startLiveCall() async {
-    throw UnimplementedError(
-      'WebRTC streaming is not implemented in ring_client_api.\n'
-      'For Flutter apps with streaming support, use the ring_camera package:\n'
-      'https://github.com/sjhorn/ring_camera',
+  /// Creates a WebRTC connection to the camera and returns a StreamingSession
+  /// that can be used to receive video/audio and optionally transcode with FFmpeg.
+  ///
+  /// Example:
+  /// ```dart
+  /// final session = await camera.startLiveCall();
+  ///
+  /// // Transcode to MP4 file
+  /// await session.startTranscoding(FfmpegOptions(
+  ///   output: ['-t', '30', 'output.mp4'],
+  /// ));
+  ///
+  /// // Wait for call to end
+  /// await session.onCallEnded.first;
+  /// ```
+  Future<StreamingSession> startLiveCall([
+    StreamingConnectionOptions? options,
+  ]) async {
+    final connection = await _createStreamingConnection(
+      options ?? StreamingConnectionOptions(),
     );
+    return StreamingSession(this, connection);
+  }
+
+  /// Create a WebRTC streaming connection
+  Future<WebRTCConnection> _createStreamingConnection(
+    StreamingConnectionOptions options,
+  ) async {
+    final ticket = await createWebRTCTicket();
+    return WebRTCConnection(ticket, this, options);
   }
 
   /// Remove a ding notification by ID
@@ -890,8 +878,8 @@ class RingCamera extends Subscribed {
   /// browser settings. Note: cameras with Ring Edge enabled will stream
   /// with the speaker enabled as soon as the stream starts, which can
   /// drain the battery more quickly.
-  SimpleWebRtcSession createSimpleWebRtcSession() {
-    return SimpleWebRtcSession(this, restClient);
+  SimpleWebRTCSession createSimpleWebRTCSession() {
+    return simple.SimpleWebRTCSession(this, restClient);
   }
 
   /// Subscribe to doorbell ding events

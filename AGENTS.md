@@ -145,7 +145,7 @@ git push origin vX.Y.Z
 
 ### CLI Tools
 
-This package includes three command-line tools:
+This package includes four command-line tools:
 
 **ring_auth_cli.dart** - Obtain refresh tokens via interactive authentication
 ```bash
@@ -160,6 +160,13 @@ dart run bin/ring_device_data_cli.dart <refresh_token>
 **list_cameras.dart** - List all cameras with names and IDs
 ```bash
 dart run bin/list_cameras.dart <refresh_token>
+```
+
+**stream_camera.dart** - Record video from a Ring camera using WebRTC
+```bash
+# Requires FFmpeg installed
+export RING_REFRESH_TOKEN="your_token"
+dart run bin/stream_camera.dart 30 recording.mp4
 ```
 
 ---

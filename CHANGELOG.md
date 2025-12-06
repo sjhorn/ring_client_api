@@ -1,3 +1,35 @@
+## 0.2.0 - 2025-12-06
+
+### Added
+- **Full WebRTC streaming support** using `webrtc_dart` (pure Dart port of werift)
+  - `WebRTCPeerConnection` - WebRTC peer connection with ICE/SDP handling
+  - `WebRTCConnection` - WebSocket signaling to Ring servers
+  - `StreamingSession` - FFmpeg transcoding and RTP packet forwarding
+  - Two-way audio support via audio transceivers
+- New CLI tool: `bin/stream_camera.dart` - Record video from Ring cameras
+  - Usage: `dart run bin/stream_camera.dart 30 recording.mp4`
+  - Requires FFmpeg installed on system
+- `RtpSplitter` class for UDP packet forwarding (pure Dart)
+- `RingCamera.startLiveCall()` method now fully functional
+- Streaming exports in main library file
+
+### Changed
+- `peer_connection.dart` - Now fully implemented (was stub)
+- `webrtc_connection.dart` - Now fully implemented (was stub)
+- `streaming_session.dart` - Now fully implemented (was stub)
+- Updated `RingCamera` to use real streaming classes
+- Updated AGENTS.md with stream_camera.dart CLI documentation
+
+### Dependencies
+- Added `webrtc_dart` as path dependency (../webrtc_dart)
+  - Pure Dart WebRTC implementation (port of werift)
+  - No native plugins required
+
+### Requirements
+- FFmpeg must be installed and in PATH for video transcoding
+
+---
+
 ## 0.1.1 - 2025-11-16
 
 ### Fixed

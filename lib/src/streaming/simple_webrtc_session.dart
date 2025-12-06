@@ -18,12 +18,12 @@ String _liveViewUrl(String path) {
 /// This provides a REST-based interface to start and end live view sessions
 /// with Ring cameras. It doesn't handle the full WebRTC peer connection
 /// complexity - that's handled by other streaming classes.
-class SimpleWebRtcSession {
+class SimpleWebRTCSession {
   final String sessionId = generateUuid();
   final RingCamera _camera;
   final RingRestClient _restClient;
 
-  SimpleWebRtcSession(this._camera, this._restClient);
+  SimpleWebRTCSession(this._camera, this._restClient);
 
   /// Start a live view session with the provided SDP offer
   ///

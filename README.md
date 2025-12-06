@@ -17,21 +17,34 @@ This package is a Dart port of the popular [ring-client-api](https://github.com/
 - Ring Alarm System integration
 - Smart Lighting control
 - Real-time push notifications via WebSocket
-- WebRTC video streaming support (via companion Flutter package)
+- **Full WebRTC video streaming** using pure Dart (webrtc_dart)
+- FFmpeg transcoding for video recording
+- Two-way audio support
 - Historical event data
 - Device status monitoring and control
 - Camera snapshots
 - Event history and playback
 - Two-factor authentication (2FA) support
-- CLI tools for authentication and device data
+- CLI tools for authentication, device data, and video recording
 
 ## Streaming Support
 
-This core package provides REST API and WebSocket functionality. For full WebRTC video streaming in Flutter apps, use the companion package:
+This package now includes **full WebRTC video streaming** using `webrtc_dart` (a pure Dart port of werift):
 
-**[ring_camera](https://github.com/sjhorn/ring_camera)** - Full video streaming with flutter_webrtc
+```dart
+// Record 30 seconds of video from a camera
+final session = await camera.startLiveCall();
+await session.startTranscoding(FfmpegOptions(
+  output: ['-t', '30', 'recording.mp4'],
+));
+await session.onCallEnded.first;
+```
 
-**Note**: Features intentionally not implemented in this core package (WebRTC, FFmpeg, Push Notifications) are tracked in [ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api) with detailed implementation plans.
+**Requirements:**
+- FFmpeg must be installed and in PATH for video transcoding
+- `webrtc_dart` package (included as dependency)
+
+**Alternative:** For Flutter apps, you can also use **[ring_camera](https://github.com/sjhorn/ring_camera)** which provides flutter_webrtc-based streaming with widgets.
 
 ## Troubleshooting Issues
 
@@ -237,6 +250,17 @@ dart run bin/list_cameras.dart <refresh_token>
 ```
 Displays camera names and IDs for quick reference.
 
+### stream_camera.dart
+Record video from a Ring camera using WebRTC:
+```bash
+# Set credentials
+export RING_REFRESH_TOKEN="your_token"
+
+# Record 30 seconds to file
+dart run bin/stream_camera.dart 30 recording.mp4
+```
+Requires FFmpeg to be installed.
+
 ## Example
 
 See the [example](example/) directory for a complete example application.
@@ -245,14 +269,13 @@ See the [example](example/) directory for a complete example application.
 
 This package includes comprehensive documentation to help you understand the implementation and migrate from the TypeScript version:
 
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history, release notes, and feature list for v0.1.0
-- **[TODO.md](TODO.md)** - Complete project implementation checklist showing all 11 phases of the port
-- **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Detailed guide to differences between TypeScript and Dart implementations, including language features, patterns, and migration guide
-- **[GAP_ANALYSIS.md](GAP_ANALYSIS.md)** - Comprehensive analysis showing 100% REST API coverage compared to the original TypeScript library
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
+- **[TODO.md](TODO.md)** - Complete project implementation checklist showing all phases of the port
+- **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Detailed guide to differences between TypeScript and Dart implementations
+- **[GAP_ANALYSIS.md](GAP_ANALYSIS.md)** - Analysis showing feature coverage compared to the original TypeScript library
 
-For information about intentional feature exclusions (WebRTC video streaming, FFmpeg integration, Push Notifications), see the companion package documentation:
-- **[ring_camera](https://github.com/sjhorn/ring_camera)** - Flutter package with full WebRTC streaming support
-- **[ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api)** - Detailed roadmap for platform-specific features
+For Flutter-specific widgets and alternative streaming implementation:
+- **[ring_camera](https://github.com/sjhorn/ring_camera)** - Flutter package with flutter_webrtc-based streaming and widgets
 
 ## Additional information
 
