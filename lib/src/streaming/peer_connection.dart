@@ -144,18 +144,13 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     // Add audio transceiver with sendrecv direction (for two-way audio)
     _pc.addTrack(returnAudioTrack);
 
-    // Add video transceiver with recvonly direction
-    // Note: We create a dummy video track since addTrack requires a track,
-    // but we'll receive video from the camera
-    final videoTrack = webrtc.VideoStreamTrack(
-      id: 'video_recv',
-      label: 'Video Receiver',
+    // Add video transceiver with recvonly direction using H264 codec
+    // Ring cameras require H264 - they reject VP8 offers
+    _videoTransceiver = _pc.addTransceiver(
+      webrtc.MediaStreamTrackKind.video,
+      codec: webrtc.createH264Codec(payloadType: 96),
+      direction: webrtc.RtpTransceiverDirection.recvonly,
     );
-    _pc.addTrack(videoTrack);
-    _videoTransceiver = _pc.getTransceivers().lastWhere(
-      (t) => t.kind == webrtc.MediaStreamTrackKind.video,
-    );
-    _videoTransceiver?.direction = webrtc.RtpTransceiverDirection.recvonly;
 
     // Subscribe to ICE candidates
     _pc.onIceCandidate.listen((candidate) {

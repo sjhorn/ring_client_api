@@ -140,10 +140,6 @@ This is a port of the TypeScript ring-client-api to Dart. The original project i
   - Uses WebRTC connection and FFmpeg transcoding
   - Command: `dart run bin/stream_camera.dart 30 recording.mp4`
 
-### Companion Flutter Package (Alternative)
-- [x] `ring_camera` package - Flutter-specific implementation using flutter_webrtc
-  - Use this for Flutter apps that prefer flutter_webrtc over webrtc_dart
-
 ### Documentation
 - [x] Create `WEBRTC_OPTIONS.md` (~400+ lines)
 - [x] Create `TYPESCRIPT_DIFFERENCES.md` (~500+ lines)
@@ -254,7 +250,6 @@ Remaining examples (optional):
 - [x] Clean up all TODO comments in source code
   - Removed all stale TODOs from core files
   - Documented future features (WebRTC, FFmpeg, FCM) clearly
-  - Updated all references from ring_client_api_flutter → ring_camera
 - [x] Delete unused boilerplate files
   - Removed ring_client_api_base.dart
 - [x] Ensure all examples run successfully
@@ -266,7 +261,6 @@ Remaining examples (optional):
   - Updated API initialization code
   - Added refresh token event handling example
   - Proper Dart syntax and conventions
-  - Updated companion package references
 
 ---
 
@@ -351,7 +345,7 @@ dev_dependencies:
 - Phase 3: Core API Client ✅
 - Phase 4: Device Models ✅
 - Phase 5: Location and Main API ✅
-- Phase 6: Streaming (WebRTC) ✅ - completed in ../ring_camera companion project
+- Phase 6: Streaming (WebRTC) ✅
 - Phase 7: Testing ✅
 - Phase 8: Examples ✅
 - Phase 9: CLI Tools ✅
@@ -375,8 +369,8 @@ dev_dependencies:
 
 ### 📦 Package Status
 - **Package**: https://pub.dev/packages/ring_client_api
-- **Version**: 0.2.0 (pending - requires webrtc_dart on pub.dev)
-- **Previous**: v0.1.1 (latest on pub.dev)
+- **Version**: 0.2.0 (latest)
+- **Previous**: v0.1.1
 
 ### Version History
 - **v0.2.0** (2025-12-06) - Full WebRTC streaming, two-way audio, FFmpeg transcoding
@@ -392,9 +386,9 @@ dev_dependencies:
 Conducted comprehensive review of all TODO comments in source code before publishing. Found 12 TODO comments:
 
 **✅ Documented & Acceptable (8)** - Intentional exclusions:
-- FFmpeg Integration (api.dart) - Platform-specific, tracked in ring_camera/TODO.md
-- Push Notifications (api.dart) - FCM planned for ring_camera v0.4.0+
-- WebRTC Streaming (ring_camera.dart) - Fully implemented in ring_camera package
+- FFmpeg Integration - Now implemented via dart:io Process
+- Push Notifications (api.dart) - Platform-specific, stub with documentation
+- WebRTC Streaming - Now fully implemented using webrtc_dart
 
 **✅ Stale TODOs - RESOLVED (4)**:
 - RingDevice circular dependency issues - **FIXED** by implementing full functionality
@@ -411,9 +405,9 @@ Conducted comprehensive review of all TODO comments in source code before publis
 3. ✅ Implemented onComponentDevices stream
 4. ✅ Wired up device data updates from location
 5. ✅ Implemented setInfo method for device commands
-6. ✅ Added 4 comprehensive RingDevice unit tests
-7. ✅ Updated all WebRTC/FFmpeg/FCM comments to reference ring_camera package
-8. ✅ Created GAP_ANALYSIS.md documenting 100% REST API coverage
+6. ✅ Added 4 RingDevice unit tests
+7. ✅ Implemented full WebRTC streaming using webrtc_dart
+8. ✅ Created GAP_ANALYSIS.md documenting 100% feature parity
 
 ---
 
@@ -429,9 +423,6 @@ This project includes comprehensive documentation:
 - **[AGENTS.md](AGENTS.md)** - Development workflow and agent instructions for AI-assisted development
 - **[CLAUDE.md](CLAUDE.md)** - Project-specific Claude Code configuration
 
-### Related Documentation:
-- **[ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md)** - Companion Flutter package with intentional exclusions (WebRTC, FFmpeg, Push Notifications)
-
 ---
 
 ## v0.2.0 Complete ✅
@@ -443,7 +434,6 @@ This project includes comprehensive documentation:
 
 ## Next Steps for v0.3.0 (Future)
 
-- [ ] Publish webrtc_dart to pub.dev (currently path dependency)
 - [ ] Performance optimizations
 - [ ] Additional device type support
 - [ ] Community feedback integration

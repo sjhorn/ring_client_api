@@ -267,9 +267,8 @@ class FlutterPeerConnection implements BasicPeerConnection {
 
 **Key Differences:**
 - **TypeScript**: Uses `werift` - pure JavaScript WebRTC
-- **Dart Core**: Provides interface stubs and SimpleWebRtcSession (REST-based)
-- **Dart Flutter**: Full implementation in separate `ring_camera` package
-- **Dart CLI**: Not feasible without pure Dart WebRTC (pure_dart_webrtc is incomplete)
+- **Dart**: Uses `webrtc_dart` - pure Dart port of werift
+- Both implementations are fully functional with no native dependencies
 
 ### 10. FFmpeg Integration
 
@@ -460,21 +459,19 @@ ring_client_api/
 
 ## Feature Availability Matrix
 
-| Feature | TypeScript | Dart Core | Dart Flutter |
-|---------|-----------|-----------|--------------|
-| **REST API** | ✅ | ✅ | ✅ |
-| **WebSocket Events** | ✅ | ✅ | ✅ |
-| **Device Control** | ✅ | ✅ | ✅ |
-| **Snapshots** | ✅ | ✅ | ✅ |
-| **Event History** | ✅ | ✅ | ✅ |
-| **Simple Streaming** | ✅ | ✅ (REST-only) | ✅ |
-| **WebRTC P2P** | ✅ (werift) | ❌ (stubs) | ✅ (flutter_webrtc) |
-| **Video Display** | ✅ (FFmpeg) | ❌ | ✅ (Widgets) |
-| **Two-way Audio** | ✅ | ❌ | ✅ |
-| **CLI Tools** | ✅ | ✅ | N/A |
-| **Web Support** | ✅ (Browser) | ⚠️ (Limited) | ✅ |
-| **Mobile Support** | ❌ | ✅ (API only) | ✅ (Full) |
-| **Desktop Support** | ✅ (Node.js) | ✅ (API only) | ✅ (Full) |
+| Feature | TypeScript | Dart |
+|---------|-----------|------|
+| **REST API** | ✅ | ✅ |
+| **WebSocket Events** | ✅ | ✅ |
+| **Device Control** | ✅ | ✅ |
+| **Snapshots** | ✅ | ✅ |
+| **Event History** | ✅ | ✅ |
+| **Simple Streaming** | ✅ | ✅ |
+| **WebRTC P2P** | ✅ (werift) | ✅ (webrtc_dart) |
+| **FFmpeg Transcoding** | ✅ | ✅ (dart:io Process) |
+| **Two-way Audio** | ✅ | ✅ |
+| **CLI Tools** | ✅ | ✅ |
+| **Desktop Support** | ✅ (Node.js) | ✅ |
 
 ## Migration Guide (TypeScript → Dart)
 
@@ -503,8 +500,8 @@ ring_client_api/
    - Dart has stronger typing for exceptions
 
 5. **WebRTC Streaming:**
-   - Use `ring_camera` package for Flutter apps
-   - Core package provides REST-based SimpleWebRtcSession
+   - Use `startLiveCall()` for full WebRTC streaming
+   - Use `createSimpleWebRTCSession()` for REST-based streaming
 
 ### Code Comparison Example:
 

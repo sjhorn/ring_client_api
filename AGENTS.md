@@ -5,8 +5,7 @@ This repository is for the Dart package **`ring_client_api`**.
 This is a port of the ring-client-api available in ./ring/packages/ring-client-api we will refer to as dgrief port.
 The focus will be porting each file to match the same name and also port the tests and examples to achieve exact input and output match prior to testing with the real ring API. The boilerplate from dart create -t package will be replaced with suitable dart files to complete the package. The README.md will follow the docs from ./ring/packages/ring-client-api and the LICENCE will also match. 
 
-The TODO.md will maintain our progress along with our git log history, and add a git commit and message for each step we take on this porting journey. 
-We have create a partner package and example in ../ring_camera as this is a dart packages and for webrtc features we needed to use a flutter dependency. The parts of the dgreif we need webrtc support for should go into that package and associated example.
+The TODO.md will maintain our progress along with our git log history, and add a git commit and message for each step we take on this porting journey.
 
 For typescript types and json mapping be sure to address the snake_case to camelCase. The quirks have been documented in TYPESCRIPT_DIFFERENCES.md that we will keep up to date as we progress. Also we aim to use ./ring for the source code rather than web calls to github.com.
 

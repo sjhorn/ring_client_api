@@ -574,9 +574,7 @@ class RingCamera extends Subscribed {
 
   /// Create a WebRTC streaming ticket
   ///
-  /// Returns a ticket string that can be used with a WebRTC implementation
-  /// (e.g., flutter_webrtc in ring_camera package).
-  ///
+  /// Returns a ticket string that can be used with WebRTC implementations.
   /// The ticket is used to authenticate the WebSocket signaling connection.
   Future<String> createWebRTCTicket() async {
     final response = await restClient.request<Map<String, dynamic>>(

@@ -158,14 +158,10 @@ class RingApi extends Subscribed {
     }
 
     // Set ffmpeg path if provided
-    // Note: FFmpeg functionality is platform-specific and not implemented in this
-    // core package. For video transcoding, use platform-specific implementations
-    // or the ring_camera package for Flutter apps.
+    // Note: FFmpeg is spawned as a subprocess via dart:io Process.
+    // Make sure FFmpeg is installed and in your PATH.
     if (options.ffmpegPath != null) {
       logDebug('ffmpegPath provided: ${options.ffmpegPath}');
-      logDebug(
-        'Note: FFmpeg functionality requires platform-specific implementation',
-      );
     }
   }
 

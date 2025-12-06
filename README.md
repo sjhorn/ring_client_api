@@ -44,8 +44,6 @@ await session.onCallEnded.first;
 - FFmpeg must be installed and in PATH for video transcoding
 - `webrtc_dart` package (included as dependency)
 
-**Alternative:** For Flutter apps, you can also use **[ring_camera](https://github.com/sjhorn/ring_camera)** which provides flutter_webrtc-based streaming with widgets.
-
 ## Troubleshooting Issues
 
 If you are having issues, please search existing [Issues](https://github.com/sjhorn/ring_client_api/issues) before opening a new one.
@@ -273,9 +271,6 @@ This package includes comprehensive documentation to help you understand the imp
 - **[TODO.md](TODO.md)** - Complete project implementation checklist showing all phases of the port
 - **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Detailed guide to differences between TypeScript and Dart implementations
 - **[GAP_ANALYSIS.md](GAP_ANALYSIS.md)** - Analysis showing feature coverage compared to the original TypeScript library
-
-For Flutter-specific widgets and alternative streaming implementation:
-- **[ring_camera](https://github.com/sjhorn/ring_camera)** - Flutter package with flutter_webrtc-based streaming and widgets
 
 ## Additional information
 

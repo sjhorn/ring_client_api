@@ -33,7 +33,7 @@
 ## 0.1.1 - 2025-11-16
 
 ### Fixed
-- Fixed broken relative links to ring_camera package in README.md, TODO.md, and GAP_ANALYSIS.md - now using absolute GitHub URLs
+- Fixed broken relative links in documentation - now using absolute GitHub URLs
 - Links now display correctly on pub.dev
 
 ### Added
@@ -120,13 +120,11 @@ First release of the Dart port of the TypeScript ring-client-api library. This r
   - Token refresh events
 - **Total**: 25 tests, all passing
 
-### Known Limitations
-- **WebRTC Streaming**: Not implemented in this package. For full WebRTC video streaming support, use the companion **[ring_camera](https://github.com/sjhorn/ring_camera)** package which provides complete streaming functionality via flutter_webrtc.
-- **FFmpeg Integration**: Platform-specific video transcoding is not included in this core package. Recording functionality is planned for ring_camera v0.3.0.
-- **Push Notifications**: Firebase Cloud Messaging integration is not included. This feature is planned for ring_camera v0.4.0+.
+### Known Limitations (v0.1.0)
+- **WebRTC Streaming**: Not implemented in v0.1.0 - added in v0.2.0
+- **FFmpeg Integration**: Not implemented in v0.1.0 - added in v0.2.0
+- **Push Notifications**: Firebase Cloud Messaging integration is not included (use WebSocket for real-time updates)
 - **Browser Support**: Primarily tested on Dart VM, browser support may vary
-
-**Note**: Intentional feature exclusions (WebRTC, FFmpeg, Push Notifications) are tracked with detailed implementation plans in [ring_camera/TODO.md](https://github.com/sjhorn/ring_camera/blob/main/TODO.md#features-tracked-from-ring_client_api).
 
 ### Dependencies
 ```yaml
