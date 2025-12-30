@@ -29,4 +29,4 @@ example/public/output/
 *.mp4
 *.m3u8
 # Video segment files (pattern like stream0.ts, part0.ts)
-*[0-9].ts
+*[0-9].tsWEBRTC_ISSUE.md
