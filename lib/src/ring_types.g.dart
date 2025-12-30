@@ -498,20 +498,20 @@ Map<String, dynamic> _$ChimeUpdateToJson(ChimeUpdate instance) =>
 ChimeUpdateSettings _$ChimeUpdateSettingsFromJson(Map<String, dynamic> json) =>
     ChimeUpdateSettings(
       volume: (json['volume'] as num?)?.toInt(),
-      dingAudioUserId: json['dingAudioUserId'] as String?,
-      dingAudioId: json['dingAudioId'] as String?,
-      motionAudioUserId: json['motionAudioUserId'] as String?,
-      motionAudioId: json['motionAudioId'] as String?,
+      dingAudioUserId: json['ding_audio_user_id'] as String?,
+      dingAudioId: json['ding_audio_id'] as String?,
+      motionAudioUserId: json['motion_audio_user_id'] as String?,
+      motionAudioId: json['motion_audio_id'] as String?,
     );
 
 Map<String, dynamic> _$ChimeUpdateSettingsToJson(
   ChimeUpdateSettings instance,
 ) => <String, dynamic>{
   'volume': instance.volume,
-  'dingAudioUserId': instance.dingAudioUserId,
-  'dingAudioId': instance.dingAudioId,
-  'motionAudioUserId': instance.motionAudioUserId,
-  'motionAudioId': instance.motionAudioId,
+  'ding_audio_user_id': instance.dingAudioUserId,
+  'ding_audio_id': instance.dingAudioId,
+  'motion_audio_user_id': instance.motionAudioUserId,
+  'motion_audio_id': instance.motionAudioId,
 };
 
 RingtoneAudio _$RingtoneAudioFromJson(Map<String, dynamic> json) =>
@@ -2110,17 +2110,17 @@ Map<String, dynamic> _$CvPropertiesToJson(CvProperties instance) =>
 
 CameraEvent _$CameraEventFromJson(Map<String, dynamic> json) => CameraEvent(
   createdAt: json['created_at'] as String,
-  cvProperties: CvProperties.fromJson(
-    json['cv_properties'] as Map<String, dynamic>,
-  ),
+  cvProperties: json['cv_properties'] == null
+      ? null
+      : CvProperties.fromJson(json['cv_properties'] as Map<String, dynamic>),
   dingId: (json['ding_id'] as num).toInt(),
   dingIdStr: json['ding_id_str'] as String,
   doorbotId: (json['doorbot_id'] as num).toInt(),
   favorite: json['favorite'] as bool,
   kind: json['kind'] as String,
   recorded: json['recorded'] as bool,
-  recordingStatus: json['recording_status'] as String,
-  state: json['state'] as String,
+  recordingStatus: json['recording_status'] as String?,
+  state: json['state'] as String?,
 );
 
 Map<String, dynamic> _$CameraEventToJson(CameraEvent instance) =>
@@ -2138,7 +2138,7 @@ Map<String, dynamic> _$CameraEventToJson(CameraEvent instance) =>
     };
 
 PaginationMeta _$PaginationMetaFromJson(Map<String, dynamic> json) =>
-    PaginationMeta(paginationKey: json['pagination_key'] as String);
+    PaginationMeta(paginationKey: json['pagination_key'] as String?);
 
 Map<String, dynamic> _$PaginationMetaToJson(PaginationMeta instance) =>
     <String, dynamic>{'pagination_key': instance.paginationKey};
@@ -2148,7 +2148,9 @@ CameraEventResponse _$CameraEventResponseFromJson(Map<String, dynamic> json) =>
       events: (json['events'] as List<dynamic>)
           .map((e) => CameraEvent.fromJson(e as Map<String, dynamic>))
           .toList(),
-      meta: PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      meta: json['meta'] == null
+          ? null
+          : PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CameraEventResponseToJson(

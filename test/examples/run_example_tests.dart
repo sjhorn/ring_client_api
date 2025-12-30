@@ -320,6 +320,13 @@ Future<TestResult> runExampleTest(ExampleTest test) async {
         );
       }
 
+      // Show output on failure for debugging
+      print('--- Output for ${test.name} (last 100 lines) ---');
+      final lines = outputStr.split('\n');
+      final lastLines = lines.length > 100 ? lines.sublist(lines.length - 100) : lines;
+      print(lastLines.join('\n'));
+      print('--- End output ---');
+
       return TestResult(
         test.name,
         false,

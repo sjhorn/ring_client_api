@@ -891,9 +891,13 @@ class ChimeUpdate {
 @JsonSerializable()
 class ChimeUpdateSettings {
   final int? volume;
+  @JsonKey(name: 'ding_audio_user_id')
   final String? dingAudioUserId;
+  @JsonKey(name: 'ding_audio_id')
   final String? dingAudioId;
+  @JsonKey(name: 'motion_audio_user_id')
   final String? motionAudioUserId;
+  @JsonKey(name: 'motion_audio_id')
   final String? motionAudioId;
 
   const ChimeUpdateSettings({
@@ -2878,7 +2882,7 @@ class CameraEvent {
   @JsonKey(name: 'created_at')
   final String createdAt;
   @JsonKey(name: 'cv_properties')
-  final CvProperties cvProperties;
+  final CvProperties? cvProperties;
   @JsonKey(name: 'ding_id')
   final int dingId;
   @JsonKey(name: 'ding_id_str')
@@ -2889,20 +2893,20 @@ class CameraEvent {
   final DingKind kind;
   final bool recorded;
   @JsonKey(name: 'recording_status')
-  final String recordingStatus; // 'ready' or 'audio_ready'
-  final String state; // 'timed_out' or 'completed'
+  final String? recordingStatus; // 'ready' or 'audio_ready' or null
+  final String? state; // 'timed_out' or 'completed' or null
 
   const CameraEvent({
     required this.createdAt,
-    required this.cvProperties,
+    this.cvProperties,
     required this.dingId,
     required this.dingIdStr,
     required this.doorbotId,
     required this.favorite,
     required this.kind,
     required this.recorded,
-    required this.recordingStatus,
-    required this.state,
+    this.recordingStatus,
+    this.state,
   });
 
   factory CameraEvent.fromJson(Map<String, dynamic> json) =>
@@ -2915,9 +2919,9 @@ class CameraEvent {
 @JsonSerializable()
 class PaginationMeta {
   @JsonKey(name: 'pagination_key')
-  final String paginationKey;
+  final String? paginationKey;
 
-  const PaginationMeta({required this.paginationKey});
+  const PaginationMeta({this.paginationKey});
 
   factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
       _$PaginationMetaFromJson(json);
@@ -2929,9 +2933,9 @@ class PaginationMeta {
 @JsonSerializable()
 class CameraEventResponse {
   final List<CameraEvent> events;
-  final PaginationMeta meta;
+  final PaginationMeta? meta;
 
-  const CameraEventResponse({required this.events, required this.meta});
+  const CameraEventResponse({required this.events, this.meta});
 
   factory CameraEventResponse.fromJson(Map<String, dynamic> json) =>
       _$CameraEventResponseFromJson(json);
