@@ -202,6 +202,16 @@ class StreamingSession extends Subscribed {
     );
   }
 
+  /// Extract clean SDP sections from Ring's SDP answer
+  String _getCleanSdp(String sdp, bool includeVideo) {
+    return sdp
+        .split('\nm=')
+        .skip(1) // Skip first part (session description)
+        .map((section) => 'm=$section')
+        .where((section) => includeVideo || !section.startsWith('m=video'))
+        .join('\n');
+  }
+
   /// Start transcoding the camera stream with FFmpeg
   ///
   /// This:
@@ -214,9 +224,9 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    // Use fixed ports for FFmpeg
-    final videoPort = 15004;
-    final audioPort = 15006;
+    // Reserve dynamic ports like TypeScript
+    final videoPort = await reservePort(bufferPorts: 1);
+    final audioPort = await reservePort(bufferPorts: 1);
     final transcodeVideoStream = options.video != false;
 
     // Wait for call to be answered
@@ -226,31 +236,31 @@ class StreamingSession extends Subscribed {
     ]);
 
     if (ringSdp == null) {
+      logDebug('Call ended before answered');
       return;
     }
 
-    // Create a simple SDP that FFmpeg understands
-    // Note: Ring cameras don't send audio unless speaker is activated,
-    // so we only include video in the SDP by default
-    final inputSdp = '''v=0
-o=- 0 0 IN IP4 127.0.0.1
-s=Ring Stream
-c=IN IP4 127.0.0.1
-t=0 0
-${transcodeVideoStream ? '''m=video $videoPort RTP/AVP 98
-a=rtpmap:98 H264/90000
-a=fmtp:98 profile-level-id=42e01f;packetization-mode=1''' : ''}''';
+    // Detect codec from SDP
+    final usingOpus = await isUsingOpus;
+
+    // Parse Ring's SDP and replace ports (matching TypeScript approach)
+    final inputSdp = _getCleanSdp(ringSdp, transcodeVideoStream)
+        .replaceAll(RegExp(r'm=audio \d+'), 'm=audio $audioPort')
+        .replaceAll(RegExp(r'm=video \d+'), 'm=video $videoPort');
 
     logDebug('FFmpeg SDP:\n$inputSdp');
 
-    // Build FFmpeg arguments - simpler structure
+    // Build FFmpeg arguments matching TypeScript structure
     final ffmpegArgs = <String>[
       '-hide_banner',
-      '-loglevel', 'info',
       '-protocol_whitelist', 'pipe,udp,rtp,file,crypto',
-      ...?options.input,
+      // Ring will answer with either opus or pcmu
+      if (usingOpus) ...['-acodec', 'libopus'],
       '-f', 'sdp',
+      ...?options.input,
       '-i', 'pipe:',
+      ...(options.audio ?? ['-acodec', 'aac']),
+      if (transcodeVideoStream) ...(options.video as List<String>? ?? ['-vcodec', 'copy']),
       ...options.output,
     ];
 
