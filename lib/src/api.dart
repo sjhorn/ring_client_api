@@ -21,6 +21,14 @@ import 'ring_types.dart';
 import 'util.dart';
 import 'subscribed.dart';
 
+/// Port range configuration for external connections
+class ExternalPorts {
+  final int? start;
+  final int? end;
+
+  const ExternalPorts({this.start, this.end});
+}
+
 /// Options for configuring the Ring API client
 class RingApiOptions {
   /// List of location IDs to filter to (optional - if provided but empty, no devices will be found)
@@ -47,6 +55,9 @@ class RingApiOptions {
   /// Display name for this device in the Ring Control Center
   final String? controlCenterDisplayName;
 
+  /// External port range for WebRTC connections
+  final ExternalPorts? externalPorts;
+
   const RingApiOptions({
     this.locationIds,
     this.cameraStatusPollingSeconds,
@@ -56,6 +67,7 @@ class RingApiOptions {
     this.ffmpegPath,
     this.systemId,
     this.controlCenterDisplayName,
+    this.externalPorts,
   });
 }
 
