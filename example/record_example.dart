@@ -10,10 +10,22 @@
 ///   dart run example/record_example.dart
 library;
 
+import 'dart:async';
 import 'dart:io';
 import 'package:ring_client_api/ring_client_api.dart';
 
 Future<void> main() async {
+  // Run in guarded zone to catch async cleanup errors from WebRTC
+  await runZonedGuarded(() => _main(), (error, stack) {
+    // Ignore WebRTC cleanup errors
+    if (error.toString().contains('Cannot add new events after calling close')) {
+      return;
+    }
+    print('Unhandled error: $error');
+  });
+}
+
+Future<void> _main() async {
   // Get credentials from environment or .env file
   var refreshToken = Platform.environment['RING_REFRESH_TOKEN'];
 
@@ -90,6 +102,11 @@ Future<void> main() async {
     print('Error: $e');
     exit(1);
   } finally {
-    await ringApi.disconnect();
+    try {
+      await ringApi.disconnect();
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+    exit(0);
   }
 }
