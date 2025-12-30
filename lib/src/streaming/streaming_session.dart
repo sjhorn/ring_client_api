@@ -124,6 +124,14 @@ class StreamingSession extends Subscribed {
   /// Audio RTP packets
   final onAudioRtp = PublishSubject<RtpPacket>();
 
+  /// Audio splitter for forwarding audio RTP to FFmpeg
+  final _audioSplitter = RtpSplitter();
+
+  /// Video splitter for forwarding video RTP to FFmpeg
+  final _videoSplitter = RtpSplitter();
+
+  /// Return audio splitter for sending audio back to camera
+  final _returnAudioSplitter = RtpSplitter();
 
   /// The camera being streamed
   final RingCamera camera;
@@ -142,6 +150,12 @@ class StreamingSession extends Subscribed {
 
   /// FFmpeg process for transcoding
   Process? _ffmpegProcess;
+
+  /// Audio packet count for debugging
+  int _audioPacketCount = 0;
+
+  /// Video packet count for debugging
+  int _videoPacketCount = 0;
 
   StreamingSession(this.camera, this.connection) {
     _bindToConnection(connection);
@@ -202,23 +216,17 @@ class StreamingSession extends Subscribed {
     );
   }
 
-  /// Build a simplified SDP for FFmpeg from Ring's SDP answer
+  /// Parse Ring's SDP and extract media sections
   ///
-  /// The WebRTC library handles DTLS-SRTP decryption, so we receive plain RTP.
-  /// FFmpeg needs an SDP that describes plain RTP on localhost.
-  /// Note: Ring cameras typically don't send audio unless speaker is activated,
-  /// so we use video-only SDP for more reliable recording.
-  String _buildFfmpegSdp({required int videoPort}) {
-    final buffer = StringBuffer();
-    buffer.writeln('v=0');
-    buffer.writeln('o=- 0 0 IN IP4 127.0.0.1');
-    buffer.writeln('s=Ring Camera');
-    buffer.writeln('c=IN IP4 127.0.0.1');
-    buffer.writeln('t=0 0');
-    buffer.writeln('m=video $videoPort RTP/AVP 98');
-    buffer.writeln('a=rtpmap:98 H264/90000');
-    buffer.writeln('a=fmtp:98 profile-level-id=42e01f;packetization-mode=1');
-    return buffer.toString().trim();
+  /// Matches TypeScript's getCleanSdp() function.
+  /// Splits SDP by media sections and optionally filters video.
+  String _getCleanSdp(String sdp, bool includeVideo) {
+    return sdp
+        .split('\nm=')
+        .skip(1) // Skip the session-level part before first m=
+        .map((section) => 'm=$section')
+        .where((section) => includeVideo || !section.startsWith('m=video'))
+        .join('\n');
   }
 
   /// Start transcoding the camera stream with FFmpeg

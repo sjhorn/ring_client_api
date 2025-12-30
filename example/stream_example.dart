@@ -91,7 +91,7 @@ Future<void> _main() async {
       exit(1);
     }
 
-    final camera = cameras.first;
+    final camera = cameras[1];
 
     print('Starting Video...');
 

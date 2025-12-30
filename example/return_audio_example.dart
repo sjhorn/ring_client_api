@@ -110,7 +110,7 @@ Future<void> _main() async {
       exit(1);
     }
 
-    final camera = cameras[1]; //cameras.first;
+    final camera = cameras[1];
     print('Using camera: ${camera.name}');
     print('');
 

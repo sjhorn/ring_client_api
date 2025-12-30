@@ -123,7 +123,7 @@ Future<void> main() async {
       exit(1);
     }
 
-    final camera = cameras.first;
+    final camera = cameras[1];
     print('Starting HLS stream from ${camera.name}...');
     print('');
 
