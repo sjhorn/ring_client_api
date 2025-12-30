@@ -202,14 +202,23 @@ class StreamingSession extends Subscribed {
     );
   }
 
-  /// Extract clean SDP sections from Ring's SDP answer
-  String _getCleanSdp(String sdp, bool includeVideo) {
-    return sdp
-        .split('\nm=')
-        .skip(1) // Skip first part (session description)
-        .map((section) => 'm=$section')
-        .where((section) => includeVideo || !section.startsWith('m=video'))
-        .join('\n');
+  /// Build a simplified SDP for FFmpeg from Ring's SDP answer
+  ///
+  /// The WebRTC library handles DTLS-SRTP decryption, so we receive plain RTP.
+  /// FFmpeg needs an SDP that describes plain RTP on localhost.
+  /// Note: Ring cameras typically don't send audio unless speaker is activated,
+  /// so we use video-only SDP for more reliable recording.
+  String _buildFfmpegSdp({required int videoPort}) {
+    final buffer = StringBuffer();
+    buffer.writeln('v=0');
+    buffer.writeln('o=- 0 0 IN IP4 127.0.0.1');
+    buffer.writeln('s=Ring Camera');
+    buffer.writeln('c=IN IP4 127.0.0.1');
+    buffer.writeln('t=0 0');
+    buffer.writeln('m=video $videoPort RTP/AVP 98');
+    buffer.writeln('a=rtpmap:98 H264/90000');
+    buffer.writeln('a=fmtp:98 profile-level-id=42e01f;packetization-mode=1');
+    return buffer.toString().trim();
   }
 
   /// Start transcoding the camera stream with FFmpeg
@@ -224,9 +233,8 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    // Reserve dynamic ports like TypeScript
+    // Reserve dynamic port for video
     final videoPort = await reservePort(bufferPorts: 1);
-    final audioPort = await reservePort(bufferPorts: 1);
     final transcodeVideoStream = options.video != false;
 
     // Wait for call to be answered
@@ -240,26 +248,20 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    // Detect codec from SDP
-    final usingOpus = await isUsingOpus;
-
-    // Parse Ring's SDP and replace ports (matching TypeScript approach)
-    final inputSdp = _getCleanSdp(ringSdp, transcodeVideoStream)
-        .replaceAll(RegExp(r'm=audio \d+'), 'm=audio $audioPort')
-        .replaceAll(RegExp(r'm=video \d+'), 'm=video $videoPort');
-
+    // Build a simplified SDP for FFmpeg (video only, plain RTP on localhost)
+    final inputSdp = _buildFfmpegSdp(videoPort: videoPort);
     logDebug('FFmpeg SDP:\n$inputSdp');
 
-    // Build FFmpeg arguments matching TypeScript structure
+    // Build FFmpeg arguments - video only for reliability
+    // Ring cameras don't send audio unless speaker is activated
     final ffmpegArgs = <String>[
       '-hide_banner',
       '-protocol_whitelist', 'pipe,udp,rtp,file,crypto',
-      // Ring will answer with either opus or pcmu
-      if (usingOpus) ...['-acodec', 'libopus'],
       '-f', 'sdp',
       ...?options.input,
       '-i', 'pipe:',
-      ...(options.audio ?? ['-acodec', 'aac']),
+      // Video only - no audio stream in SDP
+      '-an', // Disable audio output
       if (transcodeVideoStream) ...(options.video as List<String>? ?? ['-vcodec', 'copy']),
       ...options.output,
     ];
@@ -282,30 +284,15 @@ class StreamingSession extends Subscribed {
       });
 
       // Handle exit
-      _ffmpegProcess!.exitCode.then((code) {
+      unawaited(_ffmpegProcess!.exitCode.then((code) {
         logDebug('FFmpeg exited with code: $code');
         _callEnded();
-      });
+      }));
 
-      // Create direct UDP sockets for forwarding (more reliable than RtpSplitter)
+      // Create UDP socket for forwarding video RTP to FFmpeg
       final videoSocket = await RawDatagramSocket.bind(
         InternetAddress.loopbackIPv4,
         0,
-      );
-      final audioSocket = await RawDatagramSocket.bind(
-        InternetAddress.loopbackIPv4,
-        0,
-      );
-
-      // Forward audio RTP to FFmpeg
-      addSubscription(
-        onAudioRtp.listen((rtp) {
-          audioSocket.send(
-            rtp.serialize().toList(),
-            InternetAddress.loopbackIPv4,
-            audioPort,
-          );
-        }),
       );
 
       // Forward video RTP to FFmpeg
@@ -321,12 +308,11 @@ class StreamingSession extends Subscribed {
         );
       }
 
-      // Stop FFmpeg and clean up sockets when call ends
+      // Stop FFmpeg and clean up socket when call ends
       addSubscription(
         onCallEnded.take(1).listen((_) {
           _ffmpegProcess?.kill();
           videoSocket.close();
-          audioSocket.close();
         }),
       );
 

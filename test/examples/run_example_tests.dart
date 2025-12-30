@@ -67,7 +67,7 @@ const examples = [
   ExampleTest(
     name: 'record_example',
     script: 'example/record_example.dart',
-    timeoutSeconds: 30,
+    timeoutSeconds: 45, // 6s FFmpeg start + 10s recording + buffer
     expectedOutput: ['Starting Video', 'Done recording'],
     expectedFiles: ['output/example.mp4'],
   ),
