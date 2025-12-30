@@ -216,16 +216,36 @@ class StreamingSession extends Subscribed {
     );
   }
 
-  /// Parse Ring's SDP and extract media sections
+  /// Parse Ring's SDP and extract media sections for FFmpeg
   ///
   /// Matches TypeScript's getCleanSdp() function.
   /// Splits SDP by media sections and optionally filters video.
+  /// Also converts encrypted transport to plain RTP since webrtc_dart
+  /// handles DTLS-SRTP decryption and forwards plain RTP to FFmpeg.
+  ///
+  /// See WEBRTC_ISSUE.md for known audio RTP routing issue in webrtc_dart.
   String _getCleanSdp(String sdp, bool includeVideo) {
     return sdp
         .split('\nm=')
         .skip(1) // Skip the session-level part before first m=
         .map((section) => 'm=$section')
         .where((section) => includeVideo || !section.startsWith('m=video'))
+        // Convert encrypted transport to plain RTP for FFmpeg
+        // (webrtc_dart decrypts SRTP to plain RTP before forwarding)
+        .map((section) => section
+            .replaceAll('UDP/TLS/RTP/SAVPF', 'RTP/AVP')
+            .replaceAll('UDP/TLS/RTP/SAVP', 'RTP/AVP'))
+        // Remove DTLS/crypto attributes that FFmpeg doesn't need
+        .map((section) {
+          final lines = section.split('\n');
+          final filteredLines = lines.where((line) =>
+              !line.startsWith('a=fingerprint:') &&
+              !line.startsWith('a=setup:') &&
+              !line.startsWith('a=ice-ufrag:') &&
+              !line.startsWith('a=ice-pwd:') &&
+              !line.startsWith('a=candidate:'));
+          return filteredLines.join('\n');
+        })
         .join('\n');
   }
 
@@ -241,8 +261,9 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    // Reserve dynamic port for video
+    // Reserve dynamic ports for audio and video (matching TypeScript)
     final videoPort = await reservePort(bufferPorts: 1);
+    final audioPort = await reservePort(bufferPorts: 1);
     final transcodeVideoStream = options.video != false;
 
     // Wait for call to be answered
@@ -256,21 +277,38 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    // Build a simplified SDP for FFmpeg (video only, plain RTP on localhost)
-    final inputSdp = _buildFfmpegSdp(videoPort: videoPort);
-    logDebug('FFmpeg SDP:\n$inputSdp');
+    logDebug('Ring SDP answer:\n$ringSdp');
 
-    // Build FFmpeg arguments - video only for reliability
-    // Ring cameras don't send audio unless speaker is activated
-    final ffmpegArgs = <String>[
+    // Check if using Opus codec (matching TypeScript)
+    final usingOpus = await isUsingOpus;
+    logDebug('Using Opus: $usingOpus');
+
+    // Build FFmpeg input arguments (matching TypeScript)
+    final ffmpegInputArgs = <String>[
       '-hide_banner',
       '-protocol_whitelist', 'pipe,udp,rtp,file,crypto',
+      // Ring will answer with either opus or pcmu
+      if (usingOpus) ...['-acodec', 'libopus'],
       '-f', 'sdp',
       ...?options.input,
       '-i', 'pipe:',
-      // Video only - no audio stream in SDP
-      '-an', // Disable audio output
-      if (transcodeVideoStream) ...(options.video as List<String>? ?? ['-vcodec', 'copy']),
+    ];
+
+    // Parse Ring's SDP and replace ports (matching TypeScript getCleanSdp)
+    var inputSdp = _getCleanSdp(ringSdp, transcodeVideoStream)
+        .replaceFirst(RegExp(r'm=audio \d+'), 'm=audio $audioPort')
+        .replaceFirst(RegExp(r'm=video \d+'), 'm=video $videoPort');
+
+    logDebug('FFmpeg SDP (after port replacement):\n$inputSdp');
+
+    // Build full FFmpeg arguments (matching TypeScript)
+    final ffmpegArgs = <String>[
+      ...ffmpegInputArgs,
+      // Audio codec: default to aac if not specified
+      ...(options.audio ?? ['-acodec', 'aac']),
+      // Video codec: copy if not specified
+      if (transcodeVideoStream)
+        ...(options.video as List<String>? ?? ['-vcodec', 'copy']),
       ...options.output,
     ];
 
@@ -297,39 +335,41 @@ class StreamingSession extends Subscribed {
         _callEnded();
       }));
 
-      // Create UDP socket for forwarding video RTP to FFmpeg
-      final videoSocket = await RawDatagramSocket.bind(
-        InternetAddress.loopbackIPv4,
-        0,
+      // Forward audio RTP to FFmpeg (matching TypeScript)
+      addSubscription(
+        onAudioRtp.listen((rtp) {
+          _audioPacketCount++;
+          if (_audioPacketCount <= 5 || _audioPacketCount % 100 == 0) {
+            logDebug('Audio RTP packet #$_audioPacketCount, size=${rtp.serialize().length}');
+          }
+          _audioSplitter.send(rtp.serialize().toList(), port: audioPort);
+        }),
       );
 
-      // Forward video RTP to FFmpeg
+      // Forward video RTP to FFmpeg (matching TypeScript)
       if (transcodeVideoStream) {
         addSubscription(
           onVideoRtp.listen((rtp) {
-            videoSocket.send(
-              rtp.serialize().toList(),
-              InternetAddress.loopbackIPv4,
-              videoPort,
-            );
+            _videoPacketCount++;
+            if (_videoPacketCount <= 5 || _videoPacketCount % 100 == 0) {
+              logDebug('Video RTP packet #$_videoPacketCount, size=${rtp.serialize().length}');
+            }
+            _videoSplitter.send(rtp.serialize().toList(), port: videoPort);
           }),
         );
       }
 
-      // Stop FFmpeg and clean up socket when call ends
+      // Stop FFmpeg and clean up when call ends
       addSubscription(
         onCallEnded.take(1).listen((_) {
+          logDebug('Call ended - audio packets: $_audioPacketCount, video packets: $_videoPacketCount');
           _ffmpegProcess?.kill();
-          videoSocket.close();
         }),
       );
 
-      // Write SDP to FFmpeg stdin
+      // Write SDP to FFmpeg stdin (matching TypeScript ff.writeStdin)
       _ffmpegProcess!.stdin.writeln(inputSdp);
       await _ffmpegProcess!.stdin.close();
-
-      // Give FFmpeg a moment to parse SDP and start listening on UDP ports
-      await Future.delayed(const Duration(milliseconds: 100));
 
       // Request a key frame now that FFmpeg is ready
       requestKeyFrame();
@@ -423,6 +463,10 @@ class StreamingSession extends Subscribed {
     onCallEnded.add(null);
     connection.stop();
     _ffmpegProcess?.kill();
+    // Close splitters (matching TypeScript)
+    _audioSplitter.close();
+    _videoSplitter.close();
+    _returnAudioSplitter.close();
   }
 
   /// Stop the streaming session
