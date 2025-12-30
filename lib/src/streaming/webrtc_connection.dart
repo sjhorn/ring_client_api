@@ -173,6 +173,9 @@ class WebRTCConnection extends Subscribed {
       _ws.listen(
         (data) {
           final message = jsonDecode(data as String) as Map<String, dynamic>;
+          final method = message['method'] as String?;
+          final body = message['body'] as Map<String, dynamic>?;
+          logDebug('[WS] Received: $method (body keys: ${body?.keys.toList()})');
           onMessage.add(message);
           _handleMessage(message);
         },
@@ -187,7 +190,7 @@ class WebRTCConnection extends Subscribed {
 
       // Initiate call once connected
       final connectionType = _camera.isRingEdgeEnabled ? 'Ring Edge' : 'Cloud';
-      logDebug('WebSocket connected for ${_camera.name} ($connectionType)');
+      logInfo('WebSocket connected for ${_camera.name} ($connectionType)');
       await _initiateCall();
     } catch (e) {
       logError('WebSocket connection failed: $e');
@@ -198,7 +201,9 @@ class WebRTCConnection extends Subscribed {
   /// Initiate the WebRTC call
   Future<void> _initiateCall() async {
     try {
+      logInfo('Creating WebRTC offer...');
       final offer = await _pc.createOffer();
+      logInfo('Offer created, SDP length: ${offer.sdp.length}');
 
       _sendMessage({
         'method': 'live_view',
@@ -211,8 +216,9 @@ class WebRTCConnection extends Subscribed {
       });
 
       onOfferSent.add(null);
-    } catch (e) {
+    } catch (e, stack) {
       logError('Failed to create offer: $e');
+      logError('Stack: $stack');
       onError.add(e);
     }
   }
@@ -254,6 +260,26 @@ class WebRTCConnection extends Subscribed {
         case 'sdp':
           // Received SDP answer
           final sdp = body['sdp'] as String;
+          logDebug('[SDP] Answer received (${sdp.length} bytes)');
+          // Check if ICE candidates are bundled in SDP
+          final candidateLines =
+              sdp.split('\n').where((l) => l.startsWith('a=candidate:'));
+          logDebug('[SDP] Contains ${candidateLines.length} bundled candidates');
+          // Log audio/video directions
+          final lines = sdp.split('\n');
+          String? currentMedia;
+          for (final line in lines) {
+            if (line.startsWith('m=audio')) {
+              currentMedia = 'audio';
+            } else if (line.startsWith('m=video')) {
+              currentMedia = 'video';
+            } else if (line.startsWith('a=sendrecv') ||
+                line.startsWith('a=recvonly') ||
+                line.startsWith('a=sendonly') ||
+                line.startsWith('a=inactive')) {
+              logDebug('[SDP] $currentMedia direction: ${line.substring(2)}');
+            }
+          }
           await _pc.acceptAnswer(SessionDescription(type: 'answer', sdp: sdp));
           onCallAnswered.add(sdp);
           _activate();
@@ -261,9 +287,11 @@ class WebRTCConnection extends Subscribed {
 
         case 'ice':
           // Received ICE candidate
+          final iceCandidate = body['ice'] as String;
+          logDebug('Received remote ICE candidate: $iceCandidate');
           await _pc.addIceCandidate(
             RTCIceCandidate(
-              candidate: body['ice'] as String,
+              candidate: iceCandidate,
               sdpMLineIndex: body['mlineindex'] as int?,
             ),
           );
@@ -336,6 +364,8 @@ class WebRTCConnection extends Subscribed {
   /// Send a message over WebSocket
   void _sendMessage(Map<String, dynamic> message) {
     if (_hasEnded || !_wsConnected) return;
+    final method = message['method'] as String?;
+    logDebug('[WS] Sending: $method');
     _ws.add(jsonEncode(message));
   }
 

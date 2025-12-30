@@ -41,15 +41,6 @@ class FfmpegOptions {
   });
 }
 
-/// Clean up SDP by extracting media sections
-String _getCleanSdp(String sdp, bool includeVideo) {
-  return sdp
-      .split('\nm=')
-      .skip(1) // Skip session description
-      .map((section) => 'm=$section')
-      .where((section) => includeVideo || !section.startsWith('m=video'))
-      .join('\n');
-}
 
 /// RTP Splitter for forwarding RTP packets to a UDP port
 ///
@@ -91,7 +82,10 @@ class RtpSplitter {
 
   /// Send data to a specific port
   Future<void> send(List<int> data, {required int port}) async {
-    _socket?.send(data, InternetAddress.loopbackIPv4, port);
+    final sent = _socket?.send(data, InternetAddress.loopbackIPv4, port);
+    if (sent != data.length) {
+      print('[RtpSplitter] Failed to send: sent=$sent expected=${data.length}');
+    }
   }
 
   /// Close the splitter
@@ -130,14 +124,6 @@ class StreamingSession extends Subscribed {
   /// Audio RTP packets
   final onAudioRtp = PublishSubject<RtpPacket>();
 
-  /// RTP splitter for audio
-  final _audioSplitter = RtpSplitter();
-
-  /// RTP splitter for video
-  final _videoSplitter = RtpSplitter();
-
-  /// RTP splitter for return audio
-  final _returnAudioSplitter = RtpSplitter();
 
   /// The camera being streamed
   final RingCamera camera;
@@ -228,8 +214,9 @@ class StreamingSession extends Subscribed {
       return;
     }
 
-    final videoPort = await reservePort(bufferPorts: 1);
-    final audioPort = await reservePort(bufferPorts: 1);
+    // Use fixed ports for FFmpeg
+    final videoPort = 15004;
+    final audioPort = 15006;
     final transcodeVideoStream = options.video != false;
 
     // Wait for call to be answered
@@ -239,43 +226,36 @@ class StreamingSession extends Subscribed {
     ]);
 
     if (ringSdp == null) {
-      logDebug('Call ended before answered');
       return;
     }
 
-    final usingOpus = await isUsingOpus;
+    // Create a simple SDP that FFmpeg understands
+    // Note: Ring cameras don't send audio unless speaker is activated,
+    // so we only include video in the SDP by default
+    final inputSdp = '''v=0
+o=- 0 0 IN IP4 127.0.0.1
+s=Ring Stream
+c=IN IP4 127.0.0.1
+t=0 0
+${transcodeVideoStream ? '''m=video $videoPort RTP/AVP 98
+a=rtpmap:98 H264/90000
+a=fmtp:98 profile-level-id=42e01f;packetization-mode=1''' : ''}''';
 
-    // Build FFmpeg input arguments
-    final ffmpegInputArguments = <String>[
-      '-hide_banner',
-      '-protocol_whitelist',
-      'pipe,udp,rtp,file,crypto',
-      // Ring will answer with either opus or pcmu
-      if (usingOpus) ...['-acodec', 'libopus'],
-      '-f',
-      'sdp',
-      ...?options.input,
-      '-i',
-      'pipe:',
-    ];
+    logDebug('FFmpeg SDP:\n$inputSdp');
 
-    // Prepare SDP for FFmpeg
-    final inputSdp = _getCleanSdp(ringSdp, transcodeVideoStream)
-        .replaceAll(RegExp(r'm=audio \d+'), 'm=audio $audioPort')
-        .replaceAll(RegExp(r'm=video \d+'), 'm=video $videoPort');
-
-    // Build full FFmpeg arguments
+    // Build FFmpeg arguments - simpler structure
     final ffmpegArgs = <String>[
-      ...ffmpegInputArguments,
-      ...(options.audio ?? ['-acodec', 'aac']),
-      if (transcodeVideoStream)
-        ...(options.video is List<String>
-            ? options.video as List<String>
-            : ['-vcodec', 'copy']),
+      '-hide_banner',
+      '-loglevel', 'info',
+      '-protocol_whitelist', 'pipe,udp,rtp,file,crypto',
+      ...?options.input,
+      '-f', 'sdp',
+      '-i', 'pipe:',
       ...options.output,
     ];
 
     // Start FFmpeg process
+    logDebug('Starting FFmpeg: ffmpeg ${ffmpegArgs.join(" ")}');
     try {
       _ffmpegProcess = await Process.start('ffmpeg', ffmpegArgs);
 
@@ -288,43 +268,64 @@ class StreamingSession extends Subscribed {
       _ffmpegProcess!.stderr.transform(const SystemEncoding().decoder).listen((
         data,
       ) {
-        logDebug('FFmpeg (${camera.name}): $data');
+        logDebug('FFmpeg: $data');
       });
 
       // Handle exit
-      _ffmpegProcess!.exitCode.then((_) {
+      _ffmpegProcess!.exitCode.then((code) {
+        logDebug('FFmpeg exited with code: $code');
         _callEnded();
       });
 
+      // Create direct UDP sockets for forwarding (more reliable than RtpSplitter)
+      final videoSocket = await RawDatagramSocket.bind(
+        InternetAddress.loopbackIPv4,
+        0,
+      );
+      final audioSocket = await RawDatagramSocket.bind(
+        InternetAddress.loopbackIPv4,
+        0,
+      );
+
       // Forward audio RTP to FFmpeg
       addSubscription(
-        onAudioRtp.listen((rtp) async {
-          await _audioSplitter.send(rtp.serialize().toList(), port: audioPort);
+        onAudioRtp.listen((rtp) {
+          audioSocket.send(
+            rtp.serialize().toList(),
+            InternetAddress.loopbackIPv4,
+            audioPort,
+          );
         }),
       );
 
       // Forward video RTP to FFmpeg
       if (transcodeVideoStream) {
         addSubscription(
-          onVideoRtp.listen((rtp) async {
-            await _videoSplitter.send(
+          onVideoRtp.listen((rtp) {
+            videoSocket.send(
               rtp.serialize().toList(),
-              port: videoPort,
+              InternetAddress.loopbackIPv4,
+              videoPort,
             );
           }),
         );
       }
 
-      // Stop FFmpeg when call ends
+      // Stop FFmpeg and clean up sockets when call ends
       addSubscription(
         onCallEnded.take(1).listen((_) {
           _ffmpegProcess?.kill();
+          videoSocket.close();
+          audioSocket.close();
         }),
       );
 
       // Write SDP to FFmpeg stdin
       _ffmpegProcess!.stdin.writeln(inputSdp);
       await _ffmpegProcess!.stdin.close();
+
+      // Give FFmpeg a moment to parse SDP and start listening on UDP ports
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Request a key frame now that FFmpeg is ready
       requestKeyFrame();
@@ -417,9 +418,6 @@ class StreamingSession extends Subscribed {
     unsubscribe();
     onCallEnded.add(null);
     connection.stop();
-    _audioSplitter.close();
-    _videoSplitter.close();
-    _returnAudioSplitter.close();
     _ffmpegProcess?.kill();
   }
 

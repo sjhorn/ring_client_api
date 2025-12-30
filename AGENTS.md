@@ -1,52 +1,180 @@
 # AGENTS.md
 
+## 1. Project Setup
+
 ## Project Overview
 This repository is for the Dart package **`ring_client_api`**.
-This is a port of the ring-client-api available in ./ring/packages/ring-client-api we will refer to as dgrief port.
-The focus will be porting each file to match the same name and also port the tests and examples to achieve exact input and output match prior to testing with the real ring API. The boilerplate from dart create -t package will be replaced with suitable dart files to complete the package. The README.md will follow the docs from ./ring/packages/ring-client-api and the LICENCE will also match. 
+This is a port of the ring-client-api available as reference only in ./ring/packages/ring-client-api we will refer to as dgrief port. Keep this in `.gitignore` - it's for reference only, not committed.
 
-The TODO.md will maintain our progress along with our git log history, and add a git commit and message for each step we take on this porting journey.
+### Directory Structure
+Mirror the TypeScript source structure where possible:
+| TypeScript | Dart |
+|------------|------|
+| `ring/packages/ring-client-api/` | `lib/src/` |
+| `ring/packages/ring-client-api/tests/` | `test/` |
+| `ring/packages/examples/` | `example/` |
+
+### Initial Documentation Files
+
+The TODO.md will maintain our progress along with our git log history, and add a git commit and message for each step we take on this porting journey including refactoring and debugging. We should not duplicate in TODO.md what we have in our git history, just keep a concise summary. 
 
 For typescript types and json mapping be sure to address the snake_case to camelCase. The quirks have been documented in TYPESCRIPT_DIFFERENCES.md that we will keep up to date as we progress. Also we aim to use ./ring for the source code rather than web calls to github.com.
 
 Let's aim to avoid using the word comprehensive in our commits, documentation and tests. 
 
-Key points:
-- Programming language: Dart 
-- Package structure:
-  - `lib/` — main public API  
-  - `example/` — usage examples  
-  - `test/` — unit & integration tests  
-  - `tool/` — helper scripts (if any)  
-- This file (`AGENTS.md`) is meant to guide AI-based coding agents and humans alike.  
-  It complements `README.md` (which is aimed primarily at human users/contributors).
+---
+
+## 2. Porting Philosophy
+
+### Core Principles
+
+1. **Structure Matching**
+   - Mimic directory structure, filenames, classnames of TypeScript source
+   - Follow Dart conventions (snake_case files, UpperCamelCase classes)
+   - Example: `peerConnection.ts` → `peer_connection.dart`
+
+2. **Behavior Matching**
+   - Match input/output behavior exactly
+   - Create test scripts to capture TypeScript outputs for given inputs
+   - Use captured outputs as golden test cases in Dart
+
+3. **Language-Idiomatic Adaptations**
+
+   | TypeScript | Dart |
+   |------------|------|
+   | Promises | Futures + async/await |
+   | Custom Event class | Stream-based events |
+   | `Buffer` | `Uint8List` + `ByteData.view` |
+   | `null ?? default` | `??` operator (same) |
+   | Interface | Abstract class / mixin |
+
+4. **Crypto Handling**
+   - Replicate TypeScript approach where directly implemented
+   - Use `package:cryptography` where TypeScript uses crypto libraries
+   - Validate against RFC test vectors
 
 ---
 
-## Setup Commands
-```bash
-# Activate Dart SDK
-dart --version
+## 3. Testing Strategy
 
-# Fetch dependencies
-dart pub get
+### Unit Tests
+- Use descriptive test names
+- Follow arrange/act/assert pattern
+- Golden tests for binary serialization (encode/decode round-trips)
+- Validate crypto against RFC test vectors
 
-# Run the example (if applicable)
-dart run example/main.dart
+### Capturing TypeScript Outputs
+```javascript
+// create_test_vectors.js - Run in Node.js with TypeScript source
+const { SomeClass } = require('./dist/some-class');
+const input = Buffer.from([0x01, 0x02, 0x03]);
+const result = SomeClass.process(input);
+console.log(JSON.stringify({
+  input: Array.from(input),
+  output: Array.from(result),
+}));
+```
 
-# Run tests
-dart test
+Then use in Dart tests:
+```dart
+test('SomeClass.process matches TypeScript', () {
+  final input = Uint8List.fromList([0x01, 0x02, 0x03]);
+  final result = SomeClass.process(input);
+  expect(result, equals(Uint8List.fromList([/* captured output */])));
+});
+```
+---
+## 4. Example Verification
 
-# (Optional) Format code
-dart format .
+### TODO.md Structure
 
-# (Optional) Analyze code for issues
-dart analyze
+Track each example's verification status:
+
+```markdown
+| Example | Status | Method | Notes |
+|---------|--------|--------|-------|
+| `datachannel/offer.dart` | [x] | Playwright | Chrome/Firefox/Safari pass |
+| `media/sendonly.dart` | [~] | Manual | In progress |
+| `media/complex.dart` | [ ] | - | Not started |
+```
+
+### Verification Methods
+- **Dart-to-Dart**: Two Dart processes communicating
+- **Playwright**: Automated browser test
+- **Manual Browser**: Run server, open browser manually
+- **Terminal**: Run with TypeScript counterpart
+
+---
+## 5. Common Porting Patterns
+
+### Binary Data Handling
+
+TypeScript `Buffer`:
+```typescript
+const buf = Buffer.alloc(10);
+buf.writeUInt32BE(value, 0);
+```
+
+Dart equivalent:
+```dart
+final data = Uint8List(10);
+final view = ByteData.view(data.buffer);
+view.setUint32(0, value, Endian.big);
+```
+
+### Event Emitters
+
+TypeScript:
+```typescript
+class Foo extends EventEmitter {
+  emit('data', payload);
+}
+foo.on('data', (payload) => { ... });
+```
+
+Dart:
+```dart
+class Foo {
+  final _dataController = StreamController<Payload>.broadcast();
+  Stream<Payload> get onData => _dataController.stream;
+
+  void _emitData(Payload payload) => _dataController.add(payload);
+}
+foo.onData.listen((payload) { ... });
+```
+
+### Async Patterns
+
+TypeScript:
+```typescript
+async function doWork(): Promise<Result> {
+  const data = await fetchData();
+  return process(data);
+}
+```
+
+Dart:
+```dart
+Future<Result> doWork() async {
+  final data = await fetchData();
+  return process(data);
+}
+```
+
+### Optional Chaining
+
+TypeScript:
+```typescript
+const value = obj?.prop?.nested ?? defaultValue;
+```
+
+Dart:
+```dart
+final value = obj?.prop?.nested ?? defaultValue;
 ```
 
 ---
-
-## Build & Publish
+## 6. Build & Publish
 
 ### Pre-Release Checklist
 Before publishing a new version, ensure:

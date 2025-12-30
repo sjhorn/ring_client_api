@@ -115,7 +115,7 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   /// Subject for requesting key frames
   final _onRequestKeyFrame = PublishSubject<void>();
 
-  /// Video transceiver for receiving video
+  // ignore: unused_field - Stored for future use (e.g., direction changes)
   webrtc.RtpTransceiver? _videoTransceiver;
 
   /// Audio track for sending audio back to the camera
@@ -132,12 +132,15 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     );
 
     // Create peer connection with Ring ICE servers and codecs
+    // Ring cameras require bundlePolicy: disable (no BUNDLE group in SDP)
+    // This matches the TypeScript werift implementation
     _pc = webrtc.RtcPeerConnection(
       webrtc.RtcConfiguration(
         iceServers: ringIceServers
             .map((server) => webrtc.IceServer(urls: [server]))
             .toList(),
         iceTransportPolicy: webrtc.IceTransportPolicy.all,
+        bundlePolicy: webrtc.BundlePolicy.disable,
       ),
     );
 
@@ -146,9 +149,21 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
 
     // Add video transceiver with recvonly direction using H264 codec
     // Ring cameras require H264 - they reject VP8 offers
+    // Use High profile (640029) like TypeScript werift for better compatibility
     _videoTransceiver = _pc.addTransceiver(
       webrtc.MediaStreamTrackKind.video,
-      codec: webrtc.createH264Codec(payloadType: 96),
+      codec: webrtc.createH264Codec(
+        payloadType: 96,
+        parameters:
+            'packetization-mode=1;profile-level-id=640029;level-asymmetry-allowed=1',
+        rtcpFeedback: [
+          const webrtc.RtcpFeedback(type: 'transport-cc'),
+          const webrtc.RtcpFeedback(type: 'ccm', parameter: 'fir'),
+          const webrtc.RtcpFeedback(type: 'nack'),
+          const webrtc.RtcpFeedback(type: 'nack', parameter: 'pli'),
+          const webrtc.RtcpFeedback(type: 'goog-remb'),
+        ],
+      ),
       direction: webrtc.RtpTransceiverDirection.recvonly,
     );
 
@@ -198,22 +213,23 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
 
   /// Set up audio receiver to forward RTP packets
   void _setupAudioReceiver(webrtc.RtpReceiver receiver) {
-    // The receiver's track will emit audio frames
-    // For RTP packets, we need to access the RTP session
-    // This is a simplified implementation - actual RTP forwarding
-    // would need access to the raw RTP packets from the session
-    if (receiver.track is webrtc.AudioStreamTrack) {
-      final audioTrack = receiver.track as webrtc.AudioStreamTrack;
-      // Audio frames are processed internally by webrtc_dart
-      // For raw RTP access, we'd need to hook into the RTP session
-      addSubscription(
-        audioTrack.onAudioFrame.listen((_) {
-          // Audio frame received
-          // In the TypeScript version, this emits RtpPacket directly
-          // Here we'd need to serialize back to RTP or use a different approach
-        }),
-      );
-    }
+    // Forward raw RTP packets from the track to our stream
+    // The track now emits raw RTP via onReceiveRtp (after webrtc_dart update)
+    final track = receiver.track;
+    addSubscription(
+      track.onReceiveRtp.listen((rtp) {
+        if (!_closed) {
+          onAudioRtp.add(rtp);
+        }
+      }),
+    );
+    addSubscription(
+      track.onReceiveRtcp.listen((rtcp) {
+        if (!_closed) {
+          onAudioRtcp.add(rtcp);
+        }
+      }),
+    );
   }
 
   /// Set up video receiver with keyframe requests
@@ -221,26 +237,56 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     webrtc.RtpTransceiver transceiver,
     webrtc.RtpReceiver receiver,
   ) {
-    if (receiver.track is webrtc.VideoStreamTrack) {
-      final videoTrack = receiver.track as webrtc.VideoStreamTrack;
+    final track = receiver.track;
+    int? mediaSsrc;
+    Timer? pliTimer;
 
-      // Set up periodic keyframe requests (every 4 seconds)
-      addSubscriptions([
-        Stream.periodic(
-          const Duration(seconds: 4),
-        ).mergeWith([_onRequestKeyFrame.stream]).listen((_) {
-          // Request keyframe via RTCP PLI
-          // Note: This would need to be implemented in webrtc_dart's RtpSession
-          // to send RTCP PLI to the remote peer
-        }),
-        videoTrack.onVideoFrame.listen((_) {
-          // Video frame received
-        }),
-      ]);
+    // Forward raw RTP packets from the track to our stream
+    addSubscription(
+      track.onReceiveRtp.listen((rtp) {
+        if (!_closed) {
+          onVideoRtp.add(rtp);
 
-      // Request initial keyframe
-      requestKeyFrame();
-    }
+          // Start PLI requests after first RTP packet (like TypeScript werift)
+          if (mediaSsrc == null) {
+            mediaSsrc = rtp.ssrc;
+
+            // Send PLI every 2 seconds (matching TypeScript werift)
+            pliTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+              if (!_closed && mediaSsrc != null) {
+                receiver.rtpSession.sendPli(mediaSsrc!);
+              }
+            });
+          }
+        }
+      }),
+    );
+    addSubscription(
+      track.onReceiveRtcp.listen((rtcp) {
+        if (!_closed) {
+          onVideoRtcp.add(rtcp);
+        }
+      }),
+    );
+
+    // Set up manual keyframe request handling
+    addSubscription(
+      _onRequestKeyFrame.stream.listen((_) {
+        // Request keyframe via RTCP PLI
+        if (!_closed && mediaSsrc != null) {
+          receiver.rtpSession.sendPli(mediaSsrc!);
+        }
+      }),
+    );
+
+    // Clean up timer when connection closes
+    addSubscription(
+      _onConnectionStateController.stream
+          .where((state) => state == ConnectionState.closed)
+          .listen((_) {
+            pliTimer?.cancel();
+          }),
+    );
   }
 
   /// Map webrtc_dart PeerConnectionState to our ConnectionState
