@@ -1,0 +1,13 @@
+{
+  "name": "ring_client_api_tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright tests for ring_client_api examples",
+  "scripts": {
+    "test:browser": "npx playwright test",
+    "test:examples": "dart run test/examples/run_example_tests.dart"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

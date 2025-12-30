@@ -10,14 +10,27 @@ import 'package:ring_client_api/ring_client_api.dart';
 /// - Update chime settings
 void main() async {
   try {
-    // Load refresh token from .env file
-    final envFile = File('.env');
-    final envContent = await envFile.readAsString();
-    final refreshToken = envContent
-        .split('\n')
-        .firstWhere((line) => line.startsWith('refreshToken='))
-        .split('=')[1]
-        .trim();
+    // Get refresh token from environment variable or .env file
+    var refreshToken = Platform.environment['RING_REFRESH_TOKEN'];
+
+    if (refreshToken == null || refreshToken.isEmpty) {
+      // Fallback to .env file
+      final envFile = File('.env');
+      if (await envFile.exists()) {
+        final envContent = await envFile.readAsString();
+        final line = envContent.split('\n').where(
+          (l) => l.startsWith('refreshToken=') || l.startsWith('RING_REFRESH_TOKEN='),
+        ).firstOrNull;
+        if (line != null) {
+          refreshToken = line.split('=').skip(1).join('=').trim();
+        }
+      }
+    }
+
+    if (refreshToken == null || refreshToken.isEmpty) {
+      print('Error: Set RING_REFRESH_TOKEN environment variable or create .env file');
+      exit(1);
+    }
 
     // Create API instance with debug enabled
     final ringApi = RingApi(

@@ -12,15 +12,41 @@
 ///   dart run example/return_audio_example.dart
 library;
 
+import 'dart:async';
 import 'dart:io';
 import 'package:ring_client_api/ring_client_api.dart';
 
 Future<void> main() async {
-  // Get credentials from environment
-  final refreshToken = Platform.environment['RING_REFRESH_TOKEN'];
+  // Run in guarded zone to catch async cleanup errors from WebRTC
+  await runZonedGuarded(() => _main(), (error, stack) {
+    // Ignore WebRTC cleanup errors
+    if (error.toString().contains('Cannot add new events after calling close')) {
+      return;
+    }
+    print('Unhandled error: $error');
+  });
+}
 
-  if (refreshToken == null) {
-    print('Error: Set RING_REFRESH_TOKEN environment variable');
+Future<void> _main() async {
+  // Get credentials from environment or .env file
+  var refreshToken = Platform.environment['RING_REFRESH_TOKEN'];
+
+  if (refreshToken == null || refreshToken.isEmpty) {
+    // Fallback to .env file
+    final envFile = File('.env');
+    if (await envFile.exists()) {
+      final envContent = await envFile.readAsString();
+      final line = envContent.split('\n').where(
+        (l) => l.startsWith('refreshToken=') || l.startsWith('RING_REFRESH_TOKEN='),
+      ).firstOrNull;
+      if (line != null) {
+        refreshToken = line.split('=').skip(1).join('=').trim();
+      }
+    }
+  }
+
+  if (refreshToken == null || refreshToken.isEmpty) {
+    print('Error: Set RING_REFRESH_TOKEN environment variable or create .env file');
     print('');
     print('Example:');
     print('  export RING_REFRESH_TOKEN="your_token"');
@@ -106,18 +132,27 @@ Future<void> main() async {
     // Wait for call to end or timeout after 30 seconds
     await Future.any([
       session.onCallEnded.first,
-      Future.delayed(const Duration(seconds: 30)),
+      Future.delayed(const Duration(seconds: 10)),
     ]);
 
     print('');
     print('Stopping call...');
     session.stop();
 
+    // Wait for async cleanup to complete
+    await Future.delayed(const Duration(milliseconds: 500));
+
     print('Done!');
   } catch (e) {
     print('Error: $e');
     exit(1);
   } finally {
-    await api.disconnect();
+    try {
+      await api.disconnect();
+    } catch (e) {
+      // Ignore cleanup errors from WebRTC shutdown
+    }
+    // Exit explicitly to avoid hanging on pending WebRTC timers
+    exit(0);
   }
 }
