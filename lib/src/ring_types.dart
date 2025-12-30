@@ -910,16 +910,25 @@ class ChimeUpdateSettings {
   Map<String, dynamic> toJson() => _$ChimeUpdateSettingsToJson(this);
 }
 
+/// Helper to convert any type to String
+String _toStringFromDynamic(dynamic value) => value?.toString() ?? '';
+
 /// Ringtone audio structure
 @JsonSerializable()
 class RingtoneAudio {
-  @JsonKey(name: 'user_id')
+  @JsonKey(name: 'user_id', fromJson: _toStringFromDynamic)
   final String userId;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String id;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String description;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String kind;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String url;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String checksum;
+  @JsonKey(fromJson: _toStringFromDynamic)
   final String available;
 
   const RingtoneAudio({

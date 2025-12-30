@@ -516,13 +516,13 @@ Map<String, dynamic> _$ChimeUpdateSettingsToJson(
 
 RingtoneAudio _$RingtoneAudioFromJson(Map<String, dynamic> json) =>
     RingtoneAudio(
-      userId: json['user_id'] as String,
-      id: json['id'] as String,
-      description: json['description'] as String,
-      kind: json['kind'] as String,
-      url: json['url'] as String,
-      checksum: json['checksum'] as String,
-      available: json['available'] as String,
+      userId: _toStringFromDynamic(json['user_id']),
+      id: _toStringFromDynamic(json['id']),
+      description: _toStringFromDynamic(json['description']),
+      kind: _toStringFromDynamic(json['kind']),
+      url: _toStringFromDynamic(json['url']),
+      checksum: _toStringFromDynamic(json['checksum']),
+      available: _toStringFromDynamic(json['available']),
     );
 
 Map<String, dynamic> _$RingtoneAudioToJson(RingtoneAudio instance) =>
