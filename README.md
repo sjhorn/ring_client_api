@@ -265,12 +265,9 @@ See the [example](example/) directory for a complete example application.
 
 ## Documentation
 
-This package includes comprehensive documentation to help you understand the implementation and migrate from the TypeScript version:
-
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
-- **[TODO.md](TODO.md)** - Complete project implementation checklist showing all phases of the port
-- **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Detailed guide to differences between TypeScript and Dart implementations
-- **[GAP_ANALYSIS.md](GAP_ANALYSIS.md)** - Analysis showing feature coverage compared to the original TypeScript library
+- **[TODO.md](TODO.md)** - Project implementation checklist and progress
+- **[TYPESCRIPT_DIFFERENCES.md](TYPESCRIPT_DIFFERENCES.md)** - Feature parity summary and TypeScript→Dart migration guide
 
 ## Additional information
 

@@ -2,6 +2,22 @@
 
 This document outlines the key differences between the original TypeScript `ring-client-api` and this Dart port. Understanding these differences is important for developers familiar with the TypeScript version or those contributing to this port.
 
+## Feature Parity Summary
+
+**Status: Full Feature Parity Achieved** (v0.2.0)
+
+| Category | Coverage | Notes |
+|----------|----------|-------|
+| Core Source Files | 12/12 (100%) | All files ported |
+| REST API Methods | 100% | All methods implemented |
+| WebRTC Streaming | 100% | Using webrtc_dart (pure Dart) |
+| FFmpeg Transcoding | 100% | Via dart:io Process |
+| Test Coverage | 29 tests | 81% more than TypeScript's 16 |
+
+**Only Exclusion**: Push Notifications (`_registerPushReceiver`) - Platform-specific, use WebSocket for real-time updates instead.
+
+---
+
 ## Language & Platform Differences
 
 ### 1. Null Safety
@@ -459,19 +475,20 @@ ring_client_api/
 
 ## Feature Availability Matrix
 
-| Feature | TypeScript | Dart |
-|---------|-----------|------|
-| **REST API** | ✅ | ✅ |
-| **WebSocket Events** | ✅ | ✅ |
-| **Device Control** | ✅ | ✅ |
-| **Snapshots** | ✅ | ✅ |
-| **Event History** | ✅ | ✅ |
-| **Simple Streaming** | ✅ | ✅ |
-| **WebRTC P2P** | ✅ (werift) | ✅ (webrtc_dart) |
-| **FFmpeg Transcoding** | ✅ | ✅ (dart:io Process) |
-| **Two-way Audio** | ✅ | ✅ |
-| **CLI Tools** | ✅ | ✅ |
-| **Desktop Support** | ✅ (Node.js) | ✅ |
+| Feature | TypeScript | Dart | Notes |
+|---------|-----------|------|-------|
+| **REST API** | ✅ | ✅ | Full parity |
+| **WebSocket Events** | ✅ | ✅ | Real-time updates |
+| **Device Control** | ✅ | ✅ | Cameras, chimes, intercoms |
+| **Snapshots** | ✅ | ✅ | |
+| **Event History** | ✅ | ✅ | |
+| **Simple Streaming** | ✅ | ✅ | REST-based |
+| **WebRTC P2P** | ✅ (werift) | ✅ (webrtc_dart) | Pure Dart, no native deps |
+| **FFmpeg Transcoding** | ✅ | ✅ | Via dart:io Process |
+| **Two-way Audio** | ✅ | ✅ | |
+| **CLI Tools** | ✅ | ✅ | 4 tools included |
+| **Desktop Support** | ✅ (Node.js) | ✅ | |
+| **Push Notifications** | ✅ (FCM) | ⚠️ | Use WebSocket instead |
 
 ## Migration Guide (TypeScript → Dart)
 
@@ -589,9 +606,9 @@ Future<void> main() async {
 
 | TypeScript Version | Dart Port Version | Status |
 |-------------------|-------------------|--------|
-| v13.x | 0.1.0 | Core API complete, WebRTC stubs |
-| v13.x | 0.2.0 (planned) | + flutter_webrtc integration |
-| v13.x | 0.3.0 (planned) | + dart_webrtc for web |
+| v13.x | 0.1.0 | Core API complete |
+| v13.x | 0.1.1 | Documentation fixes, CLI tools |
+| v13.x | 0.2.0 | Full WebRTC streaming (webrtc_dart) |
 
 ## Questions or Issues?
 

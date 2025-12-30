@@ -14,3 +14,19 @@ snapshot_*.jpg
 
 # The orginal source code for this porting project
 ring/
+
+# Node.js (for Playwright tests in test/examples)
+test/examples/node_modules/
+test/examples/package-lock.json
+
+# Test artifacts
+test-results/
+playwright-report/
+output/
+example/public/output/
+
+# Recording files (but not TypeScript .ts files)
+*.mp4
+*.m3u8
+# Video segment files (pattern like stream0.ts, part0.ts)
+*[0-9].ts

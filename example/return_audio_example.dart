@@ -110,7 +110,7 @@ Future<void> _main() async {
       exit(1);
     }
 
-    final camera = cameras.first;
+    final camera = cameras[1]; //cameras.first;
     print('Using camera: ${camera.name}');
     print('');
 
@@ -129,7 +129,7 @@ Future<void> _main() async {
     print('Playing audio through camera speaker...');
     print('Press Ctrl+C to stop, or wait for audio to finish.');
 
-    // Wait for call to end or timeout after 30 seconds
+    // Wait for call to end or timeout after 10 seconds
     await Future.any([
       session.onCallEnded.first,
       Future.delayed(const Duration(seconds: 10)),
