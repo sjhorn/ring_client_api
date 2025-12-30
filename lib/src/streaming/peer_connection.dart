@@ -7,6 +7,7 @@ library;
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:webrtc_dart/webrtc_dart.dart' as webrtc;
+import 'package:webrtc_dart/nonstandard.dart' as nonstandard;
 
 import '../subscribed.dart';
 
@@ -121,17 +122,19 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   /// Video transceiver for receiving video
   late webrtc.RtpTransceiver _videoTransceiver;
 
-  /// Audio track for sending audio back to the camera
-  late final webrtc.AudioStreamTrack returnAudioTrack;
+  /// Audio track for sending audio back to the camera (nonstandard for RTP forwarding)
+  /// This matches TypeScript werift: returnAudioTrack = new MediaStreamTrack({ kind: 'audio' })
+  late final nonstandard.MediaStreamTrack returnAudioTrack;
 
   /// Whether peer connection is closed
   bool _closed = false;
 
   WebRTCPeerConnection() {
-    // Create return audio track (matching TypeScript)
-    returnAudioTrack = webrtc.AudioStreamTrack(
+    // Create return audio track using nonstandard MediaStreamTrack (matching TypeScript werift)
+    // TypeScript: this.returnAudioTrack = new MediaStreamTrack({ kind: 'audio' })
+    returnAudioTrack = nonstandard.MediaStreamTrack(
+      kind: nonstandard.MediaKind.audio,
       id: 'return_audio',
-      label: 'Return Audio Track',
     );
 
     // Create peer connection with Ring ICE servers and codecs
@@ -186,8 +189,9 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
       webrtc.MediaStreamTrackKind.audio,
       direction: webrtc.RtpTransceiverDirection.sendrecv,
     );
-    // Replace sender track with return audio track for sending audio back
-    _audioTransceiver.sender.replaceTrack(returnAudioTrack);
+    // Register nonstandard track for RTP forwarding (matching TypeScript werift)
+    // This subscribes to track.onReceiveRtp and forwards packets through sendRtp
+    _audioTransceiver.sender.registerNonstandardTrack(returnAudioTrack);
 
     // Add video transceiver with recvonly direction
     // (matching TypeScript: pc.addTransceiver('video', { direction: 'recvonly' }))
@@ -347,11 +351,15 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   }
 
   /// Write RTP packet to return audio track
+  ///
+  /// Matches TypeScript werift: this.pc.returnAudioTrack.writeRtp(rtp)
+  /// The nonstandard MediaStreamTrack accepts RTP packets and forwards them
+  /// through the sender's RTP session.
   void writeAudioRtp(RtpPacket rtp) {
-    // Forward audio to the return audio track
-    // The webrtc_dart AudioStreamTrack expects AudioFrame, not RTP
-    // For raw RTP sending, we'd need to access the RTP session directly
-    // This is a simplified implementation
+    if (_closed) return;
+    // Forward RTP to the return audio track (matching TypeScript werift)
+    // writeRtp() emits to onReceiveRtp which the sender is subscribed to
+    returnAudioTrack.writeRtp(rtp);
   }
 
   @override
