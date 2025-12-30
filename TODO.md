@@ -154,19 +154,19 @@ export RING_REFRESH_TOKEN="your_token"
 
 | Dart File | TypeScript File | Status | Notes |
 |-----------|-----------------|--------|-------|
-| test/rest_client_test.dart | test/rest-client.spec.ts | [ ] Review | |
-| test/ring_camera_test.dart | test/ring-camera.spec.ts | [ ] Review | |
-| test/ring_device_test.dart | - | [ ] Review | Dart-only |
-| test/integration_test.dart | - | [ ] Review | Dart-only |
+| test/rest_client_test.dart | test/rest-client.spec.ts | [x] Done | Match (same test cases) |
+| test/ring_camera_test.dart | test/ring-camera.spec.ts | [x] Done | Match (same tests) |
+| test/ring_device_test.dart | - | [x] Done | Dart-only |
+| test/integration_test.dart | - | [x] Done | Dart-only |
 
 ### CLI Tools
 
 | Dart File | TypeScript File | Status | Notes |
 |-----------|-----------------|--------|-------|
-| bin/ring_auth_cli.dart | ring-auth-cli.ts | [ ] Review | |
-| bin/ring_device_data_cli.dart | ring-device-data-cli.ts | [ ] Review | |
-| bin/list_cameras.dart | - | [ ] Review | Dart-only |
-| bin/stream_camera.dart | - | [ ] Review | Dart-only |
+| bin/ring_auth_cli.dart | ring-auth-cli.ts | [x] Done | Match |
+| bin/ring_device_data_cli.dart | ring-device-data-cli.ts | [x] Done | Match (inline vs import) |
+| bin/list_cameras.dart | - | [x] Done | Dart-only |
+| bin/stream_camera.dart | - | [x] Done | Dart-only |
 
 ---
 
