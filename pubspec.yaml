@@ -27,7 +27,7 @@ dependencies:
   # WebSocket support (built-in via dart:io)
 
   # Pure Dart WebRTC implementation (port of werift)
-  webrtc_dart: ^0.22.10
+  webrtc_dart: ^0.22.12
 
   # System/device information
   # platform_device_id: ^1.0.1
