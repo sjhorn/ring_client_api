@@ -183,8 +183,9 @@ ContentType _getContentType(String path) {
   if (path.endsWith('.html')) return ContentType.html;
   if (path.endsWith('.css')) return ContentType('text', 'css');
   if (path.endsWith('.js')) return ContentType('application', 'javascript');
-  if (path.endsWith('.m3u8'))
+  if (path.endsWith('.m3u8')) {
     return ContentType('application', 'vnd.apple.mpegurl');
+  }
   if (path.endsWith('.ts')) return ContentType('video', 'mp2t');
   if (path.endsWith('.mp4')) return ContentType('video', 'mp4');
   return ContentType.binary;

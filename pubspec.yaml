@@ -1,6 +1,6 @@
 name: ring_client_api
 description: Unofficial Dart API for Ring Doorbells, Cameras, Alarm Systems, and Smart Lighting
-version: 0.2.0
+version: 0.2.1
 repository: https://github.com/sjhorn/ring_client_api
 homepage: https://github.com/sjhorn/ring_client_api
 issue_tracker: https://github.com/sjhorn/ring_client_api/issues
@@ -27,8 +27,7 @@ dependencies:
   # WebSocket support (built-in via dart:io)
 
   # Pure Dart WebRTC implementation (port of werift)
-  webrtc_dart:
-    path: ../webrtc_dart
+  webrtc_dart: ^0.22.10
 
   # System/device information
   # platform_device_id: ^1.0.1

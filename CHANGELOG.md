@@ -1,3 +1,19 @@
+## 0.2.1 - 2025-12-31
+
+### Fixed
+- **Return audio now works** - Two-way audio to Ring camera speakers is fully functional
+  - Fixed codec payload type negotiation from SDP answer
+  - Fixed MID migration for bundlePolicy:disable transports
+  - Fixed closure capture issue in RTP send callbacks
+
+### Changed
+- Updated `webrtc_dart` dependency from path to `^0.22.10` (published version)
+
+### Housekeeping
+- Added `.DS_Store` and `.vscode/` to `.gitignore`
+
+---
+
 ## 0.2.0 - 2025-12-06
 
 ### Added

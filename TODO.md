@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Version**: v0.2.0 | **Published**: https://pub.dev/packages/ring_client_api
+**Current Version**: v0.2.1 | **Published**: https://pub.dev/packages/ring_client_api
 
 | Metric | Value |
 |--------|-------|
@@ -31,7 +31,7 @@ All phases complete. See git history for detailed implementation notes.
 | 8 | Examples | 8 examples (full parity with dgrief) |
 | 9 | CLI Tools | ring_auth_cli, list_cameras, stream_camera |
 | 10 | Documentation | README, CHANGELOG, TYPESCRIPT_DIFFERENCES |
-| 11 | Publishing | v0.1.0, v0.1.1, v0.2.0 on pub.dev |
+| 11 | Publishing | v0.1.0, v0.1.1, v0.2.0, v0.2.1 on pub.dev |
 
 ---
 
@@ -39,6 +39,7 @@ All phases complete. See git history for detailed implementation notes.
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 0.2.1 | 2025-12-31 | Return audio fix, webrtc_dart 0.22.10 |
 | 0.2.0 | 2025-12-06 | Full WebRTC streaming, two-way audio, FFmpeg |
 | 0.1.1 | 2025-11-16 | Documentation fixes, list_cameras CLI |
 | 0.1.0 | 2025-11-15 | Initial release |
@@ -170,4 +171,4 @@ export RING_REFRESH_TOKEN="your_token"
 
 ---
 
-*Last updated: 2025-12-30*
+*Last updated: 2025-12-31*
