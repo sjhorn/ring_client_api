@@ -1,7 +1,0 @@
-{
-    "dart.analysisExcludedFolders": [
-        "./ring"
-    ],
-    "files.exclude": { "ring/": true },
-    "search.exclude": { "ring/": true },
-}

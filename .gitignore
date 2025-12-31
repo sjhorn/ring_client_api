@@ -2,6 +2,12 @@
 # Created by `dart pub`
 .dart_tool/
 
+# macOS
+.DS_Store
+
+# IDE settings
+.vscode/
+
 # Avoid committing pubspec.lock for library packages; see
 # https://dart.dev/guides/libraries/private-files#pubspeclock.
 pubspec.lock
@@ -29,4 +35,4 @@ example/public/output/
 *.mp4
 *.m3u8
 # Video segment files (pattern like stream0.ts, part0.ts)
-*[0-9].tsWEBRTC_ISSUE.md
+*[0-9].ts
