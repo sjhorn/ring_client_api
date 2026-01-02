@@ -1,3 +1,15 @@
+## 0.2.3 - 2026-01-02
+
+### Changed
+- Updated `webrtc_dart` dependency to `^0.23.1`
+- Migrated to W3C-aligned API type names:
+  - `RtcPeerConnection` → `RTCPeerConnection`
+  - `RtpTransceiver` → `RTCRtpTransceiver`
+  - `SessionDescription` → `RTCSessionDescription`
+  - `Candidate` → `RTCIceCandidate`
+
+---
+
 ## 0.2.2 - 2026-01-02
 
 ### Changed

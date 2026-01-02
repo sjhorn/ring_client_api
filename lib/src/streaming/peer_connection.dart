@@ -111,16 +111,16 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   final onVideoRtcp = PublishSubject<dynamic>();
 
   /// The underlying webrtc_dart peer connection
-  late final webrtc.RtcPeerConnection _pc;
+  late final webrtc.RTCPeerConnection _pc;
 
   /// Subject for requesting key frames
   final _onRequestKeyFrame = PublishSubject<void>();
 
   /// Audio transceiver for two-way audio
-  late webrtc.RtpTransceiver _audioTransceiver;
+  late webrtc.RTCRtpTransceiver _audioTransceiver;
 
   /// Video transceiver for receiving video
-  late webrtc.RtpTransceiver _videoTransceiver;
+  late webrtc.RTCRtpTransceiver _videoTransceiver;
 
   /// Audio track for sending audio back to the camera (nonstandard for RTP forwarding)
   /// This matches TypeScript werift: returnAudioTrack = new MediaStreamTrack({ kind: 'audio' })
@@ -140,7 +140,7 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     // Create peer connection with Ring ICE servers and codecs
     // Ring cameras require bundlePolicy: disable (no BUNDLE group in SDP)
     // This matches the TypeScript werift implementation
-    _pc = webrtc.RtcPeerConnection(
+    _pc = webrtc.RTCPeerConnection(
       webrtc.RtcConfiguration(
         iceServers: ringIceServers
             .map((server) => webrtc.IceServer(urls: [server]))
@@ -335,13 +335,13 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   @override
   Future<void> acceptAnswer(SessionDescription answer) async {
     await _pc.setRemoteDescription(
-      webrtc.SessionDescription(type: 'answer', sdp: answer.sdp),
+      webrtc.RTCSessionDescription(type: 'answer', sdp: answer.sdp),
     );
   }
 
   @override
   Future<void> addIceCandidate(RTCIceCandidate candidate) async {
-    final parsedCandidate = webrtc.Candidate.fromSdp(candidate.candidate);
+    final parsedCandidate = webrtc.RTCIceCandidate.fromSdp(candidate.candidate);
     await _pc.addIceCandidate(parsedCandidate);
   }
 
