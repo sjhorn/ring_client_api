@@ -1,3 +1,13 @@
+## 0.2.2 - 2026-01-02
+
+### Changed
+- Updated `webrtc_dart` dependency to `^0.22.13`
+  - Improved RTP packet filtering (RTX/probing packets)
+  - Better SSRC tracking for echo/replay scenarios
+  - Source change notification support
+
+---
+
 ## 0.2.1 - 2025-12-31
 
 ### Fixed
