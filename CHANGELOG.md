@@ -1,3 +1,10 @@
+## 0.2.4 - 2026-01-05
+
+### Changed
+- Updated `webrtc_dart` dependency to `^0.25.0`
+
+---
+
 ## 0.2.3 - 2026-01-02
 
 ### Changed

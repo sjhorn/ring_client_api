@@ -149,7 +149,7 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
         bundlePolicy: webrtc.BundlePolicy.disable,
         // Codecs matching TypeScript werift
         codecs: webrtc.RtcCodecs(
-          // Audio codecs - Ring uses Opus or PCMU
+          // Audio codecs - Opus preferred, PCMU fallback
           audio: [
             webrtc.RtpCodecParameters(
               mimeType: 'audio/opus',
