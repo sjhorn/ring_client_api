@@ -176,27 +176,49 @@ final value = obj?.prop?.nested ?? defaultValue;
 ---
 ## 6. Build & Publish
 
-### Pre-Release Checklist
-Before publishing a new version, ensure:
-- [ ] All tests pass: `dart test`
-- [ ] Code is formatted: `dart format .`
-- [ ] No analyzer issues: `dart analyze`
-- [ ] Documentation is updated
-- [ ] Examples work correctly
-
 ### Release Process (Default Standard)
 
 This is the standard process for publishing releases to pub.dev:
 
-**1. Bump Version in `pubspec.yaml`**
+**1. Update Dependencies (if applicable)**
+```bash
+# Update pubspec.yaml with new dependency versions
+dart pub get
+```
+
+**2. Run Unit Tests**
+```bash
+dart test
+```
+All tests must pass before proceeding.
+
+**3. Run Automated Tests**
+```bash
+# Run Playwright browser tests if applicable
+cd test/examples && npm test
+```
+
+**4. Format Code**
+```bash
+dart format .
+```
+This applies formatting to all files. Do not use `--set-exit-if-changed` during release - apply the formatting.
+
+**5. Run Static Analysis**
+```bash
+dart analyze
+```
+Fix any issues before proceeding.
+
+**6. Bump Version in `pubspec.yaml`**
 ```yaml
 version: X.Y.Z  # Update according to semantic versioning
 ```
 
-**2. Update `CHANGELOG.md`**
+**7. Update `CHANGELOG.md`**
 Add release notes under a new version heading:
 ```markdown
-## X.Y.Z - Release Date
+## X.Y.Z - YYYY-MM-DD
 
 ### Added
 - New features
@@ -211,64 +233,61 @@ Add release notes under a new version heading:
 - Deprecated features
 ```
 
-**3. Update `TODO.md`**
-- Mark completed phases/tasks
-- Update project status
-- Update "Last updated" date
+**8. Update `README.md` (if needed)**
+- Update any version references
+- Add documentation for new features
+- Update examples if API changed
 
-**4. Run Pre-Publishing Checks**
+**9. Dry Run Publish**
 ```bash
-# Verify all tests pass
-dart test
-
-# Check for analyzer issues
-dart analyze
-
-# Dry run publish
 dart pub publish --dry-run
 ```
+Verify no warnings before proceeding.
 
-**5. Commit Version Bump**
+**10. Commit All Changes**
 ```bash
-git add pubspec.yaml CHANGELOG.md TODO.md
+git add .
 git commit -m "Bump version to vX.Y.Z"
 ```
 
-**6. Publish to pub.dev**
+**11. Publish to pub.dev**
 ```bash
-dart pub publish
+dart pub publish --force
 ```
 
-**7. Create Git Tag**
+**12. Push to GitHub**
+```bash
+git push origin master
+```
+
+**13. Create and Push Git Tag**
 ```bash
 git tag -a vX.Y.Z -m "Release vX.Y.Z - Brief description
 
-Features:
-- Feature 1
-- Feature 2
+- Change 1
+- Change 2
 
 Published to pub.dev: https://pub.dev/packages/ring_client_api"
-```
 
-**8. Update TODO.md Post-Publish**
-Mark publishing phase as complete and update package links.
-
-**9. Commit Post-Publish Updates**
-```bash
-git add TODO.md
-git commit -m "Mark Phase 11 complete - vX.Y.Z published to pub.dev"
-```
-
-**10. Push to GitHub**
-```bash
-git push origin main
 git push origin vX.Y.Z
 ```
 
-**11. Create GitHub Release** (Optional)
+**14. Create GitHub Release** (Optional)
 - Go to https://github.com/sjhorn/ring_client_api/releases
 - Create release from tag vX.Y.Z
 - Copy CHANGELOG.md content for release notes
+
+### Pre-Release Checklist Summary
+Before publishing, ensure:
+- [ ] Dependencies updated: `dart pub get`
+- [ ] Unit tests pass: `dart test`
+- [ ] Automated tests pass (if applicable)
+- [ ] Code formatted: `dart format .`
+- [ ] No analyzer issues: `dart analyze`
+- [ ] Version bumped in `pubspec.yaml`
+- [ ] `CHANGELOG.md` updated
+- [ ] `README.md` updated (if needed)
+- [ ] Dry run succeeds: `dart pub publish --dry-run`
 
 ### CLI Tools
 
@@ -384,4 +403,5 @@ A: Yes — treat it as living documentation.  [oai_citation:2‡agents.md](https
 
 ## Change History of this File
 - **v0.1.0** — Initial draft based on generic Dart package template
-- **v0.1.0 Post-Publish** — Added detailed release process with version bumping, documented CLI tools, added pre-release checklist  
+- **v0.1.0 Post-Publish** — Added detailed release process with version bumping, documented CLI tools, added pre-release checklist
+- **v0.2.5** — Improved release process: reordered steps to run tests first, added explicit git tag push step, added README.md update step, moved checklist to end as summary  
