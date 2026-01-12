@@ -175,7 +175,9 @@ class WebRTCConnection extends Subscribed {
           final message = jsonDecode(data as String) as Map<String, dynamic>;
           final method = message['method'] as String?;
           final body = message['body'] as Map<String, dynamic>?;
-          logDebug('[WS] Received: $method (body keys: ${body?.keys.toList()})');
+          logDebug(
+            '[WS] Received: $method (body keys: ${body?.keys.toList()})',
+          );
           onMessage.add(message);
           _handleMessage(message);
         },
@@ -262,9 +264,12 @@ class WebRTCConnection extends Subscribed {
           final sdp = body['sdp'] as String;
           logDebug('[SDP] Answer received (${sdp.length} bytes)');
           // Check if ICE candidates are bundled in SDP
-          final candidateLines =
-              sdp.split('\n').where((l) => l.startsWith('a=candidate:'));
-          logDebug('[SDP] Contains ${candidateLines.length} bundled candidates');
+          final candidateLines = sdp
+              .split('\n')
+              .where((l) => l.startsWith('a=candidate:'));
+          logDebug(
+            '[SDP] Contains ${candidateLines.length} bundled candidates',
+          );
           // Log audio/video directions
           final lines = sdp.split('\n');
           String? currentMedia;

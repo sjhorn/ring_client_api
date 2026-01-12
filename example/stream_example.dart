@@ -19,7 +19,9 @@ Future<void> main() async {
   // Run in guarded zone to catch async cleanup errors from WebRTC
   await runZonedGuarded(() => _main(), (error, stack) {
     // Ignore WebRTC cleanup errors
-    if (error.toString().contains('Cannot add new events after calling close')) {
+    if (error.toString().contains(
+      'Cannot add new events after calling close',
+    )) {
       return;
     }
     print('Unhandled error: $error');
@@ -35,9 +37,14 @@ Future<void> _main() async {
     final envFile = File('.env');
     if (await envFile.exists()) {
       final envContent = await envFile.readAsString();
-      final line = envContent.split('\n').where(
-        (l) => l.startsWith('refreshToken=') || l.startsWith('RING_REFRESH_TOKEN='),
-      ).firstOrNull;
+      final line = envContent
+          .split('\n')
+          .where(
+            (l) =>
+                l.startsWith('refreshToken=') ||
+                l.startsWith('RING_REFRESH_TOKEN='),
+          )
+          .firstOrNull;
       if (line != null) {
         refreshToken = line.split('=').skip(1).join('=').trim();
       }
@@ -45,7 +52,9 @@ Future<void> _main() async {
   }
 
   if (refreshToken == null || refreshToken.isEmpty) {
-    print('Error: Set RING_REFRESH_TOKEN environment variable or create .env file');
+    print(
+      'Error: Set RING_REFRESH_TOKEN environment variable or create .env file',
+    );
     print('');
     print('Example:');
     print('  export RING_REFRESH_TOKEN="your_token"');

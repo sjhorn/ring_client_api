@@ -172,9 +172,9 @@ Future<void> main(List<String> args) async {
     }
 
     // Check if all failures are auth-related
-    final authFailures = results.where(
-      (r) => !r.passed && r.message.contains('Auth failed'),
-    ).length;
+    final authFailures = results
+        .where((r) => !r.passed && r.message.contains('Auth failed'))
+        .length;
     if (authFailures == failed) {
       print('');
       print('All failures are due to authentication issues.');
@@ -205,14 +205,15 @@ Future<TestResult> runExampleTest(ExampleTest test) async {
     }
 
     // For stream_example, we need to kill it early since it runs for 60s
-    final effectiveTimeout = test.name == 'stream_example' ? 15 : test.timeoutSeconds;
+    final effectiveTimeout = test.name == 'stream_example'
+        ? 15
+        : test.timeoutSeconds;
 
     // Start the example
-    final process = await Process.start(
-      'dart',
-      ['run', test.script],
-      environment: Platform.environment,
-    );
+    final process = await Process.start('dart', [
+      'run',
+      test.script,
+    ], environment: Platform.environment);
 
     // Collect output
     final stdoutCompleter = Completer<void>();
@@ -323,7 +324,9 @@ Future<TestResult> runExampleTest(ExampleTest test) async {
       // Show output on failure for debugging
       print('--- Output for ${test.name} (last 100 lines) ---');
       final lines = outputStr.split('\n');
-      final lastLines = lines.length > 100 ? lines.sublist(lines.length - 100) : lines;
+      final lastLines = lines.length > 100
+          ? lines.sublist(lines.length - 100)
+          : lines;
       print(lastLines.join('\n'));
       print('--- End output ---');
 
@@ -335,19 +338,9 @@ Future<TestResult> runExampleTest(ExampleTest test) async {
       );
     }
 
-    return TestResult(
-      test.name,
-      true,
-      'All checks passed',
-      stopwatch.elapsed,
-    );
+    return TestResult(test.name, true, 'All checks passed', stopwatch.elapsed);
   } catch (e) {
     stopwatch.stop();
-    return TestResult(
-      test.name,
-      false,
-      'Exception: $e',
-      stopwatch.elapsed,
-    );
+    return TestResult(test.name, false, 'Exception: $e', stopwatch.elapsed);
   }
 }

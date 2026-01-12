@@ -41,7 +41,6 @@ class FfmpegOptions {
   });
 }
 
-
 /// RTP Splitter for forwarding RTP packets to a UDP port
 ///
 /// This is a simplified version of @homebridge/camera-utils RtpSplitter.
@@ -232,18 +231,22 @@ class StreamingSession extends Subscribed {
         .where((section) => includeVideo || !section.startsWith('m=video'))
         // Convert encrypted transport to plain RTP for FFmpeg
         // (webrtc_dart decrypts SRTP to plain RTP before forwarding)
-        .map((section) => section
-            .replaceAll('UDP/TLS/RTP/SAVPF', 'RTP/AVP')
-            .replaceAll('UDP/TLS/RTP/SAVP', 'RTP/AVP'))
+        .map(
+          (section) => section
+              .replaceAll('UDP/TLS/RTP/SAVPF', 'RTP/AVP')
+              .replaceAll('UDP/TLS/RTP/SAVP', 'RTP/AVP'),
+        )
         // Remove DTLS/crypto attributes that FFmpeg doesn't need
         .map((section) {
           final lines = section.split('\n');
-          final filteredLines = lines.where((line) =>
-              !line.startsWith('a=fingerprint:') &&
-              !line.startsWith('a=setup:') &&
-              !line.startsWith('a=ice-ufrag:') &&
-              !line.startsWith('a=ice-pwd:') &&
-              !line.startsWith('a=candidate:'));
+          final filteredLines = lines.where(
+            (line) =>
+                !line.startsWith('a=fingerprint:') &&
+                !line.startsWith('a=setup:') &&
+                !line.startsWith('a=ice-ufrag:') &&
+                !line.startsWith('a=ice-pwd:') &&
+                !line.startsWith('a=candidate:'),
+          );
           return filteredLines.join('\n');
         })
         .join('\n');
@@ -330,17 +333,21 @@ class StreamingSession extends Subscribed {
       });
 
       // Handle exit
-      unawaited(_ffmpegProcess!.exitCode.then((code) {
-        logDebug('FFmpeg exited with code: $code');
-        _callEnded();
-      }));
+      unawaited(
+        _ffmpegProcess!.exitCode.then((code) {
+          logDebug('FFmpeg exited with code: $code');
+          _callEnded();
+        }),
+      );
 
       // Forward audio RTP to FFmpeg (matching TypeScript)
       addSubscription(
         onAudioRtp.listen((rtp) {
           _audioPacketCount++;
           if (_audioPacketCount <= 5 || _audioPacketCount % 100 == 0) {
-            logDebug('Audio RTP packet #$_audioPacketCount, size=${rtp.serialize().length}');
+            logDebug(
+              'Audio RTP packet #$_audioPacketCount, size=${rtp.serialize().length}',
+            );
           }
           _audioSplitter.send(rtp.serialize().toList(), port: audioPort);
         }),
@@ -352,7 +359,9 @@ class StreamingSession extends Subscribed {
           onVideoRtp.listen((rtp) {
             _videoPacketCount++;
             if (_videoPacketCount <= 5 || _videoPacketCount % 100 == 0) {
-              logDebug('Video RTP packet #$_videoPacketCount, size=${rtp.serialize().length}');
+              logDebug(
+                'Video RTP packet #$_videoPacketCount, size=${rtp.serialize().length}',
+              );
             }
             _videoSplitter.send(rtp.serialize().toList(), port: videoPort);
           }),
@@ -362,7 +371,9 @@ class StreamingSession extends Subscribed {
       // Stop FFmpeg and clean up when call ends
       addSubscription(
         onCallEnded.take(1).listen((_) {
-          logDebug('Call ended - audio packets: $_audioPacketCount, video packets: $_videoPacketCount');
+          logDebug(
+            'Call ended - audio packets: $_audioPacketCount, video packets: $_videoPacketCount',
+          );
           _ffmpegProcess?.kill();
         }),
       );
