@@ -1,6 +1,6 @@
 name: ring_client_api
 description: Unofficial Dart API for Ring Doorbells, Cameras, Alarm Systems, and Smart Lighting
-version: 0.2.6
+version: 0.2.7
 repository: https://github.com/sjhorn/ring_client_api
 homepage: https://github.com/sjhorn/ring_client_api
 issue_tracker: https://github.com/sjhorn/ring_client_api/issues

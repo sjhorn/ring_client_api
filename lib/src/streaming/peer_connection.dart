@@ -116,7 +116,8 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   /// Subject for requesting key frames
   final _onRequestKeyFrame = PublishSubject<void>();
 
-  /// Audio transceiver for two-way audio
+  /// Audio transceiver for two-way audio (may be used for future audio operations)
+  // ignore: unused_field
   late webrtc.RTCRtpTransceiver _audioTransceiver;
 
   /// Video transceiver for receiving video
@@ -184,14 +185,11 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     );
 
     // Add audio transceiver with sendrecv direction for two-way audio
-    // (matching TypeScript: pc.addTransceiver(this.returnAudioTrack, { direction: 'sendrecv' }))
+    // Pass returnAudioTrack directly (matching TypeScript: pc.addTransceiver(this.returnAudioTrack, { direction: 'sendrecv' }))
     _audioTransceiver = _pc.addTransceiver(
-      webrtc.MediaStreamTrackKind.audio,
+      returnAudioTrack,
       direction: webrtc.RtpTransceiverDirection.sendrecv,
     );
-    // Register nonstandard track for RTP forwarding (matching TypeScript werift)
-    // This subscribes to track.onReceiveRtp and forwards packets through sendRtp
-    _audioTransceiver.sender.registerNonstandardTrack(returnAudioTrack);
 
     // Add video transceiver with recvonly direction
     // (matching TypeScript: pc.addTransceiver('video', { direction: 'recvonly' }))

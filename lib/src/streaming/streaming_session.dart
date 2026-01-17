@@ -6,6 +6,7 @@ library;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:rxdart/rxdart.dart';
 
@@ -403,7 +404,8 @@ class StreamingSession extends Subscribed {
 
     // Create splitter that forwards RTP to the connection
     final audioOutForwarder = RtpSplitter((message) {
-      final rtp = RtpPacket.parse(message as dynamic);
+      // message is Uint8List from datagram.data
+      final rtp = RtpPacket.parse(message as Uint8List);
       connection.sendAudioPacket(rtp);
     });
 

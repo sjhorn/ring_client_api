@@ -1,3 +1,12 @@
+## 0.2.7 - 2026-01-17
+
+### Fixed
+- **Return audio now works correctly** - Audio sent to Ring camera speakers via `transcodeReturnAudio()`
+  - Fixed audio transceiver setup to pass `returnAudioTrack` directly to `addTransceiver()` (matching TypeScript werift and webrtc_dart Ring example)
+  - Fixed `RtpPacket.parse()` type cast from `dynamic` to `Uint8List`
+
+---
+
 ## 0.2.6 - 2026-01-17
 
 ### Changed
