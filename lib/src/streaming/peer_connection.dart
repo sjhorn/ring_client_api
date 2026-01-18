@@ -33,6 +33,42 @@ enum ConnectionState {
   closed,
 }
 
+/// Audio codec detected from SDP
+enum AudioCodec { opus, pcmu }
+
+/// Configuration for PLI (Picture Loss Indication) keyframe requests
+class PliConfig {
+  /// Enable early PLI requests with SSRC=0 before real SSRC arrives
+  final bool earlyPli;
+
+  /// Interval for early PLI requests (default 200ms)
+  final Duration earlyPliInterval;
+
+  /// Max duration for early PLI requests (default 2 seconds)
+  final Duration earlyPliMaxDuration;
+
+  /// Number of PLI bursts when real SSRC arrives (default 0)
+  final int pliOnFirstPacketCount;
+
+  /// Periodic PLI interval (default 4 seconds)
+  final Duration periodicPliInterval;
+
+  const PliConfig({
+    this.earlyPli = false,
+    this.earlyPliInterval = const Duration(milliseconds: 200),
+    this.earlyPliMaxDuration = const Duration(seconds: 2),
+    this.pliOnFirstPacketCount = 0,
+    this.periodicPliInterval = const Duration(seconds: 4),
+  });
+
+  /// Aggressive config for Flutter/real-time apps
+  static const aggressive = PliConfig(
+    earlyPli: true,
+    pliOnFirstPacketCount: 3,
+    periodicPliInterval: Duration(seconds: 2),
+  );
+}
+
 /// ICE candidate for WebRTC connection
 class RTCIceCandidate {
   final String candidate;
@@ -130,7 +166,22 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   /// Whether peer connection is closed
   bool _closed = false;
 
-  WebRTCPeerConnection() {
+  /// Detected audio codec from SDP answer
+  AudioCodec? _audioCodec;
+
+  /// Get the detected audio codec from SDP answer
+  AudioCodec? get audioCodec => _audioCodec;
+
+  /// PLI configuration
+  final PliConfig pliConfig;
+
+  /// Timer for early PLI requests
+  Timer? _earlyPliTimer;
+
+  /// Video media SSRC (set when first packet arrives)
+  int? _videoMediaSsrc;
+
+  WebRTCPeerConnection({this.pliConfig = const PliConfig()}) {
     // Create return audio track using nonstandard MediaStreamTrack (matching TypeScript werift)
     // TypeScript: this.returnAudioTrack = new MediaStreamTrack({ kind: 'audio' })
     returnAudioTrack = nonstandard.MediaStreamTrack(
@@ -219,6 +270,10 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
       final mappedState = _mapConnectionState(state);
       _onConnectionStateController.add(mappedState);
 
+      if (state == webrtc.PeerConnectionState.connected) {
+        // Start early PLI requests when connected
+        _startEarlyPliRequests();
+      }
       if (state == webrtc.PeerConnectionState.failed) {
         // Connection failed
       }
@@ -265,20 +320,74 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     );
   }
 
+  /// Start early PLI requests before we have the real SSRC
+  void _startEarlyPliRequests() {
+    if (!pliConfig.earlyPli || _closed) return;
+
+    _earlyPliTimer?.cancel();
+    _sendPliWithSsrc(0);
+
+    final maxAttempts =
+        pliConfig.earlyPliMaxDuration.inMilliseconds ~/
+        pliConfig.earlyPliInterval.inMilliseconds;
+    var attempts = 0;
+    _earlyPliTimer = Timer.periodic(pliConfig.earlyPliInterval, (timer) {
+      attempts++;
+      if (_closed || _videoMediaSsrc != null || attempts >= maxAttempts) {
+        timer.cancel();
+        _earlyPliTimer = null;
+        return;
+      }
+      _sendPliWithSsrc(0);
+    });
+  }
+
+  /// Send PLI with a specific SSRC
+  void _sendPliWithSsrc(int ssrc) {
+    if (_closed) return;
+    try {
+      _videoTransceiver.receiver.rtpSession.sendPli(ssrc);
+    } catch (_) {
+      // Ignore errors when sending PLI
+    }
+  }
+
   /// Set up video keyframe requests (PLI)
   void _setupVideoKeyFrameRequests(webrtc.MediaStreamTrack track) {
-    int? mediaSsrc;
     Timer? pliTimer;
 
     addSubscription(
       track.onReceiveRtp.listen((rtp) {
-        if (!_closed && mediaSsrc == null) {
-          mediaSsrc = rtp.ssrc;
+        if (!_closed && _videoMediaSsrc == null) {
+          _videoMediaSsrc = rtp.ssrc;
 
-          // Send PLI every 4 seconds (matching TypeScript: interval(4000))
-          pliTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-            if (!_closed && mediaSsrc != null) {
-              _videoTransceiver.receiver.rtpSession.sendPli(mediaSsrc!);
+          // Cancel early PLI timer now that we have real SSRC
+          _earlyPliTimer?.cancel();
+          _earlyPliTimer = null;
+
+          // Send PLI burst when first packet arrives
+          if (pliConfig.pliOnFirstPacketCount > 0) {
+            _sendPliWithSsrc(_videoMediaSsrc!);
+            if (pliConfig.pliOnFirstPacketCount > 1) {
+              Timer(const Duration(milliseconds: 200), () {
+                if (!_closed && _videoMediaSsrc != null) {
+                  _sendPliWithSsrc(_videoMediaSsrc!);
+                }
+              });
+            }
+            if (pliConfig.pliOnFirstPacketCount > 2) {
+              Timer(const Duration(milliseconds: 500), () {
+                if (!_closed && _videoMediaSsrc != null) {
+                  _sendPliWithSsrc(_videoMediaSsrc!);
+                }
+              });
+            }
+          }
+
+          // Send PLI periodically using configured interval
+          pliTimer = Timer.periodic(pliConfig.periodicPliInterval, (_) {
+            if (!_closed && _videoMediaSsrc != null) {
+              _sendPliWithSsrc(_videoMediaSsrc!);
             }
           });
         }
@@ -288,8 +397,8 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
     // Set up manual keyframe request handling
     addSubscription(
       _onRequestKeyFrame.stream.listen((_) {
-        if (!_closed && mediaSsrc != null) {
-          _videoTransceiver.receiver.rtpSession.sendPli(mediaSsrc!);
+        if (!_closed && _videoMediaSsrc != null) {
+          _sendPliWithSsrc(_videoMediaSsrc!);
         }
       }),
     );
@@ -332,6 +441,14 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
 
   @override
   Future<void> acceptAnswer(SessionDescription answer) async {
+    // Detect audio codec from SDP answer
+    final sdp = answer.sdp.toLowerCase();
+    if (sdp.contains(' opus/')) {
+      _audioCodec = AudioCodec.opus;
+    } else if (sdp.contains(' pcmu/') || sdp.contains('a=rtpmap:0 ')) {
+      _audioCodec = AudioCodec.pcmu;
+    }
+
     await _pc.setRemoteDescription(
       webrtc.RTCSessionDescription(type: 'answer', sdp: answer.sdp),
     );
@@ -364,6 +481,9 @@ class WebRTCPeerConnection extends Subscribed implements BasicPeerConnection {
   void close() {
     if (_closed) return;
     _closed = true;
+
+    _earlyPliTimer?.cancel();
+    _earlyPliTimer = null;
 
     _pc.close();
     _onIceCandidateController.close();

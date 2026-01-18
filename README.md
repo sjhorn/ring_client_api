@@ -12,20 +12,20 @@ This package is a Dart port of the popular [ring-client-api](https://github.com/
 
 ## Features
 
-- Full access to Ring API with Dart null-safety
+- Full access to Ring API (Application Programming Interface) with Dart null-safety
 - Support for Ring Doorbells and Cameras
 - Ring Alarm System integration
 - Smart Lighting control
 - Real-time push notifications via WebSocket
-- **Full WebRTC video streaming** using pure Dart (webrtc_dart)
+- **Full WebRTC (Web Real-Time Communication) video streaming** using pure Dart (webrtc_dart)
 - FFmpeg transcoding for video recording
 - Two-way audio support
 - Historical event data
 - Device status monitoring and control
 - Camera snapshots
 - Event history and playback
-- Two-factor authentication (2FA) support
-- CLI tools for authentication, device data, and video recording
+- 2FA (Two-Factor Authentication) support
+- CLI (Command-Line Interface) tools for authentication, device data, and video recording
 
 ## Streaming Support
 
@@ -43,6 +43,47 @@ await session.onCallEnded.first;
 **Requirements:**
 - FFmpeg must be installed and in PATH for video transcoding
 - `webrtc_dart` package (included as dependency)
+
+### Advanced WebRTC (Web Real-Time Communication) Configuration
+
+For real-time applications like Flutter video players, you can configure aggressive PLI (Picture Loss Indication) handling to get IDR (Instantaneous Decoder Refresh) keyframes faster:
+
+```dart
+import 'package:ring_client_api/ring_client_api.dart';
+
+// Use aggressive PLI config for faster keyframe delivery
+final pc = WebRTCPeerConnection(pliConfig: PliConfig.aggressive);
+
+// Or customize PLI behavior
+final pc = WebRTCPeerConnection(
+  pliConfig: PliConfig(
+    earlyPli: true,              // Send PLI with SSRC (Synchronization Source) = 0 before real SSRC arrives
+    earlyPliInterval: Duration(milliseconds: 200),
+    earlyPliMaxDuration: Duration(seconds: 2),
+    pliOnFirstPacketCount: 3,    // Burst of 3 PLIs when first RTP (Real-time Transport Protocol) packet arrives
+    periodicPliInterval: Duration(seconds: 2),
+  ),
+);
+```
+
+| PliConfig Option | Default | Description |
+|------------------|---------|-------------|
+| `earlyPli` | `false` | Send PLI requests with SSRC (Synchronization Source) = 0 before real SSRC arrives |
+| `earlyPliInterval` | 200ms | Interval between early PLI requests |
+| `earlyPliMaxDuration` | 2s | Maximum duration for early PLI requests |
+| `pliOnFirstPacketCount` | 0 | Number of PLI bursts when real SSRC arrives (at 0, 200, 500ms) |
+| `periodicPliInterval` | 4s | Interval for periodic PLI requests |
+
+`PliConfig.aggressive` preset uses: `earlyPli: true`, `pliOnFirstPacketCount: 3`, `periodicPliInterval: 2s`
+
+### Audio Codec Detection
+
+After SDP (Session Description Protocol) answer exchange, you can detect the negotiated audio codec:
+
+```dart
+await pc.acceptAnswer(answer);
+print(pc.audioCodec); // AudioCodec.opus or AudioCodec.pcmu (Pulse Code Modulation mu-law)
+```
 
 ## Troubleshooting Issues
 
@@ -193,7 +234,7 @@ await camera.setSiren(true); // turn siren on/off
 final health = await camera.getHealth(); // fetch health info like wifi status
 await camera.startVideoOnDemand(); // ask the camera to start a new video stream
 
-// SIP session for RTP control
+// SIP (Session Initiation Protocol) session for RTP (Real-time Transport Protocol) control
 final sipSession = await camera.createSipSession();
 
 // Event history and recordings

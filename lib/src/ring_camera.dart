@@ -445,6 +445,14 @@ class RingCamera extends Subscribed {
     return currentTimestampAge < snapshotLifeTime;
   }
 
+  /// Get the DateTime when the last snapshot was captured.
+  ///
+  /// Returns null if no snapshot has been fetched yet.
+  DateTime? get lastSnapshotTime {
+    if (_lastSnapshotTimestampLocal == 0) return null;
+    return DateTime.fromMillisecondsSinceEpoch(_lastSnapshotTimestampLocal);
+  }
+
   /// Build doorbot API URL
   String doorbotUrl([String path = '']) {
     return clientApi('doorbots/$id/$path');
@@ -830,13 +838,12 @@ class RingCamera extends Subscribed {
       ),
     );
 
-    final responseTimestamp = response.responseTimestamp ?? 0;
     final timeMillis = response.timeMillis ?? 0;
-    final timestampAge = (responseTimestamp - timeMillis).abs();
 
     _lastSnapshotTimestamp = timeMillis;
-    _lastSnapshotTimestampLocal =
-        DateTime.now().millisecondsSinceEpoch - timestampAge;
+    // timeMillis IS the snapshot timestamp from Ring's API
+    // Use it directly as the local equivalent timestamp
+    _lastSnapshotTimestampLocal = timeMillis;
 
     return response.data;
   }

@@ -318,19 +318,42 @@ dart run bin/stream_camera.dart 30 recording.mp4
 ---
 
 ## Code Style & Conventions
-- Follow the official Dart style guide: https://dart.dev/guides/language/effective-dart/style  
-- Use **two spaces** for indentation (Dart default)  
-- Prefer `final` and `const` where possible  
-- Public API should be documented with Dartdoc comments: `///`  
-- Private members start with an underscore `_`  
-- Avoid using `dynamic` unless absolutely necessary  
-- Use null-safety (`--null-safety` enforced)  
+- Follow the official Dart style guide: https://dart.dev/guides/language/effective-dart/style
+- Use **two spaces** for indentation (Dart default)
+- Prefer `final` and `const` where possible
+- Public API should be documented with Dartdoc comments: `///`
+- Private members start with an underscore `_`
+- Avoid using `dynamic` unless absolutely necessary
+- Use null-safety (`--null-safety` enforced)
 - Organize imports:
-  1. Dart SDK imports  
-  2. Third-party package imports  
-  3. Local package imports  
-  Each group separated by a blank line.  
+  1. Dart SDK imports
+  2. Third-party package imports
+  3. Local package imports
+  Each group separated by a blank line.
 - Line length: aim for ≤ 80-100 characters for readability, but up to 120 acceptable for long doc comments or URLs.
+
+### Documentation Acronym Standards
+- **Expand acronyms on first use** in documentation (README.md, CHANGELOG.md, code comments)
+- Format: `ACRONYM (Full Expansion)` - e.g., `PLI (Picture Loss Indication)`
+- Common acronyms in this project:
+  - API (Application Programming Interface)
+  - CLI (Command-Line Interface)
+  - 2FA (Two-Factor Authentication)
+  - WebRTC (Web Real-Time Communication)
+  - RTP (Real-time Transport Protocol)
+  - RTCP (Real-time Transport Control Protocol)
+  - SDP (Session Description Protocol)
+  - ICE (Interactive Connectivity Establishment)
+  - STUN (Session Traversal Utilities for NAT)
+  - DTLS (Datagram Transport Layer Security)
+  - SRTP (Secure Real-time Transport Protocol)
+  - PLI (Picture Loss Indication)
+  - SSRC (Synchronization Source)
+  - IDR (Instantaneous Decoder Refresh)
+  - NAL (Network Abstraction Layer)
+  - SIP (Session Initiation Protocol)
+  - PCMU (Pulse Code Modulation mu-law)
+- After first expansion, subsequent uses can use just the acronym
 
 ---
 
@@ -404,4 +427,5 @@ A: Yes — treat it as living documentation.  [oai_citation:2‡agents.md](https
 ## Change History of this File
 - **v0.1.0** — Initial draft based on generic Dart package template
 - **v0.1.0 Post-Publish** — Added detailed release process with version bumping, documented CLI tools, added pre-release checklist
-- **v0.2.5** — Improved release process: reordered steps to run tests first, added explicit git tag push step, added README.md update step, moved checklist to end as summary  
+- **v0.2.5** — Improved release process: reordered steps to run tests first, added explicit git tag push step, added README.md update step, moved checklist to end as summary
+- **v0.2.8** — Added documentation acronym standards: expand acronyms on first use with full expansion in brackets  

@@ -1,3 +1,20 @@
+## 0.2.8 - 2026-01-18
+
+### Added
+- **Configurable PLI (Picture Loss Indication) handling** for faster keyframe delivery
+  - New `PliConfig` class with presets: `PliConfig.aggressive` for real-time video players
+  - Early PLI requests before SSRC (Synchronization Source) is known
+  - Configurable PLI burst on first RTP (Real-time Transport Protocol) packet
+  - Periodic PLI interval configuration
+- **Audio codec detection** - `audioCodec` property returns `AudioCodec.opus` or `AudioCodec.pcmu` after SDP (Session Description Protocol) answer
+- New `AudioCodec` enum for detected audio codecs
+
+### Changed
+- Updated README.md with expanded acronyms for improved clarity
+- Added documentation acronym standards to CLAUDE.md
+
+---
+
 ## 0.2.7 - 2026-01-17
 
 ### Fixed
